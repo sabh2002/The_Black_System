@@ -1,0 +1,87 @@
+body {
+    font-family: 'Arial', sans-serif; 
+    background: linear-gradient(to bottom, #f4f4f4, #fff);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    padding: 0; /* Eliminar margenes o padding que puedan causar desplazamiento */
+    box-sizing: border-box; /* Asegura que el padding no afecte el tamaño total */
+}
+
+* {
+    box-sizing: inherit; /* Aplicar box-sizing a todos los elementos */
+}
+
+.login-container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    padding: 30px;
+    width: 350px; /* Reducido el ancho */
+    overflow: hidden; 
+    position: relative; /* Para aplicar el efecto radial */
+}
+
+.logo img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 30px;
+    border-radius: 5px;
+}
+
+.login-form h2 {
+    color: #c0392b;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 10px; /* Reducido padding */
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px; 
+}
+
+.login-form input:focus {
+    outline: none;
+    border-color: #c0392b;
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
+}
+
+.login-form button {
+    background-color: #c0392b; 
+    color: white;
+    border: none;
+    padding: 10px; /* Reducido padding */
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px; /* Reducido tamaño de letra */
+    transition: background-color 0.3s ease;
+}
+
+.login-form button:hover {
+    background-color: #a93226; 
+}
+
+.login-container::before {
+    content: "";
+    position: absolute;
+    top: -50px;
+    left: -50px;
+    width: 150%;
+    height: 150%;
+    background: radial-gradient(circle at top right, rgba(255, 0, 0, 0.3), transparent);
+    z-index: -1;
+    opacity: 0.5;
+    filter: blur(20px);
+}

@@ -1,0 +1,41 @@
+<!-- templates/black_invoices/facturas/factura_list.html -->
+{% extends 'black_invoices/base/base_list.html' %}
+
+{% block table_header %}
+<tr>
+    <th>#</th>
+    <th>Cliente</th>
+    <th>Fecha</th>
+    <th>Total</th>
+    <th>Método de Pago</th>
+    <th>Empleado</th>
+    <th>Acciones</th>
+</tr>
+{% endblock %}
+
+{% block table_body %}
+{% for factura in facturas %}
+<tr>
+    <td>{{ factura.id }}</td>
+    <td>{{ factura.cliente.nombre }} {{ factura.cliente.apellido }}</td>
+    <td>{{ factura.fecha_fac|date:"d/m/Y H:i" }}</td>
+    <td>${{ factura.total_fac }}</td>
+    <td>{{ factura.get_metodo_pag_display }}</td>
+    <td>{{ factura.empleado.nombre }}</td>
+    <td>
+        <div class="btn-group">
+            <a href="#" class="btn btn-sm btn-info" title="Ver detalles">
+                <i class="fas fa-eye"></i>
+            </a>
+            <a href="#" class="btn btn-sm btn-secondary" title="Imprimir">
+                <i class="fas fa-print"></i>
+            </a>
+        </div>
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="7" class="text-center">No hay facturas registradas</td>
+</tr>
+{% endfor %}
+{% endblock %}

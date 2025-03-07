@@ -1,0 +1,177 @@
+{% extends 'black_invoices/base/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ titulo }}</h3>
+    </div>
+    <div class="card-body">
+        <form method="post" id="venta-form">
+            {% csrf_token %}
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Cliente:</label>
+                        {{ form.cliente }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Método de Pago:</label>
+                        {{ form.metodo_pag }}
+                    </div>
+                </div>
+            </div>
+            
+            <h4>Productos</h4>
+            <div id="detalles-container">
+                {{ detalles_formset.management_form }}
+                
+                <table class="table table-bordered" id="detalles-table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Precio</th>
+                            <th>Cantidad</th>
+                            <th>Tipo Factura</th>
+                            <th>Subtotal</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for form in detalles_formset %}
+                        <tr class="detalle-form">
+                            <td>{{ form.producto }}</td>
+                            <td class="precio">$0.00</td>
+                            <td>{{ form.cantidad }}</td>
+                            <td>{{ form.tipo_factura }}</td>
+                            <td class="subtotal">$0.00</td>
+                            <td>
+                                <button type="button" class="btn btn-danger btn-sm eliminar-fila">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                {{ form.id }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+                <button type="button" id="agregar-producto" class="btn btn-info">
+                    <i class="fas fa-plus"></i> Agregar Producto
+                </button>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-md-6 offset-md-6">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tr>
+                                <th style="width:50%">Total:</th>
+                                <td id="total-venta">$0.00</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Guardar Venta
+                </button>
+                <a href="{% url 'black_invoices:venta_list' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Datos de productos para JavaScript -->
+{{ productos_json|json_script:"productos-json" }}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Datos de productos para acceso rápido
+    const productos = {{ productos_json|safe }};
+    
+    // Mapeo de IDs a objetos producto
+    const productosMap = {};
+    productos.forEach(p => productosMap[p.id] = p);
+    
+    $(document).ready(function() {
+        // Evento para actualizar precio y subtotal cuando cambia la cantidad
+        $(document).on('input', 'input[name$="cantidad"]', function() {
+            const row = $(this).closest('tr');
+            updateRowCalculations(row);
+            updateTotal();
+        });
+
+        // Evento para cuando cambia el producto seleccionado
+        $(document).on('change', 'select[name$="producto"]', function() {
+            const row = $(this).closest('tr');
+            updateRowCalculations(row);
+            updateTotal();
+        });
+        
+        // Inicializar cálculos para filas existentes
+        $('tr:has(select[name$="producto"])').each(function() {
+            updateRowCalculations($(this));
+        });
+        updateTotal();
+        
+        // Botón agregar producto
+        $('#agregar-producto').click(function() {
+            // Código para agregar fila (ya implementado)
+            // ...
+            
+            // Después de agregar, reinicializar los eventos
+            $('tr:has(select[name$="producto"]):last').each(function() {
+                updateRowCalculations($(this));
+            });
+            updateTotal();
+        });
+        
+        // Función para actualizar cálculos de una fila
+        function updateRowCalculations(row) {
+            const productoSelect = row.find('select[name$="producto"]');
+            const cantidadInput = row.find('input[name$="cantidad"]');
+            
+            if (productoSelect.val() && cantidadInput.val()) {
+                const productoId = productoSelect.val();
+                const producto = productosMap[productoId];
+                const cantidad = parseInt(cantidadInput.val()) || 0;
+                
+                if (producto && cantidad > 0) {
+                    // Actualizar campo de precio
+                    row.find('td.precio').text('$' + parseFloat(producto.precio).toFixed(2));
+                    
+                    // Calcular y actualizar subtotal
+                    const subtotal = producto.precio * cantidad;
+                    row.find('td.subtotal').text('$' + subtotal.toFixed(2));
+                } else {
+                    row.find('td.precio').text('$0.00');
+                    row.find('td.subtotal').text('$0.00');
+                }
+            } else {
+                row.find('td.precio').text('$0.00');
+                row.find('td.subtotal').text('$0.00');
+            }
+        }
+        
+        // Función para actualizar el total
+        function updateTotal() {
+            let total = 0;
+            $('td.subtotal').each(function() {
+                const subtotalText = $(this).text().replace('$', '');
+                const subtotal = parseFloat(subtotalText) || 0;
+                total += subtotal;
+            });
+            $('#total-venta').text('$' + total.toFixed(2));
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,48 @@
+<!-- templates/black_invoices/productos/producto_list.html -->
+{% extends 'black_invoices/base/base_list.html' %}
+
+{% block table_header %}
+<tr>
+    <th>Nombre</th>
+    <th>Descripción</th>
+    <th>Precio</th>
+    <th>Stock</th>
+    <th>Estado</th>
+    <th>Acciones</th>
+</tr>
+{% endblock %}
+
+{% block table_body %}
+{% for producto in productos %}
+<tr>
+    <td>{{ producto.nombre }}</td>
+    <td>{{ producto.descripcion|truncatechars:50 }}</td>
+    <td>${{ producto.precio }}</td>
+    <td>{{ producto.stock }}</td>
+    <td>
+        {% if producto.activo %}
+        <span class="badge badge-success">Activo</span>
+        {% else %}
+        <span class="badge badge-danger">Inactivo</span>
+        {% endif %}
+    </td>
+    <td>
+        <div class="btn-group">
+            <a href="#" class="btn btn-sm btn-warning" title="Editar">
+                <i class="fas fa-edit"></i>
+            </a>
+            <a href="#" class="btn btn-sm btn-info" title="Ver detalles">
+                <i class="fas fa-eye"></i>
+            </a>
+            <a href="#" class="btn btn-sm btn-danger" title="Eliminar">
+                <i class="fas fa-trash"></i>
+            </a>
+        </div>
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="6" class="text-center">No hay productos registrados</td>
+</tr>
+{% endfor %}
+{% endblock %}

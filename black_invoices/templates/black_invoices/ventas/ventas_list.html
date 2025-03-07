@@ -1,0 +1,48 @@
+{% extends 'black_invoices/base/base_list.html' %}
+
+{% block table_header %}
+<tr>
+    <th>#</th>
+    <th>Fecha</th>
+    <th>Cliente</th>
+    <th>Empleado</th>
+    <th>Total</th>
+    <th>Estado</th>
+    <th>Acciones</th>
+</tr>
+{% endblock %}
+
+{% block table_body %}
+{% for venta in ventas %}
+<tr>
+    <td>{{ venta.id }}</td>
+    <td>{{ venta.fecha_venta|date:"d/m/Y H:i" }}</td>
+    <td>{{ venta.factura.cliente.nombre }} {{ venta.factura.cliente.apellido }}</td>
+    <td>{{ venta.empleado.nombre }} {{ venta.empleado.apellido }}</td>
+    <td>${{ venta.factura.total_fac }}</td>
+    <td>
+        {% if venta.status.vent_cancelada %}
+        <span class="badge badge-danger">Cancelada</span>
+        {% elif venta.status.vent_espera %}
+        <span class="badge badge-warning">En Espera</span>
+        {% else %}
+        <span class="badge badge-success">Completada</span>
+        {% endif %}
+    </td>
+    <td>
+        <div class="btn-group">
+            <a href="{% url 'black_invoices:venta_detail' venta.id %}" class="btn btn-sm btn-info" title="Ver detalles">
+                <i class="fas fa-eye"></i>
+            </a>
+            <a href="{% url 'black_invoices:factura_pdf' venta.factura.id %}" class="btn btn-sm btn-secondary" title="PDF">
+                <i class="fas fa-file-pdf"></i>
+            </a>
+        </div>
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="7" class="text-center">No hay ventas registradas</td>
+</tr>
+{% endfor %}
+{% endblock %}

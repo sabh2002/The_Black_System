@@ -1,0 +1,77 @@
+{% extends 'black_invoices/base/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <!-- Estadísticas -->
+    <div class="col-lg-4 col-md-6">
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3>${{ total_mes|floatformat:2|default:"0.00" }}</h3>
+                <p>Comisiones este mes</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-money-bill"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4 col-md-6">
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>${{ total_año|floatformat:2|default:"0.00" }}</h3>
+                <p>Comisiones este año</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ titulo }}</h3>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Fecha</th>
+                    <th>Empleado</th>
+                    <th>Venta</th>
+                    <th>Monto Venta</th>
+                    <th>Comisión</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for comision in comisiones %}
+                <tr>
+                    <td>{{ comision.id }}</td>
+                    <td>{{ comision.fecha_comision|date:"d/m/Y H:i" }}</td>
+                    <td>{{ comision.empleado.nombre }} {{ comision.empleado.apellido }}</td>
+                    <td>
+                        <a href="{% url 'black_invoices:venta_detail' comision.venta.id %}">
+                            Venta #{{ comision.venta.id }}
+                        </a>
+                    </td>
+                    <td>${{ comision.monto_venta}}</td>
+                    <td>${{ comision.total_comision }}</td>
+                    <td>
+                        <a href="{% url 'black_invoices:venta_detail' comision.venta.id %}" class="btn btn-sm btn-info">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center">No hay comisiones registradas</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

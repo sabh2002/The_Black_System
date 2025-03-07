@@ -1,0 +1,87 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include "includes/head.html" %}
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+        {% include "includes/navbar.html" %}
+        {% include "includes/sidebar.html" %}
+        <div class="content-wrapper">
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'success' %}success{% elif message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endfor %}
+        {% endif %}
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>{{titulo}}</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Inicio</a></li>
+                        <li class="breadcrumb-item"><a href="#">Ventanas</a></li>
+                        <li class="breadcrumb-item active">Ventana 1</li>
+                        </ol>
+                    </div>
+                    </div>
+                </div><!-- /.container-fluid -->
+                </section>
+            <section class="content">
+                
+            </section>
+            <section class="content">
+
+                <div class="container-fluid">
+                    <div class="row">
+                    <div class="col-12">
+                        <!-- Default box -->
+                        <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Titulo</h3>
+    
+                            <div class="card-tools">
+                            {% block tools %}
+                            
+                            {% endblock %}
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            {% block content %}
+                <!-- Aquí va el contenido principal -->
+                             {% endblock %}
+                    <script src="{% static 'js/jquery.min.js' %}"></script>
+                             {% block extra_js %}
+                             
+                             {% endblock %}
+                        </div>
+                        <!-- /.card-body -->
+                        <div class="card-footer">
+                            Footer
+                        </div>
+                        <!-- /.card-footer-->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                    </div>
+                </div>
+                </section>
+        </div>
+        {% include "includes/footer.html" %}
+    </div>
+    <!-- Scripts -->
+    
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/adminlte.min.js' %}"></script>
+
+</body>
+</html>

@@ -1,0 +1,152 @@
+{% extends 'black_invoices/base/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <!-- Información General -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Información General</h3>
+                <div class="card-tools">
+                    <a href="{% url 'black_invoices:venta_list' %}" class="btn btn-default">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </a>
+                    <a href="{% url 'black_invoices:factura_pdf' venta.factura.id %}" class="btn btn-primary" target="_blank">
+                        <i class="fas fa-file-pdf"></i> Generar PDF
+                    </a>
+                    <!-- <button type="button" class="btn btn-secondary" onclick="window.print();">
+                        <i class="fas fa-print"></i> Imprimir
+                    </button> -->
+                    {% if not venta.status.vent_cancelada %}
+                    <a href="{% url 'black_invoices:cancelar_venta' venta.id %}" class="btn btn-danger"
+                        onclick="return confirm('¿Está seguro de cancelar esta venta? Se restaurará el stock.');">
+                        <i class="fas fa-ban"></i> Cancelar Venta
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Datos de la Venta</h5>
+                        <table class="table table-striped">
+                            <tr>
+                                <th>Número de Venta:</th>
+                                <td>{{ venta.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>Fecha:</th>
+                                <td>{{ venta.fecha_venta|date:"d/m/Y H:i" }}</td>
+                            </tr>
+                            <tr>
+                                <th>Estado:</th>
+                                <td>
+                                    {% if venta.status.vent_cancelada %}
+                                    <span class="badge badge-danger">Cancelada</span>
+                                    {% elif venta.status.vent_espera %}
+                                    <span class="badge badge-warning">En Espera</span>
+                                    {% else %}
+                                    <span class="badge badge-success">Completada</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Total:</th>
+                                <td>${{ venta.factura.total_fac }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Datos del Cliente</h5>
+                        <table class="table table-striped">
+                            <tr>
+                                <th>Cliente:</th>
+                                <td>{{ venta.factura.cliente.nombre }} {{ venta.factura.cliente.apellido }}</td>
+                            </tr>
+                            <tr>
+                                <th>Email:</th>
+                                <td>{{ venta.factura.cliente.email }}</td>
+                            </tr>
+                            <tr>
+                                <th>Teléfono:</th>
+                                <td>{{ venta.factura.cliente.telefono }}</td>
+                            </tr>
+                            <tr>
+                                <th>Dirección:</th>
+                                <td>{{ venta.factura.cliente.direccion }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detalles de la Venta -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Productos</h3>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Precio</th>
+                            <th>Cantidad</th>
+                            <th>Tipo Factura</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for detalle in detalles %}
+                        <tr>
+                            <td>{{ detalle.producto.nombre }}</td>
+                            <td>${{ detalle.producto.precio }}</td>
+                            <td>{{ detalle.cantidad }}</td>
+                            <td>{{ detalle.tipo_factura }}</td>
+                            <td>${{ detalle.sub_total }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="4" class="text-right">Total:</th>
+                            <th>${{ venta.factura.total_fac }}</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <!-- Información de Comisión -->
+        {% if comision %}
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Comisión Generada</h3>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <tr>
+                        <th>Empleado:</th>
+                        <td>{{ venta.empleado.nombre }} {{ venta.empleado.apellido }}</td>
+                    </tr>
+                    <tr>
+                        <th>Monto de venta:</th>
+                        <td>${{ comision.monto_venta }}</td>
+                    </tr>
+                    <tr>
+                        <th>Comisión generada:</th>
+                        <td>${{ comision.total_comision }}</td>
+                    </tr>
+                    <tr>
+                        <th>Fecha:</th>
+                        <td>{{ comision.fecha_comision|date:"d/m/Y H:i" }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

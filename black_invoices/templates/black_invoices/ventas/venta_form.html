@@ -12,6 +12,9 @@
                         <h3 class="card-title">{{ titulo }}</h3>
                     </div>
                     <div class="card-body">
+                        <!-- Los campos ocultos del formulario principal -->
+                        {{ form.id }}
+                        
                         <!-- Datos de cliente y método de pago -->
                         <div class="row">
                             <div class="col-md-6">
@@ -28,7 +31,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Método de Pago:</label>
-                                    <select name="metodo_pago" class="form-control" required id="metodoPago">
+                                    <select name="metodo_pag" class="form-control" required id="metodoPago">
                                         <option value="efectivo">Efectivo</option>
                                         <option value="tarjeta">Tarjeta</option>
                                         <option value="transferencia">Transferencia</option>
@@ -38,6 +41,9 @@
                             </div>
                         </div>
 
+                        <!-- Management form del formset - CRUCIAL -->
+                        {{ detalles_formset.management_form }}
+                        
                         <!-- Tabla de productos -->
                         <h4 class="mt-4">Productos</h4>
                         <div class="table-responsive">
@@ -51,10 +57,11 @@
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr class="fila-producto">
+                                <tbody id="detalle-body">
+                                    <!-- Formulario vacío como plantilla (no se envía) -->
+                                    <tr class="fila-producto empty-form" style="display: none;">
                                         <td>
-                                            <select name="producto[]" class="form-control producto-select" required>
+                                            <select name="{{ detalles_formset.empty_form.prefix }}-producto" class="form-control producto-select" required disabled>
                                                 <option value="">------</option>
                                                 {% for p in productos %}
                                                     <option value="{{ p.id }}" data-precio="{{ p.precio }}" data-stock="{{ p.stock }}">{{ p.nombre }}</option>
@@ -63,13 +70,37 @@
                                         </td>
                                         <td class="precio">$0.00</td>
                                         <td>
-                                            <input type="number" name="cantidad[]" class="form-control cantidad" min="1" value="1" max="100">
+                                            <input type="number" name="{{ detalles_formset.empty_form.prefix }}-cantidad" class="form-control cantidad" min="1" value="1" max="100" disabled>
+                                        </td>
+                                        <td class="subtotal">$0.00</td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger btn-sm eliminar-fila" disabled>
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                            <input type="hidden" name="{{ detalles_formset.empty_form.prefix }}-tipo_factura" class="tipo-factura-input" value="1" disabled>
+                                        </td>
+                                    </tr>
+                                    
+                                    <!-- Formulario inicial (siempre presente) -->
+                                    <tr class="fila-producto">
+                                        <td>
+                                            <select name="form-0-producto" class="form-control producto-select" required>
+                                                <option value="">------</option>
+                                                {% for p in productos %}
+                                                    <option value="{{ p.id }}" data-precio="{{ p.precio }}" data-stock="{{ p.stock }}">{{ p.nombre }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </td>
+                                        <td class="precio">$0.00</td>
+                                        <td>
+                                            <input type="number" name="form-0-cantidad" class="form-control cantidad" min="1" value="1" max="100">
                                         </td>
                                         <td class="subtotal">$0.00</td>
                                         <td>
                                             <button type="button" class="btn btn-danger btn-sm eliminar-fila">
                                                 <i class="fas fa-trash"></i>
                                             </button>
+                                            <input type="hidden" name="form-0-tipo_factura" class="tipo-factura-input" value="1">
                                         </td>
                                     </tr>
                                 </tbody>
@@ -102,9 +133,6 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- Campo oculto para almacenar el tipo_factura asociado -->
-                        <input type="hidden" id="tipo_factura_id" name="tipo_factura_id" value="">
                     </div>
                     <div class="card-footer">
                         <button type="submit" class="btn btn-primary">
@@ -121,13 +149,36 @@
 </div>
 
 <script>
-// El script se ejecutará inmediatamente cuando se cargue la página
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Script de venta cargado');
     
     // Función para formatear números como moneda
     function formatCurrency(value) {
         return '$' + parseFloat(value).toFixed(2);
+    }
+    
+    // Actualizar el Management Form de Django
+    function updateFormsetManagement() {
+        const totalForms = document.getElementById('id_form-TOTAL_FORMS');
+        if (totalForms) {
+            const forms = document.querySelectorAll('.fila-producto:not(.empty-form)');
+            totalForms.value = forms.length;
+            console.log('Total forms actualizado a:', forms.length);
+            
+            // Renumerar los indices de los formularios
+            forms.forEach((form, index) => {
+                const inputs = form.querySelectorAll('input[name^="form-"], select[name^="form-"]');
+                inputs.forEach(input => {
+                    const name = input.getAttribute('name');
+                    if (name) {
+                        const newName = name.replace(/form-\d+/, `form-${index}`);
+                        input.setAttribute('name', newName);
+                    }
+                });
+            });
+        } else {
+            console.error('No se encontró el campo TOTAL_FORMS');
+        }
     }
     
     // Función para manejar cambios en el select de producto
@@ -199,7 +250,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Actualizar el total general de la compra
     function updateTotal() {
-        const subtotalCells = document.querySelectorAll('.subtotal');
+        const subtotalCells = document.querySelectorAll('.fila-producto:not(.empty-form) .subtotal');
         let total = 0;
         
         subtotalCells.forEach(function(cell) {
@@ -217,33 +268,45 @@ document.addEventListener('DOMContentLoaded', function() {
     // Agregar nueva fila de producto
     function addProductRow() {
         console.log('Agregando nueva fila de producto');
-        const tbody = document.querySelector('#tablaProductos tbody');
-        const firstRow = document.querySelector('.fila-producto');
         
-        if (tbody && firstRow) {
-            const newRow = firstRow.cloneNode(true);
-            
-            // Resetear valores
-            const productSelect = newRow.querySelector('.producto-select');
-            if (productSelect) productSelect.selectedIndex = 0;
-            
-            const priceCell = newRow.querySelector('.precio');
-            if (priceCell) priceCell.textContent = '$0.00';
-            
-            const quantityInput = newRow.querySelector('.cantidad');
-            if (quantityInput) quantityInput.value = 1;
-            
-            const subtotalCell = newRow.querySelector('.subtotal');
-            if (subtotalCell) subtotalCell.textContent = '$0.00';
-            
-            // Añadir event listeners
-            setupRowEventListeners(newRow);
-            
-            // Añadir a la tabla
-            tbody.appendChild(newRow);
-        } else {
-            console.error('No se encontró la tabla o la fila para clonar');
+        // Obtener la plantilla
+        const emptyForm = document.querySelector('.empty-form');
+        if (!emptyForm) {
+            console.error('No se encontró la plantilla de formulario vacío');
+            return;
         }
+        
+        // Clonar la plantilla
+        const newRow = emptyForm.cloneNode(true);
+        newRow.classList.remove('empty-form');
+        newRow.style.display = '';
+        
+        // Actualizar índice basado en filas existentes
+        const totalRows = document.querySelectorAll('.fila-producto:not(.empty-form)').length;
+        const newIndex = totalRows;
+        
+        // Habilitar y actualizar campos
+        const allInputs = newRow.querySelectorAll('input, select, button');
+        allInputs.forEach(input => {
+            // Habilitar el elemento
+            input.disabled = false;
+            
+            // Actualizar nombre con nuevo índice si tiene nombre
+            const name = input.getAttribute('name');
+            if (name) {
+                const newName = name.replace(/__prefix__/, newIndex);
+                input.setAttribute('name', newName.replace(/form-\d+/, `form-${newIndex}`));
+            }
+        });
+        
+        // Añadir event listeners
+        setupRowEventListeners(newRow);
+        
+        // Añadir a la tabla
+        document.getElementById('detalle-body').appendChild(newRow);
+        
+        // Actualizar el management form
+        updateFormsetManagement();
     }
     
     // Eliminar fila de producto
@@ -252,11 +315,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const button = event.target.closest('.eliminar-fila');
         if (!button) return;
         
-        const rows = document.querySelectorAll('.fila-producto');
+        const rows = document.querySelectorAll('.fila-producto:not(.empty-form)');
         if (rows.length > 1) {
             const row = button.closest('.fila-producto');
             row.remove();
             updateTotal();
+            updateFormsetManagement();
         } else {
             alert('Debe haber al menos un producto en la venta');
         }
@@ -286,31 +350,49 @@ document.addEventListener('DOMContentLoaded', function() {
         const cashRadio = document.getElementById('contado');
         const creditRadio = document.getElementById('credito');
         
+        // Función para actualizar los tipos de factura
+        function updateTipoFactura(isCredit) {
+            const tipoFacturaValue = isCredit ? 2 : 1; // 1=contado, 2=crédito
+            const inputs = document.querySelectorAll('.tipo-factura-input');
+            
+            inputs.forEach(input => {
+                input.value = tipoFacturaValue;
+            });
+            
+            console.log('Tipo de factura actualizado a:', tipoFacturaValue);
+        }
+        
         if (paymentSelect && cashRadio && creditRadio) {
             paymentSelect.addEventListener('change', function() {
                 if (this.value === 'credito') {
                     creditRadio.checked = true;
+                    updateTipoFactura(true);
                 } else {
                     cashRadio.checked = true;
+                    updateTipoFactura(false);
                 }
             });
             
             cashRadio.addEventListener('change', function() {
-                if (this.checked && paymentSelect.value === 'credito') {
-                    paymentSelect.value = 'efectivo';
+                if (this.checked) {
+                    if (paymentSelect.value === 'credito') {
+                        paymentSelect.value = 'efectivo';
+                    }
+                    updateTipoFactura(false);
                 }
             });
             
             creditRadio.addEventListener('change', function() {
                 if (this.checked) {
                     paymentSelect.value = 'credito';
+                    updateTipoFactura(true);
                 }
             });
         }
     }
     
     // Inicializar eventos para todas las filas existentes
-    document.querySelectorAll('.fila-producto').forEach(function(row) {
+    document.querySelectorAll('.fila-producto:not(.empty-form)').forEach(function(row) {
         setupRowEventListeners(row);
     });
     
@@ -327,6 +409,17 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Hacer un cálculo inicial
     updateTotal();
+    
+    // Verificaciones de depuración del formset
+    const totalFormsField = document.getElementById('id_form-TOTAL_FORMS');
+    const initialFormsField = document.getElementById('id_form-INITIAL_FORMS');
+    if (totalFormsField && initialFormsField) {
+        console.log('Management Form encontrado:');
+        console.log('TOTAL_FORMS:', totalFormsField.value);
+        console.log('INITIAL_FORMS:', initialFormsField.value);
+    } else {
+        console.error('¡Error! No se encontró el management form. Esto causará problemas al enviar el formulario.');
+    }
     
     console.log('Inicialización de script completada');
 });

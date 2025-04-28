@@ -395,6 +395,7 @@ class Factura(models.Model):
         ('efectivo', 'Efectivo'),
         ('tarjeta', 'Tarjeta'),
         ('transferencia', 'Transferencia'),
+        ('credito', 'Crédito'),
         ('otro', 'Otro')
     ]
     

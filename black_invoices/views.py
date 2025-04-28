@@ -308,7 +308,7 @@ from django.db import transaction
 from django.urls import reverse_lazy
 from django.contrib import messages
 
-class VentaCreateView(LoginRequiredMixin, CreateView):
+""" class VentaCreateView(LoginRequiredMixin, CreateView):
     model = Factura
     form_class = FacturaForm
     template_name = 'black_invoices/ventas/venta_form.html'
@@ -339,48 +339,103 @@ class VentaCreateView(LoginRequiredMixin, CreateView):
         
         try:
             with transaction.atomic():
-                # Verificar usuario y rol
+                # Verificar que el usuario tenga un empleado asociado
                 if not hasattr(self.request.user, 'empleado'):
                     messages.error(self.request, 'No tienes un perfil de empleado asociado.')
                     return self.form_invalid(form)
                 
-                # Guardar factura
+                # Crear la factura pero no guardarla aún
                 factura = form.save(commit=False)
                 factura.empleado = self.request.user.empleado
                 factura.save()
                 
-                # Validar y guardar detalles
+                # Validar el formset directamente
                 if formset.is_valid():
-                    # Verificar y actualizar stock
                     detalles = formset.save(commit=False)
                     
-                    for detalle in detalles:
-                        detalle.factura = factura
-                        if detalle.cantidad > detalle.producto.stock:
-                            raise ValueError(f"Stock insuficiente para {detalle.producto.nombre}. Disponible: {detalle.producto.stock}")
-                    
-                    for detalle in detalles:
-                        # Reducir stock
-                        detalle.producto.stock -= detalle.cantidad
-                        detalle.producto.save(update_fields=['stock'])
+                    if not detalles:
+                        # Si no hay detalles, intentar procesarlos manualmente
+                        total_forms = int(self.request.POST.get('form-TOTAL_FORMS', 0))
                         
-                        # Calcular subtotal y guardar detalle
-                        detalle.sub_total = detalle.cantidad * detalle.producto.precio
-                        detalle.save()
+                        # Información de diagnóstico
+                        print(f"Total de formularios: {total_forms}")
+                        print(f"Datos POST: {self.request.POST}")
+                        
+                        # Crear manualmente los detalles
+                        for i in range(total_forms):
+                            producto_id = self.request.POST.get(f'form-{i}-producto')
+                            cantidad_str = self.request.POST.get(f'form-{i}-cantidad')
+                            
+                            if producto_id and cantidad_str:
+                                # Determinar tipo de factura basado en tipo_venta
+                                es_credito = self.request.POST.get('tipo_venta') == 'credito'
+                                tipo_factura = TipoFactura.objects.get(pk=2 if es_credito else 1)
+                                
+                                producto = Producto.objects.get(pk=producto_id)
+                                cantidad = int(cantidad_str)
+                                
+                                # Verificar stock
+                                if cantidad > producto.stock:
+                                    raise ValueError(f"Stock insuficiente para {producto.nombre}. Disponible: {producto.stock}")
+                                
+                                # Crear detalle
+                                subtotal = producto.precio * cantidad
+                                detalle = DetalleFactura(
+                                    factura=factura,
+                                    producto=producto,
+                                    cantidad=cantidad,
+                                    tipo_factura=tipo_factura,
+                                    sub_total=subtotal
+                                )
+                                detalle.save()
+                                
+                                # Reducir stock
+                                producto.stock -= cantidad
+                                producto.save(update_fields=['stock'])
+                                
+                                # Agregar al array de detalles
+                                detalles.append(detalle)
+                        
+                        if not detalles:
+                            raise ValueError("Debe agregar al menos un producto a la venta. Verifique que seleccionó un producto y una cantidad.")
+                    else:
+                        # Procesar los detalles del formset
+                        total_factura = 0
+                        
+                        for detalle in detalles:
+                            detalle.factura = factura
+                            
+                            # Verificar stock
+                            if detalle.cantidad > detalle.producto.stock:
+                                raise ValueError(f"Stock insuficiente para {detalle.producto.nombre}. Disponible: {detalle.producto.stock}")
+                            
+                            # Calcular subtotal
+                            subtotal = detalle.cantidad * detalle.producto.precio
+                            detalle.sub_total = subtotal
+                            detalle.save()
+                            
+                            # Reducir stock
+                            detalle.producto.stock -= detalle.cantidad
+                            detalle.producto.save(update_fields=['stock'])
+                            
+                            total_factura += subtotal
                     
-                    # Calcular total de factura
-                    factura.calcular_total()
+                    # Calcular el total en cualquier caso
+                    total_factura = sum(detalle.sub_total for detalle in detalles)
                     
-                    # Determinar tipo de venta (crédito o contado)
+                    # Actualizar total de factura
+                    factura.total_fac = total_factura
+                    factura.total_venta = total_factura
+                    factura.save()
+                    
+                    # Crear venta
                     es_credito = self.request.POST.get('tipo_venta') == 'credito'
                     
-                    # Obtener estado adecuado
                     if es_credito:
                         estado = StatusVentas.objects.get(nombre="Pendiente")
                     else:
                         estado = StatusVentas.objects.get(nombre="Completada")
                     
-                    # Crear venta
                     venta = Ventas.objects.create(
                         empleado=factura.empleado,
                         factura=factura,
@@ -394,14 +449,140 @@ class VentaCreateView(LoginRequiredMixin, CreateView):
                     else:
                         messages.success(self.request, f'Venta #{venta.id} creada exitosamente.')
                     
+                    # Necesario para que la vista funcione correctamente
+                    self.object = factura
+                    
                     return redirect('black_invoices:venta_detail', pk=venta.id)
                 else:
+                    # Mostrar errores específicos del formset
+                    print(f"Formset inválido. Errores: {formset.errors}")
+                    for i, form_errors in enumerate(formset.errors):
+                        if form_errors:
+                            messages.error(self.request, f"Error en producto {i+1}: {form_errors}")
                     return self.form_invalid(form)
                     
-        except ValueError as e:
-            messages.error(self.request, str(e))
-            return self.form_invalid(form)
-
+        except Exception as e:
+                messages.error(self.request, f"Error: {str(e)}")
+                print(f"Excepción: {type(e).__name__}: {str(e)}")
+                return self.form_invalid(form) """
+class VentaCreateView(LoginRequiredMixin, View):
+    template_name = 'black_invoices/ventas/venta_form.html'
+    
+    def get(self, request):
+        context = {
+            'titulo': 'Crear Venta',
+            'clientes': Cliente.objects.all(),
+            'productos': Producto.objects.all(),
+            'opciones_venta': [
+                {'id': 'contado', 'nombre': 'Contado'},
+                {'id': 'credito', 'nombre': 'Crédito'}
+            ]
+        }
+        return render(request, self.template_name, context)
+    
+    def post(self, request):
+        try:
+            with transaction.atomic():
+                # 1. Verificar que el usuario tenga empleado asociado
+                if not hasattr(request.user, 'empleado'):
+                    messages.error(request, 'No tienes un perfil de empleado asociado.')
+                    return redirect('black_invoices:venta_create')
+                
+                # 2. Obtener cliente y método de pago
+                cliente_id = request.POST.get('cliente')
+                metodo_pago = request.POST.get('metodo_pag')
+                
+                if not cliente_id:
+                    messages.error(request, 'Debe seleccionar un cliente.')
+                    return redirect('black_invoices:venta_create')
+                
+                # 3. Recopilar detalles de productos
+                productos = []
+                total_forms = int(request.POST.get('form-TOTAL_FORMS', 0))
+                
+                for i in range(total_forms):
+                    producto_id = request.POST.get(f'form-{i}-producto')
+                    cantidad_str = request.POST.get(f'form-{i}-cantidad')
+                    
+                    if producto_id and cantidad_str and cantidad_str.isdigit():
+                        productos.append({
+                            'id': producto_id,
+                            'cantidad': int(cantidad_str)
+                        })
+                
+                if not productos:
+                    messages.error(request, 'Debe agregar al menos un producto a la venta.')
+                    return redirect('black_invoices:venta_create')
+                
+                # 4. Crear la factura
+                cliente = Cliente.objects.get(pk=cliente_id)
+                factura = Factura(
+                    cliente=cliente,
+                    empleado=request.user.empleado,
+                    metodo_pag=metodo_pago
+                )
+                factura.save()
+                
+                # 5. Procesar los productos
+                total_factura = 0
+                es_credito = request.POST.get('tipo_venta') == 'credito'
+                tipo_factura = TipoFactura.objects.get(credito_fac=es_credito)
+                
+                for prod in productos:
+                    try:
+                        producto = Producto.objects.get(pk=prod['id'])
+                        cantidad = prod['cantidad']
+                        
+                        # Verificar stock
+                        if cantidad > producto.stock:
+                            raise ValueError(f"Stock insuficiente para {producto.nombre}. Disponible: {producto.stock}")
+                        
+                        # Calcular subtotal
+                        subtotal = producto.precio * cantidad
+                        total_factura += subtotal
+                        
+                        # Crear detalle
+                        detalle = DetalleFactura(
+                            factura=factura,
+                            producto=producto,
+                            cantidad=cantidad,
+                            tipo_factura=tipo_factura,
+                            sub_total=subtotal
+                        )
+                        detalle.save()
+                        
+                        # Reducir stock
+                        producto.stock -= cantidad
+                        producto.save(update_fields=['stock'])
+                        
+                    except Producto.DoesNotExist:
+                        raise ValueError(f"El producto con ID {prod['id']} no existe.")
+                
+                # 6. Actualizar el total de la factura
+                factura.total_fac = total_factura
+                factura.total_venta = total_factura
+                factura.save()
+                
+                # 7. Crear la venta
+                if es_credito:
+                    estado = StatusVentas.objects.get(nombre="Pendiente")
+                else:
+                    estado = StatusVentas.objects.get(nombre="Completada")
+                
+                venta = Ventas.objects.create(
+                    empleado=factura.empleado,
+                    factura=factura,
+                    status=estado,
+                    credito=es_credito,
+                    monto_pagado=0 if es_credito else factura.total_fac
+                )
+                
+                messages.success(request, f'Venta {"a crédito " if es_credito else ""}#{venta.id} creada exitosamente.')
+                return redirect('black_invoices:venta_detail', pk=venta.id)
+                
+        except Exception as e:
+            messages.error(request, f"Error: {str(e)}")
+            return redirect('black_invoices:venta_create')
 class VentaListView(LoginRequiredMixin, ListView):
     model = Ventas
     template_name = 'black_invoices/ventas/ventas_list.html'

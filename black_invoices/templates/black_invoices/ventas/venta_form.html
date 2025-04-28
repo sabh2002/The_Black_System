@@ -12,9 +12,6 @@
                         <h3 class="card-title">{{ titulo }}</h3>
                     </div>
                     <div class="card-body">
-                        <!-- Los campos ocultos del formulario principal -->
-                        {{ form.id }}
-                        
                         <!-- Datos de cliente y método de pago -->
                         <div class="row">
                             <div class="col-md-6">
@@ -41,8 +38,11 @@
                             </div>
                         </div>
 
-                        <!-- Management form del formset - CRUCIAL -->
-                        {{ detalles_formset.management_form }}
+                        <!-- Campos del management form crucial para Django -->
+                        <input type="hidden" name="form-TOTAL_FORMS" value="1" id="id_form-TOTAL_FORMS">
+                        <input type="hidden" name="form-INITIAL_FORMS" value="0" id="id_form-INITIAL_FORMS">
+                        <input type="hidden" name="form-MIN_NUM_FORMS" value="0" id="id_form-MIN_NUM_FORMS">
+                        <input type="hidden" name="form-MAX_NUM_FORMS" value="1000" id="id_form-MAX_NUM_FORMS">
                         
                         <!-- Tabla de productos -->
                         <h4 class="mt-4">Productos</h4>
@@ -57,31 +57,7 @@
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
-                                <tbody id="detalle-body">
-                                    <!-- Formulario vacío como plantilla (no se envía) -->
-                                    <tr class="fila-producto empty-form" style="display: none;">
-                                        <td>
-                                            <select name="{{ detalles_formset.empty_form.prefix }}-producto" class="form-control producto-select" required disabled>
-                                                <option value="">------</option>
-                                                {% for p in productos %}
-                                                    <option value="{{ p.id }}" data-precio="{{ p.precio }}" data-stock="{{ p.stock }}">{{ p.nombre }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </td>
-                                        <td class="precio">$0.00</td>
-                                        <td>
-                                            <input type="number" name="{{ detalles_formset.empty_form.prefix }}-cantidad" class="form-control cantidad" min="1" value="1" max="100" disabled>
-                                        </td>
-                                        <td class="subtotal">$0.00</td>
-                                        <td>
-                                            <button type="button" class="btn btn-danger btn-sm eliminar-fila" disabled>
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                            <input type="hidden" name="{{ detalles_formset.empty_form.prefix }}-tipo_factura" class="tipo-factura-input" value="1" disabled>
-                                        </td>
-                                    </tr>
-                                    
-                                    <!-- Formulario inicial (siempre presente) -->
+                                <tbody>
                                     <tr class="fila-producto">
                                         <td>
                                             <select name="form-0-producto" class="form-control producto-select" required>
@@ -149,279 +125,289 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Script de venta cargado');
+// Mantenemos las mismas funciones auxiliares pero modificamos addProductRow y la estructura
+
+// Función para formatear números como moneda
+function formatCurrency(value) {
+    return '$' + parseFloat(value).toFixed(2);
+}
+
+// Función para manejar cambios en el select de producto
+function handleProductChange(event) {
+    const select = event.target;
+    const row = select.closest('.fila-producto');
+    const priceCell = row.querySelector('.precio');
+    const quantityInput = row.querySelector('.cantidad');
+    const subtotalCell = row.querySelector('.subtotal');
     
-    // Función para formatear números como moneda
-    function formatCurrency(value) {
-        return '$' + parseFloat(value).toFixed(2);
-    }
-    
-    // Actualizar el Management Form de Django
-    function updateFormsetManagement() {
-        const totalForms = document.getElementById('id_form-TOTAL_FORMS');
-        if (totalForms) {
-            const forms = document.querySelectorAll('.fila-producto:not(.empty-form)');
-            totalForms.value = forms.length;
-            console.log('Total forms actualizado a:', forms.length);
-            
-            // Renumerar los indices de los formularios
-            forms.forEach((form, index) => {
-                const inputs = form.querySelectorAll('input[name^="form-"], select[name^="form-"]');
-                inputs.forEach(input => {
-                    const name = input.getAttribute('name');
-                    if (name) {
-                        const newName = name.replace(/form-\d+/, `form-${index}`);
-                        input.setAttribute('name', newName);
-                    }
-                });
-            });
-        } else {
-            console.error('No se encontró el campo TOTAL_FORMS');
-        }
-    }
-    
-    // Función para manejar cambios en el select de producto
-    function handleProductChange(event) {
-        console.log('Producto cambiado');
-        const select = event.target;
-        const row = select.closest('.fila-producto');
-        const priceCell = row.querySelector('.precio');
-        const quantityInput = row.querySelector('.cantidad');
-        const subtotalCell = row.querySelector('.subtotal');
+    if (select.selectedIndex > 0) {
+        const selectedOption = select.options[select.selectedIndex];
+        const price = parseFloat(selectedOption.dataset.precio);
+        const stock = parseInt(selectedOption.dataset.stock);
         
-        if (select.selectedIndex > 0) {
-            const selectedOption = select.options[select.selectedIndex];
-            const price = parseFloat(selectedOption.dataset.precio);
-            const stock = parseInt(selectedOption.dataset.stock);
-            
-            console.log('Precio seleccionado:', price);
-            console.log('Stock disponible:', stock);
-            
-            // Actualizar precio mostrado
-            priceCell.textContent = formatCurrency(price);
-            
-            // Limitar cantidad al stock disponible
-            quantityInput.max = stock;
-            if (parseInt(quantityInput.value) > stock) {
-                quantityInput.value = stock;
-            }
-            
-            // Calcular y actualizar subtotal
-            updateSubtotal(row);
-        } else {
-            priceCell.textContent = '$0.00';
-            subtotalCell.textContent = '$0.00';
-            updateTotal();
-        }
-    }
-    
-    // Función para actualizar subtotal cuando cambia la cantidad
-    function handleQuantityChange(event) {
-        console.log('Cantidad cambiada');
-        const input = event.target;
-        const row = input.closest('.fila-producto');
+        // Actualizar precio mostrado
+        priceCell.textContent = formatCurrency(price);
         
-        // Asegurar que la cantidad sea al menos 1
-        if (parseInt(input.value) < 1 || isNaN(parseInt(input.value))) {
-            input.value = 1;
+        // Limitar cantidad al stock disponible
+        quantityInput.max = stock;
+        if (parseInt(quantityInput.value) > stock) {
+            quantityInput.value = stock;
         }
         
+        // Calcular y actualizar subtotal
         updateSubtotal(row);
-    }
-    
-    // Actualizar el subtotal de una fila
-    function updateSubtotal(row) {
-        const priceCell = row.querySelector('.precio');
-        const quantityInput = row.querySelector('.cantidad');
-        const subtotalCell = row.querySelector('.subtotal');
-        
-        const price = parseFloat(priceCell.textContent.replace('$', '')) || 0;
-        const quantity = parseInt(quantityInput.value) || 0;
-        
-        const subtotal = price * quantity;
-        subtotalCell.textContent = formatCurrency(subtotal);
-        
-        console.log('Subtotal calculado:', subtotal);
-        
-        // Actualizar el total general
+    } else {
+        priceCell.textContent = '$0.00';
+        subtotalCell.textContent = '$0.00';
         updateTotal();
     }
+}
+
+// Función para actualizar subtotal cuando cambia la cantidad
+function handleQuantityChange(event) {
+    const input = event.target;
+    const row = input.closest('.fila-producto');
     
-    // Actualizar el total general de la compra
-    function updateTotal() {
-        const subtotalCells = document.querySelectorAll('.fila-producto:not(.empty-form) .subtotal');
-        let total = 0;
-        
-        subtotalCells.forEach(function(cell) {
-            const subtotal = parseFloat(cell.textContent.replace('$', '')) || 0;
-            total += subtotal;
-        });
-        
-        const totalSpan = document.getElementById('total');
-        if (totalSpan) {
-            totalSpan.textContent = formatCurrency(total);
-            console.log('Total actualizado:', total);
-        }
+    // Asegurar que la cantidad sea al menos 1
+    if (parseInt(input.value) < 1 || isNaN(parseInt(input.value))) {
+        input.value = 1;
     }
     
-    // Agregar nueva fila de producto
-    function addProductRow() {
-        console.log('Agregando nueva fila de producto');
+    updateSubtotal(row);
+}
+
+// Actualizar el subtotal de una fila
+function updateSubtotal(row) {
+    const priceCell = row.querySelector('.precio');
+    const quantityInput = row.querySelector('.cantidad');
+    const subtotalCell = row.querySelector('.subtotal');
+    
+    const price = parseFloat(priceCell.textContent.replace('$', '')) || 0;
+    const quantity = parseInt(quantityInput.value) || 0;
+    
+    const subtotal = price * quantity;
+    subtotalCell.textContent = formatCurrency(subtotal);
+    
+    // Actualizar el total general
+    updateTotal();
+}
+
+// Actualizar el total general de la compra
+function updateTotal() {
+    const subtotalCells = document.querySelectorAll('.fila-producto .subtotal');
+    let total = 0;
+    
+    subtotalCells.forEach(function(cell) {
+        const subtotal = parseFloat(cell.textContent.replace('$', '')) || 0;
+        total += subtotal;
+    });
+    
+    const totalSpan = document.getElementById('total');
+    if (totalSpan) {
+        totalSpan.textContent = formatCurrency(total);
+    }
+}
+
+// Eliminar fila de producto
+function removeProductRow(event) {
+    const button = event.target.closest('.eliminar-fila');
+    if (!button) return;
+    
+    const rows = document.querySelectorAll('.fila-producto');
+    if (rows.length > 1) {
+        const row = button.closest('.fila-producto');
+        row.remove();
+        updateTotal();
+        updateFormsetManagement();
+    } else {
+        alert('Debe haber al menos un producto en la venta');
+    }
+}
+
+// Configurar event listeners para una fila
+function setupRowEventListeners(row) {
+    const productSelect = row.querySelector('.producto-select');
+    if (productSelect) {
+        productSelect.addEventListener('change', handleProductChange);
+    }
+    
+    const quantityInput = row.querySelector('.cantidad');
+    if (quantityInput) {
+        quantityInput.addEventListener('input', handleQuantityChange);
+    }
+    
+    const removeButton = row.querySelector('.eliminar-fila');
+    if (removeButton) {
+        removeButton.addEventListener('click', removeProductRow);
+    }
+}
+
+// Actualizar el Management Form de Django
+function updateFormsetManagement() {
+    const totalForms = document.getElementById('id_form-TOTAL_FORMS');
+    if (totalForms) {
+        const forms = document.querySelectorAll('.fila-producto');
+        totalForms.value = forms.length;
         
-        // Obtener la plantilla
-        const emptyForm = document.querySelector('.empty-form');
-        if (!emptyForm) {
-            console.error('No se encontró la plantilla de formulario vacío');
-            return;
-        }
+        // Renumerar los índices de los formularios
+        forms.forEach((form, index) => {
+            const inputs = form.querySelectorAll('input[name^="form-"], select[name^="form-"]');
+            inputs.forEach(input => {
+                const name = input.getAttribute('name');
+                if (name) {
+                    const newName = name.replace(/form-\d+/, `form-${index}`);
+                    input.setAttribute('name', newName);
+                }
+            });
+        });
+    }
+}
+
+// Sincronizar método de pago con tipo de venta
+function setupPaymentSync() {
+    const paymentSelect = document.getElementById('metodoPago');
+    const cashRadio = document.getElementById('contado');
+    const creditRadio = document.getElementById('credito');
+    
+    // Función para actualizar los tipos de factura
+    function updateTipoFactura(isCredit) {
+        const tipoFacturaValue = isCredit ? 2 : 1; // 1=contado, 2=crédito
+        const inputs = document.querySelectorAll('.tipo-factura-input');
         
-        // Clonar la plantilla
-        const newRow = emptyForm.cloneNode(true);
-        newRow.classList.remove('empty-form');
-        newRow.style.display = '';
-        
-        // Actualizar índice basado en filas existentes
-        const totalRows = document.querySelectorAll('.fila-producto:not(.empty-form)').length;
-        const newIndex = totalRows;
-        
-        // Habilitar y actualizar campos
-        const allInputs = newRow.querySelectorAll('input, select, button');
-        allInputs.forEach(input => {
-            // Habilitar el elemento
-            input.disabled = false;
-            
-            // Actualizar nombre con nuevo índice si tiene nombre
-            const name = input.getAttribute('name');
-            if (name) {
-                const newName = name.replace(/__prefix__/, newIndex);
-                input.setAttribute('name', newName.replace(/form-\d+/, `form-${newIndex}`));
+        inputs.forEach(input => {
+            input.value = tipoFacturaValue;
+        });
+    }
+    
+    if (paymentSelect && cashRadio && creditRadio) {
+        paymentSelect.addEventListener('change', function() {
+            if (this.value === 'credito') {
+                creditRadio.checked = true;
+                updateTipoFactura(true);
+            } else {
+                cashRadio.checked = true;
+                updateTipoFactura(false);
             }
         });
         
-        // Añadir event listeners
-        setupRowEventListeners(newRow);
-        
-        // Añadir a la tabla
-        document.getElementById('detalle-body').appendChild(newRow);
-        
-        // Actualizar el management form
-        updateFormsetManagement();
-    }
-    
-    // Eliminar fila de producto
-    function removeProductRow(event) {
-        console.log('Eliminando fila de producto');
-        const button = event.target.closest('.eliminar-fila');
-        if (!button) return;
-        
-        const rows = document.querySelectorAll('.fila-producto:not(.empty-form)');
-        if (rows.length > 1) {
-            const row = button.closest('.fila-producto');
-            row.remove();
-            updateTotal();
-            updateFormsetManagement();
-        } else {
-            alert('Debe haber al menos un producto en la venta');
-        }
-    }
-    
-    // Configurar event listeners para una fila
-    function setupRowEventListeners(row) {
-        const productSelect = row.querySelector('.producto-select');
-        if (productSelect) {
-            productSelect.addEventListener('change', handleProductChange);
-        }
-        
-        const quantityInput = row.querySelector('.cantidad');
-        if (quantityInput) {
-            quantityInput.addEventListener('input', handleQuantityChange);
-        }
-        
-        const removeButton = row.querySelector('.eliminar-fila');
-        if (removeButton) {
-            removeButton.addEventListener('click', removeProductRow);
-        }
-    }
-    
-    // Sincronizar método de pago con tipo de venta
-    function setupPaymentSync() {
-        const paymentSelect = document.getElementById('metodoPago');
-        const cashRadio = document.getElementById('contado');
-        const creditRadio = document.getElementById('credito');
-        
-        // Función para actualizar los tipos de factura
-        function updateTipoFactura(isCredit) {
-            const tipoFacturaValue = isCredit ? 2 : 1; // 1=contado, 2=crédito
-            const inputs = document.querySelectorAll('.tipo-factura-input');
-            
-            inputs.forEach(input => {
-                input.value = tipoFacturaValue;
-            });
-            
-            console.log('Tipo de factura actualizado a:', tipoFacturaValue);
-        }
-        
-        if (paymentSelect && cashRadio && creditRadio) {
-            paymentSelect.addEventListener('change', function() {
-                if (this.value === 'credito') {
-                    creditRadio.checked = true;
-                    updateTipoFactura(true);
-                } else {
-                    cashRadio.checked = true;
-                    updateTipoFactura(false);
+        cashRadio.addEventListener('change', function() {
+            if (this.checked) {
+                if (paymentSelect.value === 'credito') {
+                    paymentSelect.value = 'efectivo';
                 }
-            });
-            
-            cashRadio.addEventListener('change', function() {
-                if (this.checked) {
-                    if (paymentSelect.value === 'credito') {
-                        paymentSelect.value = 'efectivo';
-                    }
-                    updateTipoFactura(false);
-                }
-            });
-            
-            creditRadio.addEventListener('change', function() {
-                if (this.checked) {
-                    paymentSelect.value = 'credito';
-                    updateTipoFactura(true);
-                }
-            });
-        }
+                updateTipoFactura(false);
+            }
+        });
+        
+        creditRadio.addEventListener('change', function() {
+            if (this.checked) {
+                paymentSelect.value = 'credito';
+                updateTipoFactura(true);
+            }
+        });
     }
+}
+
+// VERSIÓN CORREGIDA: Agregar nueva fila de producto
+function addProductRow() {
+    // Clonar la primera fila
+    const firstRow = document.querySelector('.fila-producto');
+    const newRow = firstRow.cloneNode(true);
     
-    // Inicializar eventos para todas las filas existentes
-    document.querySelectorAll('.fila-producto:not(.empty-form)').forEach(function(row) {
-        setupRowEventListeners(row);
+    // Resetear valores
+    const productSelect = newRow.querySelector('.producto-select');
+    productSelect.selectedIndex = 0;
+    
+    const priceCell = newRow.querySelector('.precio');
+    priceCell.textContent = '$0.00';
+    
+    const quantityInput = newRow.querySelector('.cantidad');
+    quantityInput.value = 1;
+    
+    const subtotalCell = newRow.querySelector('.subtotal');
+    subtotalCell.textContent = '$0.00';
+    
+    // Cambiar names a form-N-campo
+    const rowCount = document.querySelectorAll('.fila-producto').length;
+    const inputs = newRow.querySelectorAll('input[name^="form-"], select[name^="form-"]');
+    inputs.forEach(input => {
+        const name = input.getAttribute('name');
+        if (name) {
+            const newName = name.replace(/form-\d+/, `form-${rowCount}`);
+            input.setAttribute('name', newName);
+        }
     });
     
+    // IMPORTANTE: NO REEMPLAZAR NODOS aquí, solo agregar la nueva fila
+    document.querySelector('#tablaProductos tbody').appendChild(newRow);
+    
+    // Limpiar y volver a agregar event listeners
+    const newProductSelect = newRow.querySelector('.producto-select');
+    const newQuantityInput = newRow.querySelector('.cantidad');
+    const newRemoveButton = newRow.querySelector('.eliminar-fila');
+    
+    // Eliminar listeners existentes (puede haber sido clonados)
+    newProductSelect.replaceWith(newProductSelect.cloneNode(true));
+    newQuantityInput.replaceWith(newQuantityInput.cloneNode(true));
+    newRemoveButton.replaceWith(newRemoveButton.cloneNode(true));
+    
+    // Configurar nuevos listeners
+    setupRowEventListeners(newRow);
+    
+    // Actualizar TOTAL_FORMS
+    updateFormsetManagement();
+}
+
+// Añadir una función para verificar el formulario antes de enviar
+function setupFormSubmitValidation() {
+    const form = document.getElementById('formVenta');
+    
+    if (form) {
+        form.addEventListener('submit', function(event) {
+            // Verificar que hay al menos un producto seleccionado
+            const productos = document.querySelectorAll('.producto-select');
+            let hayProductosSeleccionados = false;
+            
+            productos.forEach(select => {
+                if (select.selectedIndex > 0) {
+                    hayProductosSeleccionados = true;
+                }
+            });
+            
+            if (!hayProductosSeleccionados) {
+                event.preventDefault();
+                alert('Debe seleccionar al menos un producto');
+                return false;
+            }
+            
+            // Asegurarse que el formset management está actualizado
+            updateFormsetManagement();
+            
+            // Permitir que el formulario se envíe
+            return true;
+        });
+    }
+}
+
+// Inicializar cuando la página cargue
+document.addEventListener('DOMContentLoaded', function() {
     // Configurar botón para agregar productos
     const addButton = document.getElementById('agregarProducto');
     if (addButton) {
         addButton.addEventListener('click', addProductRow);
-    } else {
-        console.error('No se encontró el botón Agregar Producto');
     }
+    
+    // Inicializar primera fila
+    setupRowEventListeners(document.querySelector('.fila-producto'));
     
     // Configurar sincronización de método de pago
     setupPaymentSync();
     
-    // Hacer un cálculo inicial
-    updateTotal();
+    // Configurar validación del formulario
+    setupFormSubmitValidation();
     
-    // Verificaciones de depuración del formset
-    const totalFormsField = document.getElementById('id_form-TOTAL_FORMS');
-    const initialFormsField = document.getElementById('id_form-INITIAL_FORMS');
-    if (totalFormsField && initialFormsField) {
-        console.log('Management Form encontrado:');
-        console.log('TOTAL_FORMS:', totalFormsField.value);
-        console.log('INITIAL_FORMS:', initialFormsField.value);
-    } else {
-        console.error('¡Error! No se encontró el management form. Esto causará problemas al enviar el formulario.');
-    }
-    
-    console.log('Inicialización de script completada');
+    // Actualizar management form inicialmente
+    updateFormsetManagement();
 });
-</script>
+</script> 
 {% endblock %}

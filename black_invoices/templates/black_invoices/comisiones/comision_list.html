@@ -37,37 +37,29 @@
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Fecha</th>
                     <th>Empleado</th>
-                    <th>Venta</th>
-                    <th>Monto Venta</th>
+                    <th>Nivel</th>
+                    <th>Ventas Completadas</th>
                     <th>Comisión</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                {% for comision in comisiones %}
+                {% for item in comisiones %}
                 <tr>
-                    <td>{{ comision.id }}</td>
-                    <td>{{ comision.fecha_comision|date:"d/m/Y H:i" }}</td>
-                    <td>{{ comision.empleado.nombre }} {{ comision.empleado.apellido }}</td>
+                    <td>{{ item.empleado.nombre }} {{ item.empleado.apellido }}</td>
+                    <td>{{ item.empleado.nivel_acceso.nombre }}</td>
+                    <td>{{ item.ventas }}</td>
+                    <td>${{ item.comision|floatformat:2 }}</td>
                     <td>
-                        <a href="{% url 'black_invoices:venta_detail' comision.venta.id %}">
-                            Venta #{{ comision.venta.id }}
-                        </a>
-                    </td>
-                    <td>${{ comision.monto_venta}}</td>
-                    <td>${{ comision.total_comision }}</td>
-                    <td>
-                        <a href="{% url 'black_invoices:venta_detail' comision.venta.id %}" class="btn btn-sm btn-info">
-                            <i class="fas fa-eye"></i>
+                        <a href="#" class="btn btn-sm btn-info">
+                            <i class="fas fa-eye"></i> Detalles
                         </a>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="7" class="text-center">No hay comisiones registradas</td>
+                    <td colspan="5" class="text-center">No hay comisiones disponibles</td>
                 </tr>
                 {% endfor %}
             </tbody>

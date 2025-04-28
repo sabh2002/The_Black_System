@@ -1,10 +1,16 @@
 from django.core.management.base import BaseCommand
-from django.db import transaction
+from django.db import transaction, connection
 from django.contrib.auth.models import User
 from ...models import *
 
 class Command(BaseCommand):
     help = 'Limpia todos los datos del sistema, excepto el superusuario'
+
+    def table_exists(self, table_name):
+        """Verifica si una tabla existe en la base de datos"""
+        with connection.cursor() as cursor:
+            tables = connection.introspection.table_names(cursor)
+            return table_name in tables
 
     @transaction.atomic
     def handle(self, *args, **kwargs):
@@ -14,9 +20,16 @@ class Command(BaseCommand):
             # Preservar superusuarios
             superusers = list(User.objects.filter(is_superuser=True).values_list('id', flat=True))
             
-            # Eliminar registros por orden para evitar conflictos de claves foráneas
-            self.stdout.write('Eliminando pagos de ventas...')
-            PagoVenta.objects.all().delete()
+            # Verificar y eliminar pagos de ventas solo si existe la tabla
+            if self.table_exists('black_invoices_pagoventa'):
+                self.stdout.write('Eliminando pagos de ventas...')
+                # Verificamos si la clase existe en el modelo actual
+                if 'PagoVenta' in globals():
+                    PagoVenta.objects.all().delete()
+                else:
+                    self.stdout.write('Modelo PagoVenta no definido, omitiendo...')
+            else:
+                self.stdout.write('La tabla de pagos de ventas no existe, omitiendo...')
             
             self.stdout.write('Eliminando ventas...')
             Ventas.objects.all().delete()

@@ -1,0 +1,84 @@
+{% extends 'black_invoices/base/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ titulo }}</h3>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="callout callout-info">
+                    <h5>Información de la Venta</h5>
+                    <p><strong>Cliente:</strong> {{ venta.factura.cliente.nombre }} {{ venta.factura.cliente.apellido }}</p>
+                    <p><strong>Fecha:</strong> {{ venta.factura.fecha_fac|date:"d/m/Y H:i" }}</p>
+                    <p><strong>Total Factura:</strong> ${{ venta.factura.total_fac|floatformat:2 }}</p>
+                    <p><strong>Monto Pagado:</strong> ${{ venta.monto_pagado|floatformat:2 }}</p>
+                    <p><strong>Saldo Pendiente:</strong> ${{ venta.saldo_pendiente|floatformat:2 }}</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Registrar Pago</h3>
+                    </div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="monto">Monto a Pagar:</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">$</span>
+                                    </div>
+                                    <input type="number" class="form-control" id="monto" name="monto" 
+                                           step="0.01" min="0.01" max="{{ venta.saldo_pendiente }}" 
+                                           value="{{ venta.saldo_pendiente }}" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Registrar Pago
+                            </button>
+                            <a href="{% url 'black_invoices:ventas_pendientes' %}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Historial de pagos -->
+        {% if venta.pagos.exists %}
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3 class="card-title">Historial de Pagos</h3>
+            </div>
+            <div class="card-body table-responsive p-0">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Fecha</th>
+                            <th>Monto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pago in venta.pagos.all %}
+                        <tr>
+                            <td>{{ pago.id }}</td>
+                            <td>{{ pago.fecha|date:"d/m/Y H:i" }}</td>
+                            <td>${{ pago.monto|floatformat:2 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

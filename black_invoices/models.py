@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.contrib.auth.models import User
@@ -99,15 +100,43 @@ class Empleado(models.Model):
     def __str__(self):
         return f"{self.nombre} {self.apellido}"
     
-    def get_comisiones_mes(self, mes, año):
+    def get_comisiones_mes(self, mes, anio):
+        """Calcular comisiones solo de ventas completadas"""
+        from decimal import Decimal
         
-        return self.comision_set.filter(
-            fecha_comision__month=mes,
-            fecha_comision__year=año,
-        ).aggregate(
-            total=models.Sum('total_comision')
-        )['total'] or 0
-
+        total = Decimal('0.00')
+        # Obtener ventas del mes donde el empleado fue vendedor
+        ventas = Ventas.objects.filter(
+            empleado=self,
+            factura__fecha_fac__month=mes,
+            factura__fecha_fac__year=anio
+        ).exclude(
+            status__vent_cancelada=True
+        )
+        
+        for venta in ventas:
+            # Solo calcular comisión si la venta está completada
+            completada = False
+            if hasattr(venta, 'completada'):
+                completada = venta.completada
+            else:
+                # Verificar manualmente si la venta está completada
+                completada = not venta.credito or venta.monto_pagado >= venta.factura.total_fac
+            
+            if completada:
+                # Buscar el porcentaje en la tabla de rangos de comisión
+                total_factura = venta.factura.total_fac
+                rango_comision = ConsultaComision.objects.filter(
+                    rango_inferior__lte=total_factura,
+                    rango_superior__gte=total_factura
+                ).first()
+                
+                if rango_comision:
+                    # Calcular comisión basada en el monto de la venta
+                    comision = total_factura * rango_comision.porcentaje / Decimal('100.00')
+                    total += comision
+        
+        return total
 class ConsultaComision(models.Model):
     rango_inferior = models.DecimalField(
         max_digits=10,
@@ -165,6 +194,7 @@ class Comision(models.Model):
         verbose_name="Total de Comisión",
         editable=False  # No se puede editar manualmente
     )
+    
 
     class Meta:
         verbose_name = "Comisión"
@@ -230,6 +260,8 @@ class Ventas(models.Model):
         auto_now_add=True,
         verbose_name="Fecha de Venta"
     )
+    credito = models.BooleanField(default=False, verbose_name="Venta a Crédito")
+    monto_pagado = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Monto Pagado")
     
     class Meta:
         verbose_name = "Venta"
@@ -275,7 +307,55 @@ class Ventas(models.Model):
             
             return True
         return False
-
+    @property
+    def saldo_pendiente(self):
+        """Retorna el saldo pendiente por pagar"""
+        return self.factura.total_fac - self.monto_pagado
+    
+    @property
+    def completada(self):
+        """Retorna True si la venta está completamente pagada"""
+        return self.saldo_pendiente <= 0 or not self.credito
+    
+    def registrar_pago(self, monto):
+        from decimal import Decimal
+        """Registra un pago parcial"""
+        if monto <= 0:
+            return False
+        
+        # Convertir monto a Decimal para evitar error de tipo de datos
+        if not isinstance(monto, Decimal):
+            monto = Decimal(str(monto))
+        
+        self.monto_pagado += monto
+        
+        # Cambiar estado si se completó el pago
+        if self.completada and self.credito:
+            estado_completado = StatusVentas.objects.get(nombre="Completada")
+            self.status = estado_completado
+            
+        self.save(update_fields=['monto_pagado', 'status'])
+        
+        # Crear registro de pago
+        PagoVenta.objects.create(
+            venta=self,
+            monto=monto,
+            fecha=timezone.now()
+        )
+        
+        return True
+class PagoVenta(models.Model):
+    venta = models.ForeignKey(Ventas, on_delete=models.CASCADE, related_name='pagos')
+    monto = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Monto Pagado")
+    fecha = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Pago")
+    
+    class Meta:
+        verbose_name = "Pago"
+        verbose_name_plural = "Pagos"
+        ordering = ['-fecha']
+    
+    def __str__(self):
+        return f"Pago #{self.id} de Venta #{self.venta.id}"
 class StatusVentas(models.Model):
     
     nombre = models.CharField(  # Añadimos un nombre descriptivo

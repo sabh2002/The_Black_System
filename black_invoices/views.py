@@ -12,6 +12,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import *
 from .forms.producto_forms import ProductoForm
 from .forms.cliente_forms import ClienteForm
+from .forms.empleado_form import EmpleadoForm
 from .forms.ventas_form import FacturaForm, DetalleFacturaFormSet
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core import serializers
@@ -24,6 +25,8 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.platypus import Table, TableStyle
 import io
+from .mixins import EmpleadoRolMixin
+
 
 ###################     Dashboard       #################
 class DashboardView(LoginRequiredMixin, TemplateView):
@@ -162,9 +165,34 @@ class ProductoCreateView(LoginRequiredMixin, CreateView):
         messages.success(self.request, 'Producto creado exitosamente.')
         return super().form_valid(form)
 
+class ProductoStockUpdateView(LoginRequiredMixin, UpdateView):
+    model = Producto
+    template_name = 'black_invoices/productos/producto_stock.html'
+    fields = ['stock']
+    success_url = reverse_lazy('black_invoices:producto_list')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = f'Actualizar Stock: {self.object.nombre}'
+        return context
+    
+    def form_valid(self, form):
+        # Guardar stock anterior para mensaje
+        stock_anterior = self.object.stock
+        
+        # Guardar formulario
+        response = super().form_valid(form)
+        
+        # Mostrar mensaje con el cambio
+        messages.success(
+            self.request, 
+            f'Stock de {self.object.nombre} actualizado de {stock_anterior} a {self.object.stock}'
+        )
+        
+        return response
 
 ########################        EMPLEADOS       #############
-class EmpleadoListView(LoginRequiredMixin, ListView):
+class EmpleadoListView(EmpleadoRolMixin, ListView):
     model = Empleado
     template_name = 'black_invoices/empleados/empleados_list.html'
     context_object_name = 'empleados'
@@ -173,6 +201,76 @@ class EmpleadoListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Lista de Empleados'
         return context
+    
+class EmpleadoCreateView(EmpleadoRolMixin, CreateView):
+    model = Empleado
+    form_class = EmpleadoForm
+    template_name = 'black_invoices/empleados/empleado_form.html'
+    success_url = reverse_lazy('black_invoices:empleado_list')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Crear Nuevo Empleado'
+        context['accion'] = 'Crear'
+        return context
+    
+    def form_valid(self, form):
+        try:
+            with transaction.atomic():
+                # Crear usuario
+                user = User.objects.create_user(
+                    username=form.cleaned_data['username'],
+                    password=form.cleaned_data['password'] or '12345678',  # Contraseña temporal si no se proporciona
+                    first_name=form.cleaned_data['nombre'],
+                    last_name=form.cleaned_data['apellido']
+                )
+                
+                # Crear empleado
+                empleado = form.save(commit=False)
+                empleado.user = user
+                empleado.save()
+                
+                messages.success(self.request, f'Empleado {empleado.nombre} creado exitosamente')
+                return redirect(self.success_url)
+        except Exception as e:
+            messages.error(self.request, f'Error al crear empleado: {str(e)}')
+            return self.form_invalid(form)
+
+class EmpleadoUpdateView(EmpleadoRolMixin, UpdateView):
+    model = Empleado
+    form_class = EmpleadoForm
+    template_name = 'black_invoices/empleados/empleado_form.html'
+    success_url = reverse_lazy('black_invoices:empleado_list')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = f'Editar Empleado: {self.object.nombre}'
+        context['accion'] = 'Actualizar'
+        return context
+    
+    def form_valid(self, form):
+        try:
+            with transaction.atomic():
+                # Actualizar usuario
+                user = self.object.user
+                user.username = form.cleaned_data['username']
+                user.first_name = form.cleaned_data['nombre']
+                user.last_name = form.cleaned_data['apellido']
+                
+                # Actualizar contraseña si se proporcionó
+                if form.cleaned_data['password']:
+                    user.set_password(form.cleaned_data['password'])
+                    
+                user.save()
+                
+                # Guardar cambios en empleado
+                empleado = form.save()
+                
+                messages.success(self.request, f'Empleado {empleado.nombre} actualizado exitosamente')
+                return redirect(self.success_url)
+        except Exception as e:
+            messages.error(self.request, f'Error al actualizar empleado: {str(e)}')
+            return self.form_invalid(form)
     
 #######################     FACTURAS        ######################
 class FacturaListView(LoginRequiredMixin, ListView):
@@ -218,108 +316,88 @@ class VentaCreateView(LoginRequiredMixin, CreateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Nueva Venta'
+        context['titulo'] = 'Crear Venta'
         
         if self.request.POST:
             context['detalles_formset'] = DetalleFacturaFormSet(self.request.POST)
         else:
             context['detalles_formset'] = DetalleFacturaFormSet()
-            
-        # Mejorar la serialización de productos
-        productos = Producto.objects.filter(activo=True).values('id', 'nombre', 'precio', 'stock')
-        # Convertir Decimal a float para mejor compatibilidad con JavaScript
-        productos_list = []
-        for p in productos:
-            p['precio'] = float(p['precio'])
-            productos_list.append(p)
+        context['clientes'] = Cliente.objects.all() #.objects.filter(activo=True)
+        context['productos'] = Producto.objects.all() #.objects.filter(activo=True)
         
-        context['productos_json'] = json.dumps(productos_list, cls=DjangoJSONEncoder)
+        # Añadir opciones de crédito
+        context['opciones_venta'] = [
+            {'id': 'contado', 'nombre': 'Contado'},
+            {'id': 'credito', 'nombre': 'Crédito'}
+        ]
         
         return context
     
-    # def form_valid(self, form):
-    #     context = self.get_context_data()
-    #     formset = context['detalles_formset']
-        
-    #     with transaction.atomic():
-    #         # Establecer el empleado basado en el usuario actual
-    #         factura = form.save(commit=False)
-    #         factura.empleado = self.request.user.empleado
-    #         factura.save()
-            
-    #         # Guardar los detalles si son válidos
-    #         if formset.is_valid():
-    #             formset.instance = factura
-    #             formset.save()
-                
-    #             # Crear la venta automáticamente
-    #             estado = StatusVentas.objects.get(nombre="Completada")
-    #             venta = Ventas.objects.create(
-    #                 empleado=factura.empleado,
-    #                 factura=factura,
-    #                 status=estado
-    #             )
-                
-    #             # Calcular el total de la factura
-    #             factura.calcular_total()
-                
-    #             messages.success(self.request, f'Venta #{venta.id} creada exitosamente.')
-    #             return super().form_valid(form)
-    #         else:
-    #             return self.form_invalid(form)
-                
     def form_valid(self, form):
         context = self.get_context_data()
         formset = context['detalles_formset']
         
         try:
             with transaction.atomic():
-                # Establecer el empleado basado en el usuario actual
+                # Verificar usuario y rol
+                if not hasattr(self.request.user, 'empleado'):
+                    messages.error(self.request, 'No tienes un perfil de empleado asociado.')
+                    return self.form_invalid(form)
+                
+                # Guardar factura
                 factura = form.save(commit=False)
                 factura.empleado = self.request.user.empleado
                 factura.save()
                 
-                # Guardar los detalles si son válidos
+                # Validar y guardar detalles
                 if formset.is_valid():
+                    # Verificar y actualizar stock
                     detalles = formset.save(commit=False)
                     
-                    # Verificar stock y calcular subtotales manualmente
                     for detalle in detalles:
                         detalle.factura = factura
-                        
-                        # Verificar stock
-                        if detalle.producto.stock < detalle.cantidad:
+                        if detalle.cantidad > detalle.producto.stock:
                             raise ValueError(f"Stock insuficiente para {detalle.producto.nombre}. Disponible: {detalle.producto.stock}")
-                        
-                        # Calcular subtotal
-                        detalle.sub_total = detalle.cantidad * detalle.producto.precio
-                        
-                        # Actualizar stock ANTES de guardar
+                    
+                    for detalle in detalles:
+                        # Reducir stock
                         detalle.producto.stock -= detalle.cantidad
                         detalle.producto.save(update_fields=['stock'])
                         
-                        # Guardar detalle
+                        # Calcular subtotal y guardar detalle
+                        detalle.sub_total = detalle.cantidad * detalle.producto.precio
                         detalle.save()
                     
-                    # Procesar eliminaciones
-                    for obj in formset.deleted_objects:
-                        obj.delete()
+                    # Calcular total de factura
+                    factura.calcular_total()
                     
-                    # Crear la venta automáticamente
-                    estado = StatusVentas.objects.get(nombre="Completada")
+                    # Determinar tipo de venta (crédito o contado)
+                    es_credito = self.request.POST.get('tipo_venta') == 'credito'
+                    
+                    # Obtener estado adecuado
+                    if es_credito:
+                        estado = StatusVentas.objects.get(nombre="Pendiente")
+                    else:
+                        estado = StatusVentas.objects.get(nombre="Completada")
+                    
+                    # Crear venta
                     venta = Ventas.objects.create(
                         empleado=factura.empleado,
                         factura=factura,
-                        status=estado
+                        status=estado,
+                        credito=es_credito,
+                        monto_pagado=0 if es_credito else factura.total_fac
                     )
                     
-                    # Calcular el total de la factura
-                    factura.calcular_total()
+                    if es_credito:
+                        messages.success(self.request, f'Venta a crédito #{venta.id} creada exitosamente.')
+                    else:
+                        messages.success(self.request, f'Venta #{venta.id} creada exitosamente.')
                     
-                    messages.success(self.request, f'Venta #{venta.id} creada exitosamente.')
-                    return super().form_valid(form)
+                    return redirect('black_invoices:venta_detail', pk=venta.id)
                 else:
                     return self.form_invalid(form)
+                    
         except ValueError as e:
             messages.error(self.request, str(e))
             return self.form_invalid(form)
@@ -335,7 +413,64 @@ class VentaListView(LoginRequiredMixin, ListView):
         context['create_url'] = reverse_lazy('black_invoices:venta_create')
         return context
 
-
+class VentasPendientesView(EmpleadoRolMixin, ListView):
+    model = Ventas
+    template_name = 'black_invoices/ventas/ventas_pendientes.html'
+    context_object_name = 'ventas'
+    roles_permitidos = ['Administrador', 'Supervisor', 'Vendedor']
+    
+    def get_queryset(self):
+        return Ventas.objects.filter(
+            credito=True, 
+            status__vent_cancelada=False
+        ).exclude(
+            monto_pagado__gte=F('factura__total_fac')
+        ).order_by('-id')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Ventas Pendientes (Crédito)'
+        return context
+    
+class RegistrarPagoView(EmpleadoRolMixin, UpdateView):
+    model = Ventas
+    template_name = 'black_invoices/ventas/registrar_pago.html'
+    fields = []  # No usamos campos del modelo directamente
+    roles_permitidos = ['Administrador', 'Supervisor', 'Vendedor']
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = f'Registrar Pago - Venta #{self.object.id}'
+        context['venta'] = self.object
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        
+        try:
+            monto = float(request.POST.get('monto', 0))
+            
+            if monto <= 0:
+                messages.error(request, 'El monto debe ser mayor a cero.')
+                return self.get(request, *args, **kwargs)
+            
+            if monto > self.object.saldo_pendiente:
+                messages.error(request, f'El monto excede el saldo pendiente (${self.object.saldo_pendiente}).')
+                return self.get(request, *args, **kwargs)
+            
+            # Registrar pago
+            self.object.registrar_pago(monto)
+            
+            if self.object.completada:
+                messages.success(request, f'Pago de ${monto} registrado. La venta ha sido completada.')
+            else:
+                messages.success(request, f'Pago de ${monto} registrado. Saldo pendiente: ${self.object.saldo_pendiente}')
+            
+            return redirect('black_invoices:ventas_pendientes')
+            
+        except ValueError:
+            messages.error(request, 'Por favor ingrese un monto válido.')
+            return self.get(request, *args, **kwargs)
 class VentaDetailView(LoginRequiredMixin, DetailView):
     model = Ventas
     template_name = 'black_invoices/ventas/venta_detail.html'
@@ -372,38 +507,60 @@ def cancelar_venta(request, pk):
     return redirect('black_invoices:venta_list')
 
 
-######################      COMISIONES      ###############3
+######################      COMISIONES      ###############
+from django.db.models import Q
+
 class ComisionListView(LoginRequiredMixin, ListView):
-    model = Comision
-    template_name = 'black_invoices/comisiones/comision_list.html'
-    context_object_name = 'comisiones'
-
-    def get_queryset(self):
-        if hasattr(self.request.user, 'empleado'):
-
-            if self.request.user.empleado.nivel_acceso.nombre == "Administrador":
-                return Comision.objects.all()
-            
-            else:
-                return Comision.objects.filter(empleado=self.request.user.empleado)
-        
-        return Comision.objects.none()
+    model = Empleado
+    template_name = 'black_invoices/empleados/comisiones.html'
+    context_object_name = 'empleados'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Comisiones'
-
-
-        #Estadisticas
-
+        
         if hasattr(self.request.user, 'empleado'):
             empleado = self.request.user.empleado
             mes_actual = datetime.now().month
             anio_actual = datetime.now().year
-
+            
+            # Filtrar empleados según el nivel de acceso
+            es_admin = empleado.nivel_acceso.nombre == 'Administrador'
+            context['es_administrador'] = es_admin
+            
+            if es_admin:
+                empleados = Empleado.objects.filter(activo=True)
+            else:
+                empleados = Empleado.objects.filter(id=empleado.id)
+            
+            # Calcular comisiones para cada empleado
+            comisiones = []
+            for emp in empleados:
+                # Obtener ventas completadas
+                ventas_completadas = Ventas.objects.filter(
+                    empleado=emp,
+                    factura__fecha_fac__month=mes_actual,
+                    factura__fecha_fac__year=anio_actual
+                ).exclude(status__vent_cancelada=True).filter(
+                    # Solo ventas completadas (contado o crédito pagado)
+                    Q(credito=False) | Q(credito=True, monto_pagado__gte=F('factura__total_fac'))
+                )
+                
+                # Calcular comisión
+                total_comision = emp.get_comisiones_mes(mes_actual, anio_actual)
+                
+                comisiones.append({
+                    'empleado': emp,
+                    'ventas': ventas_completadas.count(),
+                    'comision': total_comision
+                })
+            
+            context['comisiones'] = comisiones
+            
+            # Cálculo para el empleado actual (para el widget)
             context['total_mes'] = empleado.get_comisiones_mes(mes_actual, anio_actual)
-            context['total_año'] = sum(
-                empleado.get_comisiones_mes(m, anio_actual)
+            context['total_anio'] = sum(
+                empleado.get_comisiones_mes(m, anio_actual) 
                 for m in range(1, mes_actual + 1)
             )
         

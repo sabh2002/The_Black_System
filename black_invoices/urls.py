@@ -14,6 +14,7 @@ urlpatterns = [
     path('clientes/', views.ClienteListView.as_view(), name='cliente_list'),
     path('productos/', views.ProductoListView.as_view(), name='producto_list'),
     path('productos/crear/', views.ProductoCreateView.as_view(), name='producto_create'),
+    path('productos/<int:pk>/stock/', views.ProductoStockUpdateView.as_view(), name='producto_stock'),
 
 
     path('clientes/crear/', views.ClienteCreateView.as_view(), name='cliente_create'),
@@ -22,11 +23,14 @@ urlpatterns = [
     path('ventas/crear/', views.VentaCreateView.as_view(), name='venta_create'),
     path('ventas/<int:pk>/', views.VentaDetailView.as_view(), name='venta_detail'),
     path('ventas/<int:pk>/cancelar/', views.cancelar_venta, name='cancelar_venta'),
+    path('ventas/pendientes/', views.VentasPendientesView.as_view(), name='ventas_pendientes'),
+    path('ventas/<int:pk>/pago/', views.RegistrarPagoView.as_view(), name='registrar_pago'),
 
     # # Empleados
     path('empleados/', views.EmpleadoListView.as_view(), name='empleado_list'),
-    # path('empleados/crear/', views.EmpleadoCreateView.as_view(), name='empleado_create'),
+    path('empleados/crear/', views.EmpleadoCreateView.as_view(), name='empleado_create'),
     path('empleados/comisiones/', views.ComisionListView.as_view(), name='comision_list'),
+    path('empleados/<int:pk>/editar/', views.EmpleadoUpdateView.as_view(), name='empleado_update'),
     path('accounts/login/', views.ingresar, name='login'),
     path('logout/', views.logout_view, name='logout')
 ]

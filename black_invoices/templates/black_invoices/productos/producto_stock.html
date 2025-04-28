@@ -1,0 +1,39 @@
+{% extends 'black_invoices/base/base.html' %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ titulo }}</h3>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="callout callout-info">
+                    <h5>Información del Producto</h5>
+                    <p><strong>Nombre:</strong> {{ object.nombre }}</p>
+                    <p><strong>Precio:</strong> ${{ object.precio }}</p>
+                    <p><strong>Stock Actual:</strong> {{ object.stock }}</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="{{ form.stock.id_for_label }}">Nuevo Stock:</label>
+                        {{ form.stock }}
+                        {% if form.stock.errors %}
+                            <div class="text-danger">{{ form.stock.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Actualizar Stock
+                    </button>
+                    <a href="{% url 'black_invoices:producto_list' %}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancelar
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

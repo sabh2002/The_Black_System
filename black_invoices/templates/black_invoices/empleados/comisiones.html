@@ -1,0 +1,81 @@
+{% extends 'black_invoices/base/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <!-- Widget de resumen para el usuario actual -->
+    {% if user.empleado %}
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Mi comisión de este mes</h3>
+                    </div>
+                    <div class="card-body">
+                        <h1 class="text-center">${{ total_mes|floatformat:2 }}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card card-success">
+                    <div class="card-header">
+                        <h3 class="card-title">Mi comisión anual</h3>
+                    </div>
+                    <div class="card-body">
+                        <h1 class="text-center">${{ total_anio|floatformat:2 }}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Tabla de comisiones -->
+    <div class="col-md-12 mt-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    {% if es_administrador %}
+                        Comisiones de todos los empleados
+                    {% else %}
+                        Mis comisiones
+                    {% endif %}
+                </h3>
+            </div>
+            <div class="card-body table-responsive p-0">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Empleado</th>
+                            <th>Nivel</th>
+                            <th>Ventas Completadas</th>
+                            <th>Comisión</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in comisiones %}
+                        <tr>
+                            <td>{{ item.empleado.nombre }} {{ item.empleado.apellido }}</td>
+                            <td>{{ item.empleado.nivel_acceso.nombre }}</td>
+                            <td>{{ item.ventas }}</td>
+                            <td>${{ item.comision|floatformat:2 }}</td>
+                            <td>
+                                <a href="#" class="btn btn-sm btn-info">
+                                    <i class="fas fa-eye"></i> Detalles
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center">No hay comisiones disponibles</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

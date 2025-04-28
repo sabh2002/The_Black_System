@@ -332,8 +332,15 @@ class Command(BaseCommand):
                     total_factura += subtotal
                     
                     # Reducir stock
-                    producto.stock -= cantidad
-                    producto.save()
+                    if producto.stock >= cantidad:
+                        producto.stock -= cantidad
+                        producto.save()
+                    else:
+                        # Puedes manejar el caso de stock insuficiente
+                        # Por ejemplo, reducir la cantidad a lo disponible
+                        cantidad = producto.stock
+                        producto.stock = 0
+                        producto.save()
                     
                     DetalleFactura.objects.create(
                     factura=factura,

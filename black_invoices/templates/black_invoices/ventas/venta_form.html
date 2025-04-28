@@ -118,114 +118,217 @@
             </div>
         </div>
     </form>
-    <!-- En el bloque content, antes de cerrar el div -->
 </div>
 
-{% endblock %}
-
-
-
-<!-- <script>
-// Esperar a que el documento esté completamente cargado
+<script>
+// El script se ejecutará inmediatamente cuando se cargue la página
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("DOM cargado completamente");
+    console.log('Script de venta cargado');
     
-    // Actualizar subtotales iniciales
-    document.querySelectorAll('.fila-producto').forEach(function(fila) {
-        actualizarSubtotal(fila);
-    });
-    
-    // EVENTO CAMBIO DE PRODUCTO
-    document.addEventListener('change', function(e) {
-        if (e.target && e.target.classList.contains('producto-select')) {
-            console.log("Producto seleccionado");
-            let fila = e.target.closest('tr');
-            let opcion = e.target.options[e.target.selectedIndex];
-            let precio = opcion.dataset.precio || 0;
-            
-            // Actualizar precio en la fila
-            fila.querySelector('.precio').textContent = '$' + parseFloat(precio).toFixed(2);
-            actualizarSubtotal(fila);
-        }
-    });
-    
-    // EVENTO CAMBIO DE CANTIDAD (mientras escribes)
-    document.addEventListener('input', function(e) {
-        if (e.target && e.target.classList.contains('cantidad')) {
-            console.log("Cantidad cambiada (input)");
-            let fila = e.target.closest('tr');
-            actualizarSubtotal(fila);
-        }
-    });
-    
-    // EVENTO CAMBIO DE CANTIDAD (cuando se pierde el foco)
-    document.addEventListener('change', function(e) {
-        if (e.target && e.target.classList.contains('cantidad')) {
-            console.log("Cantidad cambiada (change)");
-            let fila = e.target.closest('tr');
-            actualizarSubtotal(fila);
-        }
-    });
-    
-    // EVENTO AGREGAR PRODUCTO
-    document.getElementById('agregarProducto').addEventListener('click', function() {
-        console.log("Agregar producto clicked");
-        let tabla = document.getElementById('tablaProductos');
-        let primeraFila = tabla.querySelector('tbody tr');
-        let nuevaFila = primeraFila.cloneNode(true);
-        
-        // Limpiar valores de la nueva fila
-        nuevaFila.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
-        nuevaFila.querySelectorAll('input').forEach(input => input.value = 1);
-        nuevaFila.querySelector('.precio').textContent = '$0.00';
-        nuevaFila.querySelector('.subtotal').textContent = '$0.00';
-        
-        // Agregar la nueva fila
-        tabla.querySelector('tbody').appendChild(nuevaFila);
-    });
-    
-    // EVENTO ELIMINAR FILA
-    document.addEventListener('click', function(e) {
-        if (e.target && e.target.closest('.eliminar-fila')) {
-            console.log("Eliminar fila clicked");
-            let boton = e.target.closest('.eliminar-fila');
-            let fila = boton.closest('tr');
-            let tabla = document.getElementById('tablaProductos');
-            
-            if (tabla.querySelectorAll('tbody tr').length > 1) {
-                fila.remove();
-                calcularTotal();
-            } else {
-                alert('Debe haber al menos un producto');
-            }
-        }
-    });
-    
-    // FUNCIONES AUXILIARES
-    
-    // Función para actualizar subtotal de una fila
-    function actualizarSubtotal(fila) {
-        console.log("Actualizando subtotal");
-        let precioText = fila.querySelector('.precio').textContent;
-        let precio = parseFloat(precioText.replace('$', '')) || 0;
-        let cantidad = parseInt(fila.querySelector('.cantidad').value) || 0;
-        
-        let subtotal = precio * cantidad;
-        fila.querySelector('.subtotal').textContent = '$' + subtotal.toFixed(2);
-        
-        calcularTotal();
+    // Función para formatear números como moneda
+    function formatCurrency(value) {
+        return '$' + parseFloat(value).toFixed(2);
     }
     
-    // Función para calcular el total general
-    function calcularTotal() {
-        console.log("Calculando total");
+    // Función para manejar cambios en el select de producto
+    function handleProductChange(event) {
+        console.log('Producto cambiado');
+        const select = event.target;
+        const row = select.closest('.fila-producto');
+        const priceCell = row.querySelector('.precio');
+        const quantityInput = row.querySelector('.cantidad');
+        const subtotalCell = row.querySelector('.subtotal');
+        
+        if (select.selectedIndex > 0) {
+            const selectedOption = select.options[select.selectedIndex];
+            const price = parseFloat(selectedOption.dataset.precio);
+            const stock = parseInt(selectedOption.dataset.stock);
+            
+            console.log('Precio seleccionado:', price);
+            console.log('Stock disponible:', stock);
+            
+            // Actualizar precio mostrado
+            priceCell.textContent = formatCurrency(price);
+            
+            // Limitar cantidad al stock disponible
+            quantityInput.max = stock;
+            if (parseInt(quantityInput.value) > stock) {
+                quantityInput.value = stock;
+            }
+            
+            // Calcular y actualizar subtotal
+            updateSubtotal(row);
+        } else {
+            priceCell.textContent = '$0.00';
+            subtotalCell.textContent = '$0.00';
+            updateTotal();
+        }
+    }
+    
+    // Función para actualizar subtotal cuando cambia la cantidad
+    function handleQuantityChange(event) {
+        console.log('Cantidad cambiada');
+        const input = event.target;
+        const row = input.closest('.fila-producto');
+        
+        // Asegurar que la cantidad sea al menos 1
+        if (parseInt(input.value) < 1 || isNaN(parseInt(input.value))) {
+            input.value = 1;
+        }
+        
+        updateSubtotal(row);
+    }
+    
+    // Actualizar el subtotal de una fila
+    function updateSubtotal(row) {
+        const priceCell = row.querySelector('.precio');
+        const quantityInput = row.querySelector('.cantidad');
+        const subtotalCell = row.querySelector('.subtotal');
+        
+        const price = parseFloat(priceCell.textContent.replace('$', '')) || 0;
+        const quantity = parseInt(quantityInput.value) || 0;
+        
+        const subtotal = price * quantity;
+        subtotalCell.textContent = formatCurrency(subtotal);
+        
+        console.log('Subtotal calculado:', subtotal);
+        
+        // Actualizar el total general
+        updateTotal();
+    }
+    
+    // Actualizar el total general de la compra
+    function updateTotal() {
+        const subtotalCells = document.querySelectorAll('.subtotal');
         let total = 0;
-        document.querySelectorAll('.subtotal').forEach(function(celda) {
-            let subtotal = parseFloat(celda.textContent.replace('$', '')) || 0;
+        
+        subtotalCells.forEach(function(cell) {
+            const subtotal = parseFloat(cell.textContent.replace('$', '')) || 0;
             total += subtotal;
         });
         
-        document.getElementById('total').textContent = '$' + total.toFixed(2);
+        const totalSpan = document.getElementById('total');
+        if (totalSpan) {
+            totalSpan.textContent = formatCurrency(total);
+            console.log('Total actualizado:', total);
+        }
     }
+    
+    // Agregar nueva fila de producto
+    function addProductRow() {
+        console.log('Agregando nueva fila de producto');
+        const tbody = document.querySelector('#tablaProductos tbody');
+        const firstRow = document.querySelector('.fila-producto');
+        
+        if (tbody && firstRow) {
+            const newRow = firstRow.cloneNode(true);
+            
+            // Resetear valores
+            const productSelect = newRow.querySelector('.producto-select');
+            if (productSelect) productSelect.selectedIndex = 0;
+            
+            const priceCell = newRow.querySelector('.precio');
+            if (priceCell) priceCell.textContent = '$0.00';
+            
+            const quantityInput = newRow.querySelector('.cantidad');
+            if (quantityInput) quantityInput.value = 1;
+            
+            const subtotalCell = newRow.querySelector('.subtotal');
+            if (subtotalCell) subtotalCell.textContent = '$0.00';
+            
+            // Añadir event listeners
+            setupRowEventListeners(newRow);
+            
+            // Añadir a la tabla
+            tbody.appendChild(newRow);
+        } else {
+            console.error('No se encontró la tabla o la fila para clonar');
+        }
+    }
+    
+    // Eliminar fila de producto
+    function removeProductRow(event) {
+        console.log('Eliminando fila de producto');
+        const button = event.target.closest('.eliminar-fila');
+        if (!button) return;
+        
+        const rows = document.querySelectorAll('.fila-producto');
+        if (rows.length > 1) {
+            const row = button.closest('.fila-producto');
+            row.remove();
+            updateTotal();
+        } else {
+            alert('Debe haber al menos un producto en la venta');
+        }
+    }
+    
+    // Configurar event listeners para una fila
+    function setupRowEventListeners(row) {
+        const productSelect = row.querySelector('.producto-select');
+        if (productSelect) {
+            productSelect.addEventListener('change', handleProductChange);
+        }
+        
+        const quantityInput = row.querySelector('.cantidad');
+        if (quantityInput) {
+            quantityInput.addEventListener('input', handleQuantityChange);
+        }
+        
+        const removeButton = row.querySelector('.eliminar-fila');
+        if (removeButton) {
+            removeButton.addEventListener('click', removeProductRow);
+        }
+    }
+    
+    // Sincronizar método de pago con tipo de venta
+    function setupPaymentSync() {
+        const paymentSelect = document.getElementById('metodoPago');
+        const cashRadio = document.getElementById('contado');
+        const creditRadio = document.getElementById('credito');
+        
+        if (paymentSelect && cashRadio && creditRadio) {
+            paymentSelect.addEventListener('change', function() {
+                if (this.value === 'credito') {
+                    creditRadio.checked = true;
+                } else {
+                    cashRadio.checked = true;
+                }
+            });
+            
+            cashRadio.addEventListener('change', function() {
+                if (this.checked && paymentSelect.value === 'credito') {
+                    paymentSelect.value = 'efectivo';
+                }
+            });
+            
+            creditRadio.addEventListener('change', function() {
+                if (this.checked) {
+                    paymentSelect.value = 'credito';
+                }
+            });
+        }
+    }
+    
+    // Inicializar eventos para todas las filas existentes
+    document.querySelectorAll('.fila-producto').forEach(function(row) {
+        setupRowEventListeners(row);
+    });
+    
+    // Configurar botón para agregar productos
+    const addButton = document.getElementById('agregarProducto');
+    if (addButton) {
+        addButton.addEventListener('click', addProductRow);
+    } else {
+        console.error('No se encontró el botón Agregar Producto');
+    }
+    
+    // Configurar sincronización de método de pago
+    setupPaymentSync();
+    
+    // Hacer un cálculo inicial
+    updateTotal();
+    
+    console.log('Inicialización de script completada');
 });
-</script> -->
+</script>
+{% endblock %}

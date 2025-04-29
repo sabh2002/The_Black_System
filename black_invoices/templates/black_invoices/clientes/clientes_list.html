@@ -21,15 +21,15 @@
     <td>{{ cliente.direccion }}</td>
     <td>
         <div class="btn-group">
-            <a href="#" class="btn btn-sm btn-warning" title="Editar">
+            <a href="{% url 'black_invoices:cliente_update' cliente.id %}" class="btn btn-sm btn-warning" title="Editar">
                 <i class="fas fa-edit"></i>
             </a>
-            <a href="#" class="btn btn-sm btn-info" title="Ver detalles">
+            <a href="{% url 'black_invoices:cliente_detail' cliente.id %}" class="btn btn-sm btn-info" title="Ver detalles">
                 <i class="fas fa-eye"></i>
             </a>
-            <a href="#" class="btn btn-sm btn-danger" title="Eliminar">
+            <!-- <a href="#" class="btn btn-sm btn-danger" title="Eliminar">
                 <i class="fas fa-trash"></i>
-            </a>
+            </a> -->
         </div>
     </td>
 </tr>

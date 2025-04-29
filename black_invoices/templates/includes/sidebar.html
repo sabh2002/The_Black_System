@@ -116,12 +116,12 @@
                                 <p>Registrar venta</p>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="fas fa-chart-bar nav-icon"></i>
                                 <p>Reportes de ventas</p>
                             </a>
-                        </li>
+                        </li> -->
                         <li class="nav-item">
                             <a href="{% url 'black_invoices:ventas_pendientes' %}" class="nav-link">
                                 <i class="fas fa-clock nav-icon"></i>
@@ -156,12 +156,12 @@
                                     <p>Registrar producto</p>
                                 </a>
                             </li>
-                            <li class="nav-item">
+                            <!-- <li class="nav-item">
                                 <a href="#" class="nav-link">
                                     <i class="fas fa-exclamation-triangle nav-icon"></i>
                                     <p>Stock bajo</p>
                                 </a>
-                            </li>
+                            </li> -->
                         </ul>
                     </li>
                 {% if user.is_authenticated %}
@@ -188,12 +188,12 @@
                                     <p>Registrar empleado</p>
                                 </a>
                             </li>
-                            <li class="nav-item">
+                            <!-- <li class="nav-item">
                                 <a href="#" class="nav-link">
                                     <i class="fas fa-money-check-alt nav-icon"></i>
                                     <p>Comisiones de empleados</p>
                                 </a>
-                            </li>
+                            </li> -->
                         </ul>
                     </li>
                     {% endif %}
@@ -202,15 +202,15 @@
                     <li class="nav-item">
                         <a href="{% url 'black_invoices:comision_list' %}" class="nav-link">
                             <i class="nav-icon fas fa-money-bill"></i>
-                            <p>Mis comisiones</p>
+                            <p>Comisiones</p>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-chart-line"></i>
                             <p>Reporte mensual</p>
                         </a>
-                    </li>
+                    </li> -->
                     <li class="nav-header">CONFIGURACIÓN</li>
                     <li class="nav-item">
                         <a href="#" class="nav-link">
@@ -222,17 +222,17 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="#" class="nav-link">
+                                <a href="{% url 'black_invoices:rangos_comisiones_list' %}" class="nav-link">
                                     <i class="fas fa-percentage nav-icon"></i>
                                     <p>Rangos de comisión</p>
                                 </a>
                             </li>
-                            <li class="nav-item">
+                            <!-- <li class="nav-item">
                                 <a href="#" class="nav-link">
                                     <i class="fas fa-key nav-icon"></i>
                                     <p>Niveles de acceso</p>
                                 </a>
-                            </li>
+                            </li> -->
                         </ul>
                     </li>
                     <li class="nav-item dropdown user-menu">

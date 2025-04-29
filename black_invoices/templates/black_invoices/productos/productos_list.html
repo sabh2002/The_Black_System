@@ -28,20 +28,20 @@
     </td>
     <td>
         <div class="btn-group">
-            <a href="#" class="btn btn-sm btn-info" title="Ver detalles">
+            <a href="{% url 'black_invoices:producto_detail' producto.id %}" class="btn btn-sm btn-info" title="Ver detalles">
                 <i class="fas fa-eye"></i>
 
             <a href="{% url 'black_invoices:producto_stock' producto.id %}" class="btn btn-sm btn-success" title="Actualizar Stock">
                 <i class="fas fa-plus"></i>
             </a>
-            <a href="#" class="btn btn-sm btn-warning" title="Editar">
+            <a href="{% url 'black_invoices:producto_update' producto.id %}" class="btn btn-sm btn-warning" title="Editar">
                 <i class="fas fa-edit"></i>
             </a>
             
             </a>
-            <a href="#" class="btn btn-sm btn-danger" title="Eliminar">
+            <!-- <a href="#" class="btn btn-sm btn-danger" title="Eliminar">
                 <i class="fas fa-trash"></i>
-            </a>
+            </a> -->
         </div>
     </td>
 </tr>

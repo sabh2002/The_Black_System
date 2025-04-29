@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DetailView
+from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DetailView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import *
 from .forms.producto_forms import ProductoForm
@@ -136,6 +136,28 @@ class ClienteCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         messages.success(self.request, 'Cliente registrado exitosamente.')
         return super().form_valid(form)
+class ClienteDetailView(LoginRequiredMixin, DetailView):
+    model = Cliente
+    template_name = 'black_invoices/clientes/cliente_detail.html'
+    context_object_name = 'cliente'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        cliente = self.get_object()
+        # Obtener historial de ventas/facturas del cliente
+        context['facturas'] = Factura.objects.filter(cliente=cliente).order_by('-fecha_fac')
+        return context
+class ClienteUpdateView(LoginRequiredMixin, UpdateView):
+    model = Cliente
+    template_name = 'black_invoices/clientes/cliente_form.html'
+    fields = ['nombre', 'apellido', 'email', 'telefono', 'direccion']
+    
+    def get_success_url(self):
+        return reverse_lazy('black_invoices:cliente_detail', kwargs={'pk': self.object.pk})
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Cliente actualizado exitosamente')
+        return super().form_valid(form)
     
 ######################      PRODUCTOS       ###############
 class ProductoListView(LoginRequiredMixin, ListView):
@@ -190,6 +212,42 @@ class ProductoStockUpdateView(LoginRequiredMixin, UpdateView):
         )
         
         return response
+    
+# En views.py, añade estas clases
+
+class ProductoDetailView(LoginRequiredMixin, DetailView):
+    model = Producto
+    template_name = 'black_invoices/productos/producto_detail.html'
+    context_object_name = 'producto'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = f'Detalles del Producto: {self.object.nombre}'
+        
+        # Obtener historial de ventas de este producto (opcional)
+        context['detalles_ventas'] = DetalleFactura.objects.filter(
+            producto=self.object
+        ).order_by('-factura__fecha_fac')[:10]  # Últimas 10 ventas
+        
+        return context
+
+class ProductoUpdateView(LoginRequiredMixin, UpdateView):
+    model = Producto
+    form_class = ProductoForm
+    template_name = 'black_invoices/productos/producto_form.html'
+    
+    def get_success_url(self):
+        return reverse_lazy('black_invoices:producto_detail', kwargs={'pk': self.object.pk})
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = f'Editar Producto: {self.object.nombre}'
+        context['action'] = 'Actualizar'
+        return context
+    
+    def form_valid(self, form):
+        messages.success(self.request, f'Producto {self.object.nombre} actualizado exitosamente.')
+        return super().form_valid(form)
 
 ########################        EMPLEADOS       #############
 class EmpleadoListView(EmpleadoRolMixin, ListView):
@@ -283,7 +341,16 @@ class FacturaListView(LoginRequiredMixin, ListView):
         context['titulo'] = 'Lista de Facturas'
         return context
 
-
+class FacturaDetailView(LoginRequiredMixin, DetailView):
+    model = Factura
+    template_name = 'black_invoices/facturas/factura_detail.html'
+    context_object_name = 'factura'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Detalle de Factura'
+        context['detalles'] = self.object.detallefactura_set.all()
+        return context
 
 def ingresar(request):
     if request.method == 'POST':
@@ -691,6 +758,61 @@ def cancelar_venta(request, pk):
 ######################      COMISIONES      ###############
 from django.db.models import Q
 
+class RangosComisionesListView(LoginRequiredMixin, ListView):
+    model = ConsultaComision
+    template_name = 'black_invoices/comisiones/rangos_list.html'
+    context_object_name = 'rangos'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Rangos de Comisiones'
+        return context
+
+class RangosComisionesCreateView(LoginRequiredMixin, CreateView):
+    model = ConsultaComision
+    template_name = 'black_invoices/comisiones/rangos_form.html'
+    fields = ['rango_inferior', 'rango_superior', 'porcentaje']
+    success_url = reverse_lazy('black_invoices:rangos_comisiones_list')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Añadir Rango de Comisión'
+        context['boton'] = 'Guardar'
+        return context
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Rango de comisión creado exitosamente')
+        return super().form_valid(form)
+
+class RangosComisionesUpdateView(LoginRequiredMixin, UpdateView):
+    model = ConsultaComision
+    template_name = 'black_invoices/comisiones/rangos_form.html'
+    fields = ['rango_inferior', 'rango_superior', 'porcentaje']
+    success_url = reverse_lazy('black_invoices:rangos_comisiones_list')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Editar Rango de Comisión'
+        context['boton'] = 'Actualizar'
+        return context
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Rango de comisión actualizado exitosamente')
+        return super().form_valid(form)
+
+class RangosComisionesDeleteView(LoginRequiredMixin, DeleteView):
+    model = ConsultaComision
+    template_name = 'black_invoices/comisiones/rangos_confirm_delete.html'
+    success_url = reverse_lazy('black_invoices:rangos_comisiones_list')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Eliminar Rango de Comisión'
+        return context
+    
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, 'Rango de comisión eliminado exitosamente')
+        return super().delete(request, *args, **kwargs)
 class ComisionListView(LoginRequiredMixin, ListView):
     model = Empleado
     template_name = 'black_invoices/empleados/comisiones.html'

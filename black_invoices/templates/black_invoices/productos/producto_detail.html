@@ -1,0 +1,109 @@
+{% extends 'black_invoices/base/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Información del Producto</h3>
+                <div class="card-tools">
+                    <a href="{% url 'black_invoices:producto_update' producto.id %}" class="btn btn-warning btn-sm">
+                        <i class="fas fa-edit"></i> Editar
+                    </a>
+                    <a href="{% url 'black_invoices:producto_stock' producto.id %}" class="btn btn-success btn-sm">
+                        <i class="fas fa-plus"></i> Actualizar Stock
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <tr>
+                            <th style="width:30%">Nombre:</th>
+                            <td>{{ producto.nombre }}</td>
+                        </tr>
+                        <tr>
+                            <th>Descripción:</th>
+                            <td>{{ producto.descripcion }}</td>
+                        </tr>
+                        <tr>
+                            <th>Precio:</th>
+                            <td>${{ producto.precio|floatformat:2 }}</td>
+                        </tr>
+                        <tr>
+                            <th>Stock:</th>
+                            <td>
+                                {% if producto.stock > 10 %}
+                                    <span class="badge badge-success">{{ producto.stock }}</span>
+                                {% elif producto.stock > 5 %}
+                                    <span class="badge badge-warning">{{ producto.stock }}</span>
+                                {% else %}
+                                    <span class="badge badge-danger">{{ producto.stock }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Estado:</th>
+                            <td>
+                                {% if producto.activo %}
+                                    <span class="badge badge-success">Activo</span>
+                                {% else %}
+                                    <span class="badge badge-danger">Inactivo</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Fecha de creación:</th>
+                            <td>{{ producto.created_at|date:"d/m/Y H:i" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Última actualización:</th>
+                            <td>{{ producto.updated_at|date:"d/m/Y H:i" }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="{% url 'black_invoices:producto_list' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Historial de Ventas</h3>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Cliente</th>
+                            <th>Cantidad</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for detalle in detalles_ventas %}
+                        <tr>
+                            <td>{{ detalle.factura.fecha_fac|date:"d/m/Y" }}</td>
+                            <td>{{ detalle.factura.cliente.nombre }} {{ detalle.factura.cliente.apellido }}</td>
+                            <td>{{ detalle.cantidad }}</td>
+                            <td>${{ detalle.sub_total|floatformat:2 }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center">No hay ventas registradas para este producto.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

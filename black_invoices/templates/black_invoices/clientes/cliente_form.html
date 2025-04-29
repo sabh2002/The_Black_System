@@ -1,0 +1,71 @@
+{% extends 'black_invoices/base/base.html' %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Editar Cliente</h3>
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.nombre.id_for_label }}">Nombre:</label>
+                        {{ form.nombre.errors }}
+                        <input type="text" name="{{ form.nombre.name }}" id="{{ form.nombre.id_for_label }}" 
+                               class="form-control {% if form.nombre.errors %}is-invalid{% endif %}" 
+                               value="{{ form.nombre.value|default:'' }}" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.apellido.id_for_label }}">Apellido:</label>
+                        {{ form.apellido.errors }}
+                        <input type="text" name="{{ form.apellido.name }}" id="{{ form.apellido.id_for_label }}" 
+                               class="form-control {% if form.apellido.errors %}is-invalid{% endif %}" 
+                               value="{{ form.apellido.value|default:'' }}" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.email.id_for_label }}">Email:</label>
+                        {{ form.email.errors }}
+                        <input type="email" name="{{ form.email.name }}" id="{{ form.email.id_for_label }}" 
+                               class="form-control {% if form.email.errors %}is-invalid{% endif %}" 
+                               value="{{ form.email.value|default:'' }}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.telefono.id_for_label }}">Teléfono:</label>
+                        {{ form.telefono.errors }}
+                        <input type="text" name="{{ form.telefono.name }}" id="{{ form.telefono.id_for_label }}" 
+                               class="form-control {% if form.telefono.errors %}is-invalid{% endif %}" 
+                               value="{{ form.telefono.value|default:'' }}">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.direccion.id_for_label }}">Dirección:</label>
+                {{ form.direccion.errors }}
+                <textarea name="{{ form.direccion.name }}" id="{{ form.direccion.id_for_label }}" 
+                          class="form-control {% if form.direccion.errors %}is-invalid{% endif %}" 
+                          rows="3">{{ form.direccion.value|default:'' }}</textarea>
+            </div>
+        </div>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Guardar Cambios
+            </button>
+            <a href="{% url 'black_invoices:cliente_detail' cliente.id %}" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

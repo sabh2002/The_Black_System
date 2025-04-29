@@ -75,16 +75,16 @@ class Command(BaseCommand):
             self.stdout.write('Configurando rangos de comisión...')
             ConsultaComision.objects.create(
                 rango_inferior=Decimal('0.00'),
-                rango_superior=Decimal('1000.00'),
+                rango_superior=Decimal('100.00'),
                 porcentaje=Decimal('5.00')
             )
             ConsultaComision.objects.create(
-                rango_inferior=Decimal('1001.00'),
-                rango_superior=Decimal('5000.00'),
+                rango_inferior=Decimal('101.00'),
+                rango_superior=Decimal('500.00'),
                 porcentaje=Decimal('10.00')
             )
             ConsultaComision.objects.create(
-                rango_inferior=Decimal('5001.00'),
+                rango_inferior=Decimal('501.00'),
                 rango_superior=Decimal('999999.99'),
                 porcentaje=Decimal('15.00')
             )

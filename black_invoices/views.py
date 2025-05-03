@@ -1,4 +1,5 @@
 from datetime import datetime
+from decimal import Decimal
 import json
 import math as m
 from django.shortcuts import render, redirect
@@ -702,7 +703,7 @@ class RegistrarPagoView(EmpleadoRolMixin, UpdateView):
                 messages.error(request, 'El monto debe ser mayor a cero.')
                 return self.get(request, *args, **kwargs)
             
-            if monto > self.object.saldo_pendiente:
+            if monto > (self.object.saldo_pendiente + Decimal(0.01)):
                 messages.error(request, f'El monto excede el saldo pendiente (${self.object.saldo_pendiente}).')
                 return self.get(request, *args, **kwargs)
             
@@ -978,6 +979,6 @@ class FacturaPDFView(LoginRequiredMixin, View):
         # Preparar respuesta
         buffer.seek(0)
         response = HttpResponse(buffer, content_type='application/pdf')
-        response['Content-Disposition'] = f'attachment; filename="factura_{factura.id}.pdf"'
+        response['Content-Disposition'] = f'attachment; filename="Registro de Venta #{factura.id}.pdf"'
         
         return response

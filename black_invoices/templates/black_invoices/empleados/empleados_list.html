@@ -1,48 +1,296 @@
-<!-- templates/black_invoices/empleados/empleado_list.html -->
-{% extends 'black_invoices/base/base_list.html' %}
+{% extends 'black_invoices/base/base.html' %}
+{% load static %}
 
-{% block table_header %}
-<tr>
-    <th>Nombre</th>
-    <th>Apellido</th>
-    <th>Nivel de Acceso</th>
-    <th>Fecha Contratación</th>
-    <th>Estado</th>
-    <th>Acciones</th>
-</tr>
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-md-8">
+                <h3 class="card-title">{{ titulo }}</h3>
+            </div>
+            <div class="col-md-4 text-right">
+                <a href="{% url 'black_invoices:empleado_create' %}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Nuevo Empleado
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- Filtros personalizados -->
+        <div class="row mb-4">
+            <!-- <div class="col-md-3">
+                <label for="nivel_acceso">Nivel de Acceso:</label>
+                <select id="nivel_acceso" class="form-control">
+                    <option value="">Todos</option>
+                    {% for nivel in niveles_acceso %}
+                    <option value="{{ nivel.nombre }}">{{ nivel.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div> -->
+            <!-- <div class="col-md-3">
+                <label for="estado_empleado">Estado:</label>
+                <select id="estado_empleado" class="form-control">
+                    <option value="">Todos</option>
+                    <option value="Activo">Activo</option>
+                    <option value="Inactivo">Inactivo</option>
+                </select>
+            </div> -->
+            <!-- <div class="col-md-3">
+                <label>&nbsp;</label>
+                <button id="btnFiltrarEmpleados" class="btn btn-info form-control">
+                    <i class="fas fa-filter"></i> Filtrar
+                </button>
+            </div> -->
+            <!-- <div class="col-md-3">
+                <label>&nbsp;</label>
+                <button id="btnResetEmpleados" class="btn btn-secondary form-control">
+                    <i class="fas fa-sync"></i> Limpiar
+                </button>
+            </div> -->
+        </div>
+
+        <table id="tabla-empleados" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Usuario</th>
+                    <th>Nivel de Acceso</th>
+                    <th>Fecha Contratación</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for empleado in empleados %}
+                <tr>
+                    <td>{{ empleado.id }}</td>
+                    <td>{{ empleado.nombre }}</td>
+                    <td>{{ empleado.apellido }}</td>
+                    <td>{{ empleado.user.username }}</td>
+                    <td>{{ empleado.nivel_acceso.nombre }}</td>
+                    <td data-sort="{{ empleado.fecha_contratacion|date:'Y-m-d' }}">{{ empleado.fecha_contratacion|date:'d/m/Y' }}</td>
+                    <td>
+                        <span class="badge {% if empleado.activo %}badge-success{% else %}badge-danger{% endif %}">
+                            {% if empleado.activo %}Activo{% else %}Inactivo{% endif %}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <a href="{% url 'black_invoices:empleado_update' empleado.id %}" class="btn btn-warning btn-sm">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center">No hay empleados registrados.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}
 
-{% block table_body %}
-{% for empleado in empleados %}
-<tr>
-    <td>{{ empleado.nombre }}</td>
-    <td>{{ empleado.apellido }}</td>
-    <td>{{ empleado.nivel_acceso.nombre }}</td>
-    <td>{{ empleado.fecha_contratacion|date:"d/m/Y" }}</td>
-    <td>
-        {% if empleado.activo %}
-        <span class="badge badge-success">Activo</span>
-        {% else %}
-        <span class="badge badge-danger">Inactivo</span>
-        {% endif %}
-    </td>
-    <td>
-        <div class="btn-group">
-            <a href="{% url 'black_invoices:empleado_update' empleado.id %}" class="btn btn-sm btn-warning" title="Editar">
-                <i class="fas fa-edit"></i>
-            </a>
-            <a href="#" class="btn btn-sm btn-info" title="Ver detalles">
-                <i class="fas fa-eye"></i>
-            </a>
-            <a href="#" class="btn btn-sm btn-success" title="Ver comisiones">
-                <i class="fas fa-dollar-sign"></i>
-            </a>
-        </div>
-    </td>
-</tr>
-{% empty %}
-<tr>
-    <td colspan="6" class="text-center">No hay empleados registrados</td>
-</tr>
-{% endfor %}
+{% block extra_js %}
+<!-- DataTables -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.bootstrap4.min.css">
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.bootstrap4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.colVis.min.js"></script>
+
+<script>
+ $(document).ready(function() {
+    // Definir personalización para exportaciones
+    var fechaActual = new Date().toLocaleDateString('es-ES');
+    var tituloReporte = 'Directorio de Empleados - ' + fechaActual;
+    
+    // Inicializar DataTable
+    var table = $('#tabla-empleados').DataTable({
+        "responsive": true,
+        "lengthChange": true,
+        "autoWidth": false,
+        "dom": "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>>" +
+               "<'row'<'col-sm-12'tr>>" +
+               "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+        "buttons": [
+            {
+                extend: 'colvis',
+                text: '<i class="fas fa-columns"></i> Columnas',
+                className: 'btn btn-secondary'
+            },
+            {
+                extend: 'excel',
+                text: '<i class="fas fa-file-excel"></i> Excel',
+                className: 'btn btn-success',
+                title: tituloReporte,
+                messageTop: 'The Black System - Directorio de Empleados',
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4, 5, 6]
+                }
+            },
+            {
+                extend: 'pdf',
+                text: '<i class="fas fa-file-pdf"></i> PDF',
+                className: 'btn btn-danger',
+                title: tituloReporte,
+                messageTop: 'The Black System - Directorio de Empleados',
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4, 5, 6]
+                },
+                customize: function(doc) {
+                    doc.pageMargins = [20, 20, 20, 20];
+                    doc.defaultStyle.fontSize = 10;
+                    doc.styles.tableHeader.fontSize = 11;
+                    doc.styles.tableHeader.fillColor = '#212529';
+                    doc.styles.title.fontSize = 14;
+                    doc.styles.title.alignment = 'center';
+                    
+                    // Agregar pie de página
+                    doc['footer'] = function(page, pages) {
+                        return {
+                            columns: [
+                                {
+                                    alignment: 'left',
+                                    text: ['Creado el: ', { text: fechaActual }]
+                                },
+                                {
+                                    alignment: 'right',
+                                    text: ['Página ', { text: page.toString() }, ' de ', { text: pages.toString() }]
+                                }
+                            ],
+                            margin: [20, 0]
+                        };
+                    };
+                }
+            },
+            {
+                extend: 'print',
+                text: '<i class="fas fa-print"></i> Imprimir',
+                className: 'btn btn-primary',
+                title: tituloReporte,
+                messageTop: 'The Black System - Directorio de Empleados',
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4, 5, 6]
+                },
+                customize: function(win) {
+                    $(win.document.body).css('font-size', '10pt');
+                    $(win.document.body).find('table')
+                        .addClass('compact')
+                        .css('font-size', 'inherit');
+                        
+                    // Agregar pie de página con fecha
+                    $(win.document.body).append(
+                        '<div style="text-align: center; margin-top: 20px;">' +
+                        '<p>Creado el: ' + fechaActual + '</p>' +
+                        '</div>'
+                    );
+                }
+            }
+        ],
+        "language": {
+            "sProcessing":     "Procesando...",
+            "sLengthMenu":     "Mostrar _MENU_ registros",
+            "sZeroRecords":    "No se encontraron resultados",
+            "sEmptyTable":     "Ningún dato disponible en esta tabla",
+            "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_",
+            "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0",
+            "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+            "sInfoPostFix":    "",
+            "sSearch":         "Buscar:",
+            "sUrl":            "",
+            "sInfoThousands":  ",",
+            "sLoadingRecords": "Cargando...",
+            "oPaginate": {
+                "sFirst":    "Primero",
+                "sLast":     "Último",
+                "sNext":     "Siguiente",
+                "sPrevious": "Anterior"
+            },
+            "oAria": {
+                "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+            },
+            "buttons": {
+                "colvis": "Columnas",
+                "excel": "Excel",
+                "pdf": "PDF",
+                "print": "Imprimir"
+            }
+        }
+    });
+    
+    // Función para mostrar mensajes de alerta
+    function mostrarAlerta(mensaje, tipo) {
+        // Eliminar alertas previas
+        $('.alert-filtros').remove();
+        
+        // Crear nueva alerta
+        var alertaHTML = '<div class="alert alert-' + tipo + ' alert-dismissible fade show alert-filtros" role="alert">' +
+                         mensaje +
+                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                         '<span aria-hidden="true">&times;</span></button></div>';
+        
+        // Insertar alerta solo en el card-body de la tabla de empleados
+        $('#tabla-empleados').closest('.card-body').prepend(alertaHTML);
+        
+        // Auto-cerrar después de 5 segundos
+        setTimeout(function() {
+            $('.alert-filtros').fadeOut('slow', function() {
+                $(this).remove();
+            });
+        }, 5000);
+    }
+    
+    // Función para filtrar empleados
+    $('#btnFiltrarEmpleados').click(function() {
+        // var nivelAcceso = $('#nivel_acceso').val();
+        var estadoEmpleado = $('#estado_empleado').val();
+        
+        // Limpiar filtros anteriores
+        table.columns().search('').draw();
+        
+        // Contador para filtros aplicados
+        var filtrosAplicados = 0;
+        
+        // Filtrar por nivel de acceso (columna 4)
+        /* if (nivelAcceso) {
+            table.column(4).search(nivelAcceso).draw();
+            filtrosAplicados++;
+        } */
+        
+        // Filtrar por estado (columna 6)
+        if (estadoEmpleado) {
+            table.column(6).search(estadoEmpleado).draw();
+            filtrosAplicados++;
+        }
+        
+        // Mostrar mensaje de filtros aplicados
+        if (filtrosAplicados > 0) {
+            mostrarAlerta("Filtros aplicados correctamente", "success");
+        } else {
+            mostrarAlerta("No se ha seleccionado ningún filtro", "info");
+        }
+    });
+    
+    // Función para resetear filtros
+    $('#btnResetEmpleados').click(function() {
+        // $('#nivel_acceso').val('');
+        $('#estado_empleado').val('');
+        table.search('').columns().search('').draw();
+        mostrarAlerta("Filtros eliminados", "info");
+    });
+});
+</script>
 {% endblock %}

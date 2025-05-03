@@ -16,9 +16,9 @@
             <!-- <div class="image">
         <img src="../../dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div> -->
-            <div class="info">
+            <!-- <div class="info">
                 <a href="#" class="d-block">Bryan Alejo</a>
-            </div>
+            </div> -->
         </div>
 
         <!-- SidebarSearch Form -->
@@ -38,63 +38,101 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <!-- Add icons to the links using the .nav-icon class
             with font-awesome or any other icon font library -->
+                
+                <!-- 1. PRODUCTOS -->
                 <li class="nav-item">
                     <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-light fa-file-invoice"></i>
+                        <i class="nav-icon fas fa-box"></i>
                         <p>
-                            Facturas
+                            Productos
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        <!-- <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-plus nav-icon"></i>
-                                <p>Generar factura</p>
-                            </a>
-                        </li> -->
                         <li class="nav-item">
-                            <a href="{% url 'black_invoices:factura_list' %}" class="nav-link">
+                            <a href="{% url 'black_invoices:producto_list' %}" class="nav-link">
                                 <i class="fas fa-list nav-icon"></i>
-                                <p>Lista de facturas</p>
+                                <p>Lista de productos</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'black_invoices:producto_create' %}" class="nav-link">
+                                <i class="fas fa-plus nav-icon"></i>
+                                <p>Registrar producto</p>
                             </a>
                         </li>
                         <!-- <li class="nav-item">
-                <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Opcion 3</p>
-                </a>
-            </li> -->
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-exclamation-triangle nav-icon"></i>
+                                <p>Stock bajo</p>
+                            </a>
+                        </li> -->
                     </ul>
                 </li>
-
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="nav-icon fas fa-light fa-users"></i>
-                    <p>
-                        Clientes
-                        <i class="fas fa-angle-left right"></i>
-                        <!-- <span class="badge badge-info right">6</span> -->
-                    </p>
-                </a>
-                <ul class="nav nav-treeview">
-                    <!-- <li class="nav-header"> <small>SEGMENTO 1</small></li> -->
+                
+                <!-- 2. EMPLEADOS -->
+                {% if user.is_authenticated %}
+                    {% if user.empleado.nivel_acceso.nombre == 'Administrador' %}
                     <li class="nav-item">
-                        <a href="{% url 'black_invoices:cliente_list' %}" class="nav-link">
-                            <i class="far fas fa-address-book nav-icon"></i>
-                            <p>Lista de clientes</p>
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-user-tie"></i>
+                            <p>
+                                Empleados
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
                         </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{% url 'black_invoices:empleado_list' %}" class="nav-link">
+                                    <i class="fas fa-users nav-icon"></i>
+                                    <p>Lista de empleados</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'black_invoices:empleado_create' %}" class="nav-link">
+                                    <i class="fas fa-user-plus nav-icon"></i>
+                                    <p>Registrar empleado</p>
+                                </a>
+                            </li>
+                            <!-- <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="fas fa-money-check-alt nav-icon"></i>
+                                    <p>Comisiones de empleados</p>
+                                </a>
+                            </li> -->
+                        </ul>
                     </li>
-                    <li class="nav-item">
-                        <a href="{% url 'black_invoices:cliente_create' %}" class="nav-link">
-                            <i class="fas fa-user-plus nav-icon"></i>
-                            <p>Registrar cliente</p>
-                        </a>
-                    </li>
-
-                </ul>
-            </li>
+                    {% endif %}
+                {% endif %}
+                
+                <!-- 3. CLIENTES -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-light fa-users"></i>
+                        <p>
+                            Clientes
+                            <i class="fas fa-angle-left right"></i>
+                            <!-- <span class="badge badge-info right">6</span> -->
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <!-- <li class="nav-header"> <small>SEGMENTO 1</small></li> -->
+                        <li class="nav-item">
+                            <a href="{% url 'black_invoices:cliente_list' %}" class="nav-link">
+                                <i class="far fas fa-address-book nav-icon"></i>
+                                <p>Lista de clientes</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'black_invoices:cliente_create' %}" class="nav-link">
+                                <i class="fas fa-user-plus nav-icon"></i>
+                                <p>Registrar cliente</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                
+                <!-- 4. VENTAS -->
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-sharp fa-thin fa-dollar-sign"></i>
@@ -129,134 +167,98 @@
                             </a>
                         </li>
                         <!-- <li class="nav-item">
-                <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Opcion 3</p>
-                </a>
-            </li> -->
+                            <a href="#" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Opcion 3</p>
+                            </a>
+                        </li> -->
                     </ul>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-box"></i>
+                </li>
+                
+                <!-- 5. FACTURAS -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-light fa-file-invoice"></i>
+                        <p>
+                            Facturas
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <!-- <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-plus nav-icon"></i>
+                                <p>Generar factura</p>
+                            </a>
+                        </li> -->
+                        <li class="nav-item">
+                            <a href="{% url 'black_invoices:factura_list' %}" class="nav-link">
+                                <i class="fas fa-list nav-icon"></i>
+                                <p>Lista de facturas</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                
+                <li class="nav-header">COMISIONES</li>
+                <li class="nav-item">
+                    <a href="{% url 'black_invoices:comision_list' %}" class="nav-link">
+                        <i class="nav-icon fas fa-money-bill"></i>
+                        <p>Comisiones</p>
+                    </a>
+                </li>
+                <!-- <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-chart-line"></i>
+                        <p>Reporte mensual</p>
+                    </a>
+                </li> -->
+                <li class="nav-header">CONFIGURACIÓN</li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-cog"></i>
+                        <p>
+                            Configuración
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'black_invoices:rangos_comisiones_list' %}" class="nav-link">
+                                <i class="fas fa-percentage nav-icon"></i>
+                                <p>Rangos de comisión</p>
+                            </a>
+                        </li>
+                        <!-- <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-key nav-icon"></i>
+                                <p>Niveles de acceso</p>
+                            </a>
+                        </li> -->
+                    </ul>
+                </li>
+                <li class="nav-item dropdown user-menu">
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+                        <i class="fas fa-user"></i>
+                        <span class="d-none d-md-inline">{{ user.empleado.nombre }} {{ user.empleado.apellido }}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                        <!-- User image -->
+                        <li class="user-header bg-primary">
                             <p>
-                                Productos
-                                <i class="right fas fa-angle-left"></i>
+                                {{ user.empleado.nombre }} {{ user.empleado.apellido }}
+                                <small>{{ user.empleado.nivel_acceso.nombre }}</small>
                             </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{% url 'black_invoices:producto_list' %}" class="nav-link">
-                                    <i class="fas fa-list nav-icon"></i>
-                                    <p>Lista de productos</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{% url 'black_invoices:producto_create' %}" class="nav-link">
-                                    <i class="fas fa-plus nav-icon"></i>
-                                    <p>Registrar producto</p>
-                                </a>
-                            </li>
-                            <!-- <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="fas fa-exclamation-triangle nav-icon"></i>
-                                    <p>Stock bajo</p>
-                                </a>
-                            </li> -->
-                        </ul>
-                    </li>
-                {% if user.is_authenticated %}
-                    {% if user.empleado.nivel_acceso.nombre == 'Administrador' %}
-
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-user-tie"></i>
-                            <p>
-                                Empleados
-                                <i class="right fas fa-angle-left"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{% url 'black_invoices:empleado_list' %}" class="nav-link">
-                                    <i class="fas fa-users nav-icon"></i>
-                                    <p>Lista de empleados</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{% url 'black_invoices:empleado_create' %}" class="nav-link">
-                                    <i class="fas fa-user-plus nav-icon"></i>
-                                    <p>Registrar empleado</p>
-                                </a>
-                            </li>
-                            <!-- <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="fas fa-money-check-alt nav-icon"></i>
-                                    <p>Comisiones de empleados</p>
-                                </a>
-                            </li> -->
-                        </ul>
-                    </li>
-                    {% endif %}
-                    {% endif %}
-                    <li class="nav-header">COMISIONES</li>
-                    <li class="nav-item">
-                        <a href="{% url 'black_invoices:comision_list' %}" class="nav-link">
-                            <i class="nav-icon fas fa-money-bill"></i>
-                            <p>Comisiones</p>
-                        </a>
-                    </li>
-                    <!-- <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-chart-line"></i>
-                            <p>Reporte mensual</p>
-                        </a>
-                    </li> -->
-                    <li class="nav-header">CONFIGURACIÓN</li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-cog"></i>
-                            <p>
-                                Configuración
-                                <i class="right fas fa-angle-left"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{% url 'black_invoices:rangos_comisiones_list' %}" class="nav-link">
-                                    <i class="fas fa-percentage nav-icon"></i>
-                                    <p>Rangos de comisión</p>
-                                </a>
-                            </li>
-                            <!-- <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="fas fa-key nav-icon"></i>
-                                    <p>Niveles de acceso</p>
-                                </a>
-                            </li> -->
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown user-menu">
-                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
-                            <i class="fas fa-user"></i>
-                            <span class="d-none d-md-inline">{{ user.empleado.nombre }} {{ user.empleado.apellido }}</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                            <!-- User image -->
-                            <li class="user-header bg-primary">
-                                <p>
-                                    {{ user.empleado.nombre }} {{ user.empleado.apellido }}
-                                    <small>{{ user.empleado.nivel_acceso.nombre }}</small>
-                                </p>
-                            </li>
-                            <!-- Menu Footer-->
-                            <li class="user-footer">
-                                <a href="#" class="btn btn-default btn-flat">Perfil</a>
-                                <a href="{% url 'black_invoices:logout' %}" class="btn btn-default btn-flat float-right">
-                                    <i class="fas fa-sign-out-alt mr-2"></i> Cerrar sesión
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                        </li>
+                        <!-- Menu Footer-->
+                        <li class="user-footer">
+                            <a href="#" class="btn btn-default btn-flat">Perfil</a>
+                            <a href="{% url 'black_invoices:logout' %}" class="btn btn-default btn-flat float-right">
+                                <i class="fas fa-sign-out-alt mr-2"></i> Cerrar sesión
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <!-- <li class="nav-header">OPCIONES USUARIO</li>
                 <li class="nav-item">
                     <a href="#" class="nav-link">

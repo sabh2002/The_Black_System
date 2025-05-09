@@ -87,7 +87,7 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="7" class="text-center">No hay facturas registradas.</td>
+                    <td colspan="7" class="text-center">No hay recibos de venta registrados.</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -124,7 +124,7 @@ $(document).ready(function() {
     $('#fecha_inicio').attr('max', fechaMaxima);
     $('#fecha_fin').attr('max', fechaMaxima);
     
-    var tituloReporte = 'Registro de Facturas - ' + fechaActual;
+    var tituloReporte = 'Registro de Recibos de Venta - ' + fechaActual;
     
     // Inicializar DataTable
     var table = $('#tabla-facturas').DataTable({
@@ -146,7 +146,7 @@ $(document).ready(function() {
                 text: '<i class="fas fa-file-excel"></i> Excel',
                 className: 'btn btn-success',
                 title: tituloReporte,
-                messageTop: 'The Black System - Registro de Facturas',
+                messageTop: 'The Black System - Registro de Recibos de Venta',
                 exportOptions: {
                     columns: [0, 1, 2, 3, 4, 5]
                 }
@@ -156,7 +156,7 @@ $(document).ready(function() {
                 text: '<i class="fas fa-file-pdf"></i> PDF',
                 className: 'btn btn-danger',
                 title: tituloReporte,
-                messageTop: 'The Black System - Registro de Facturas',
+                messageTop: 'The Black System - Registro de Recibos de Venta',
                 exportOptions: {
                     columns: [0, 1, 2, 3, 4, 5]
                 },
@@ -191,7 +191,7 @@ $(document).ready(function() {
                 text: '<i class="fas fa-print"></i> Imprimir',
                 className: 'btn btn-primary',
                 title: tituloReporte,
-                messageTop: 'The Black System - Registro de Facturas',
+                messageTop: 'The Black System - Registro de Recibos de Venta',
                 exportOptions: {
                     columns: [0, 1, 2, 3, 4, 5]
                 },
@@ -407,24 +407,14 @@ $(document).ready(function() {
     $('#fecha_inicio, #fecha_fin').on('change', function() {
         var fechaInicio = $('#fecha_inicio').val();
         var fechaFin = $('#fecha_fin').val();
-        var inputId = $(this).attr('id');
-        
-        // Validar que no sea una fecha futura
-        var fechaSeleccionada = new Date($(this).val());
-        if (fechaSeleccionada > hoy) {
-            mostrarAlerta("No se permite seleccionar fechas futuras", "warning");
-            $(this).val(''); // Limpiar el campo
-            return;
-        }
         
         if (fechaInicio && fechaFin) {
-            var fechaInicioObj = new Date(fechaInicio);
-            var fechaFinObj = new Date(fechaFin);
+            var fechaInicioObj = validarFecha(fechaInicio, true);
+            var fechaFinObj = validarFecha(fechaFin, false);
             
-            if (fechaInicioObj > fechaFinObj) {
+            if (fechaInicioObj && fechaFinObj && fechaInicioObj > fechaFinObj) {
                 mostrarAlerta("La fecha de inicio no puede ser posterior a la fecha de fin", "warning");
-                // Limpiar solo el campo que el usuario está editando actualmente
-                $('#' + inputId).val('');
+                $(this).val('');
             }
         }
     });

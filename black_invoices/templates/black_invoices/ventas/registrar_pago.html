@@ -13,7 +13,7 @@
                     <h5>Información de la Venta</h5>
                     <p><strong>Cliente:</strong> {{ venta.factura.cliente.nombre }} {{ venta.factura.cliente.apellido }}</p>
                     <p><strong>Fecha:</strong> {{ venta.factura.fecha_fac|date:"d/m/Y H:i" }}</p>
-                    <p><strong>Total Factura:</strong> ${{ venta.factura.total_fac|floatformat:2 }}</p>
+                    <p><strong>Total Recibo:</strong> ${{ venta.factura.total_fac|floatformat:2 }}</p>
                     <p><strong>Monto Pagado:</strong> ${{ venta.monto_pagado|floatformat:2 }}</p>
                     <p><strong>Saldo Pendiente:</strong> ${{ venta.saldo_pendiente|floatformat:2 }}</p>
                 </div>

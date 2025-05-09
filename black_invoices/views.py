@@ -820,7 +820,7 @@ class RangosComisionesDeleteView(LoginRequiredMixin, DeleteView):
         return super().delete(request, *args, **kwargs)
 class ComisionListView(LoginRequiredMixin, ListView):
     model = Empleado
-    template_name = 'black_invoices/empleados/comisiones.html'
+    template_name = 'black_invoices/comisiones/comision_list.html'
     context_object_name = 'empleados'
     
     def get_context_data(self, **kwargs):
@@ -873,8 +873,6 @@ class ComisionListView(LoginRequiredMixin, ListView):
             )
         
         return context
-
-
 
 def logout_view(request):
     logout(request)
@@ -986,3 +984,155 @@ class FacturaPDFView(LoginRequiredMixin, View):
         response['Content-Disposition'] = f'attachment; filename="Registro de Venta #{factura.id}.pdf"'
         
         return response
+
+def comision_detail(request, empleado_id):
+    try:
+        empleado = Empleado.objects.get(id=empleado_id)
+        mes_actual = datetime.now().month
+        anio_actual = datetime.now().year
+        ventas = Ventas.objects.filter(
+            empleado=empleado,
+            factura__fecha_fac__month=mes_actual,
+            factura__fecha_fac__year=anio_actual
+        ).exclude(status__vent_cancelada=True).filter(
+            Q(credito=False) | Q(credito=True, monto_pagado__gte=F('factura__total_fac'))
+        )
+        total_comision = Decimal('0.00')
+        ventas_detalle = []
+        for venta in ventas:
+            total_venta = venta.factura.total_fac
+            rango_comision = ConsultaComision.objects.filter(
+                rango_inferior__lte=total_venta,
+                rango_superior__gte=total_venta
+            ).first()
+            porcentaje = rango_comision.porcentaje if rango_comision else Decimal('0.00')
+            comision_venta = (total_venta * porcentaje / Decimal('100.00')) if rango_comision else Decimal('0.00')
+            total_comision += comision_venta
+            ventas_detalle.append({
+                'factura': venta.factura,
+                'comision': comision_venta,
+                'porcentaje': porcentaje
+            })
+        porcentaje_promedio = ''
+        if ventas_detalle:
+            suma_porcentajes = sum([v['porcentaje'] for v in ventas_detalle])
+            porcentaje_promedio = suma_porcentajes / len(ventas_detalle)
+            porcentaje_promedio = f"{porcentaje_promedio:.2f}"  # String para mostrar
+        comision_data = {
+            'empleado': empleado,
+            'ventas': ventas.count(),
+            'comision': total_comision,
+            'porcentaje': porcentaje_promedio
+        }
+        context = {
+            'titulo': f'Detalle de Comisión - {empleado.nombre} {empleado.apellido}',
+            'comision': comision_data,
+            'ventas_detalle': ventas_detalle
+        }
+        return render(request, 'black_invoices/comisiones/comision_detail.html', context)
+    except Empleado.DoesNotExist:
+        messages.error(request, 'El empleado no existe.')
+        return redirect('black_invoices:comision_list')
+    except Exception as e:
+        messages.error(request, f'Error al cargar el detalle de comisión: {str(e)}')
+        return redirect('black_invoices:comision_list')
+
+class ComisionPDFView(LoginRequiredMixin, View):
+    def get(self, request, empleado_id):
+        try:
+            empleado = Empleado.objects.get(id=empleado_id)
+            mes_actual = datetime.now().month
+            anio_actual = datetime.now().year
+            ventas = Ventas.objects.filter(
+                empleado=empleado,
+                factura__fecha_fac__month=mes_actual,
+                factura__fecha_fac__year=anio_actual
+            ).exclude(status__vent_cancelada=True).filter(
+                Q(credito=False) | Q(credito=True, monto_pagado__gte=F('factura__total_fac'))
+            )
+            total_comision = Decimal('0.00')
+            ventas_detalle = []
+            for venta in ventas:
+                total_venta = venta.factura.total_fac
+                rango_comision = ConsultaComision.objects.filter(
+                    rango_inferior__lte=total_venta,
+                    rango_superior__gte=total_venta
+                ).first()
+                porcentaje = rango_comision.porcentaje if rango_comision else Decimal('0.00')
+                comision_venta = (total_venta * porcentaje / Decimal('100.00')) if rango_comision else Decimal('0.00')
+                total_comision += comision_venta
+                ventas_detalle.append({
+                    'factura': venta.factura,
+                    'comision': comision_venta,
+                    'porcentaje': porcentaje
+                })
+            buffer = io.BytesIO()
+            p = canvas.Canvas(buffer, pagesize=letter)
+            width, height = letter
+            p.setFont("Helvetica-Bold", 16)
+            p.drawString(50, height - 50, "The Black System")
+            p.setFont("Helvetica", 12)
+            p.drawString(50, height - 70, "Reporte de Comisión")
+            p.setFont("Helvetica", 10)
+            fecha_actual = datetime.now().strftime("%d/%m/%Y")
+            p.drawString(50, height - 90, f"Fecha: {fecha_actual}")
+            p.setFont("Helvetica-Bold", 12)
+            p.drawString(50, height - 120, "Información del Empleado:")
+            p.setFont("Helvetica", 10)
+            p.drawString(50, height - 140, f"Nombre: {empleado.nombre} {empleado.apellido}")
+            p.drawString(50, height - 155, f"Nivel de Acceso: {empleado.nivel_acceso.nombre}")
+            p.setFont("Helvetica-Bold", 12)
+            p.drawString(50, height - 185, "Resumen de Comisión:")
+            p.setFont("Helvetica", 10)
+            p.drawString(50, height - 205, f"Ventas Completadas: {ventas.count()}")
+            p.drawString(50, height - 220, f"Total Comisión: ${total_comision:.2f}")
+            p.drawString(50, height - 235, f"Rangos de Comisión según monto de venta")
+            p.setFont("Helvetica-Bold", 12)
+            p.drawString(50, height - 265, "Detalle de Ventas:")
+            data = [["Fecha", "Recibo #", "Cliente", "Total Venta", "% Comisión", "Comisión"]]
+            for venta in ventas_detalle:
+                data.append([
+                    venta['factura'].fecha_fac.strftime("%d/%m/%Y"),
+                    str(venta['factura'].id),
+                    f"{venta['factura'].cliente.nombre} {venta['factura'].cliente.apellido}",
+                    f"${venta['factura'].total_fac:.2f}",
+                    f"{venta['porcentaje']}%",
+                    f"${venta['comision']:.2f}"
+                ])
+            if len(data) == 1:
+                data.append(["-", "-", "-", "-", "-", "-"])
+            # --- Ajuste visual de la tabla ---
+            # Definir anchos de columna y calcular el ancho total de la tabla
+            col_widths = [80, 60, 150, 100, 80, 100]
+            table_width = sum(col_widths)
+            x_table = (width - table_width) / 2  # Centrar la tabla
+            y_table = height - 300 - 20 * len(data)  # Reducir el espacio antes de la tabla
+            table = Table(data, colWidths=col_widths)
+            table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, 0), 11),
+                ('BOTTOMPADDING', (0, 0), (-1, 0), 10),
+                ('GRID', (0, 0), (-1, -1), 1, colors.black),
+                ('FONTSIZE', (0, 1), (-1, -1), 10),
+                ('TOPPADDING', (0, 1), (-1, -1), 6),
+                ('BOTTOMPADDING', (0, 1), (-1, -1), 6),
+            ]))
+            table.wrapOn(p, width, height)
+            table.drawOn(p, x_table, y_table)
+            p.setFont("Helvetica", 8)
+            p.drawString(50, 30, "The Black System - Todos los derechos reservados")
+            p.showPage()
+            p.save()
+            buffer.seek(0)
+            response = HttpResponse(buffer, content_type='application/pdf')
+            response['Content-Disposition'] = f'attachment; filename="Comision_{empleado.nombre}_{empleado.apellido}_{fecha_actual}.pdf"'
+            return response
+        except Empleado.DoesNotExist:
+            messages.error(request, 'El empleado no existe.')
+            return redirect('black_invoices:comision_list')
+        except Exception as e:
+            messages.error(request, f'Error al generar el PDF: {str(e)}')
+            return redirect('black_invoices:comision_list')

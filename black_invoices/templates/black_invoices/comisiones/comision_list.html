@@ -34,7 +34,38 @@
         <h3 class="card-title">{{ titulo }}</h3>
     </div>
     <div class="card-body">
-        <table class="table table-bordered table-striped">
+        <!-- Filtros personalizados -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <label for="fecha_inicio">Fecha Inicio:</label>
+                <input type="date" class="form-control" id="fecha_inicio">
+            </div>
+            <div class="col-md-3">
+                <label for="fecha_fin">Fecha Fin:</label>
+                <input type="date" class="form-control" id="fecha_fin">
+            </div>
+            <div class="col-md-2">
+                <label for="nivel_acceso">Nivel:</label>
+                <select class="form-control" id="nivel_acceso">
+                    <option value="">Todos</option>
+                    <option value="Administrador">Administrador</option>
+                    <option value="Vendedor">Vendedor</option>
+                    <option value="Supervisor">Supervisor</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="monto_minimo">Monto Mínimo:</label>
+                <input type="number" class="form-control" id="monto_minimo" min="0" step="0.01" placeholder="0.00">
+            </div>
+            <div class="col-md-2">
+                <label>&nbsp;</label>
+                <button id="btnFiltrarComisiones" class="btn btn-info form-control">
+                    <i class="fas fa-filter"></i> Filtrar
+                </button>
+            </div>
+        </div>
+
+        <table id="tabla-comisiones" class="table table-bordered table-striped">
             <thead>
                 <tr>
                     <th>Empleado</th>
@@ -42,6 +73,7 @@
                     <th>Ventas Completadas</th>
                     <th>Comisión</th>
                     <th>Acciones</th>
+
                 </tr>
             </thead>
             <tbody>
@@ -52,14 +84,15 @@
                     <td>{{ item.ventas }}</td>
                     <td>${{ item.comision|floatformat:2 }}</td>
                     <td>
-                        <a href="#" class="btn btn-sm btn-info">
+                        <a href="{% url 'black_invoices:comision_detail' item.empleado.id %}" class="btn btn-sm btn-info">
                             <i class="fas fa-eye"></i> Detalles
                         </a>
                     </td>
+
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="5" class="text-center">No hay comisiones disponibles</td>
+                    <td colspan="4" class="text-center">No hay comisiones disponibles</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -103,7 +136,7 @@ $(document).ready(function() {
         "responsive": true,
         "lengthChange": true,
         "autoWidth": false,
-        "order": [[1, 'desc']], // Ordenar por fecha descendente
+        "order": [[3, 'desc']], // Ordenar por comisión descendente
         "dom": "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>>" +
                "<'row'<'col-sm-12'tr>>" +
                "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
@@ -262,32 +295,20 @@ $(document).ready(function() {
         }
     }
     
-    // Función para extraer fecha de la celda de DataTables
-    function extraerFechaCelda(dataCell) {
+    // Función para extraer monto de la celda
+    function extraerMonto(dataCell) {
         try {
-            // Extraer la fecha de la celda (formato DD/MM/YYYY)
-            var dateString = dataCell.split(' ')[0]; // Obtenemos solo la parte de la fecha
-            var dateParts = dateString.split('/');
+            // Extraer el monto de la celda (formato $XX.XX)
+            var montoStr = dataCell.replace('$', '').trim();
+            var monto = parseFloat(montoStr);
             
-            if (dateParts.length !== 3) {
-                throw new Error("Formato de fecha incorrecto");
+            if (isNaN(monto)) {
+                throw new Error("Monto inválido");
             }
             
-            // Crear objeto Date con formato día/mes/año
-            var fecha = new Date(
-                parseInt(dateParts[2]), // Año
-                parseInt(dateParts[1]) - 1, // Mes (0-11)
-                parseInt(dateParts[0]) // Día
-            );
-            
-            // Verificar si la fecha es válida
-            if (isNaN(fecha.getTime())) {
-                throw new Error("Fecha inválida");
-            }
-            
-            return fecha;
+            return monto;
         } catch(error) {
-            console.error("Error al procesar la fecha de la celda:", error);
+            console.error("Error al procesar el monto:", error);
             return null;
         }
     }
@@ -296,7 +317,8 @@ $(document).ready(function() {
     $('#btnFiltrarComisiones').click(function() {
         var fechaInicio = $('#fecha_inicio').val();
         var fechaFin = $('#fecha_fin').val();
-        var empleado = $('#empleado_id').val();
+        var nivelAcceso = $('#nivel_acceso').val();
+        var montoMinimo = $('#monto_minimo').val();
         
         // Validar fechas
         var fechaInicioObj = validarFecha(fechaInicio, true);
@@ -315,39 +337,32 @@ $(document).ready(function() {
         
         // Limpiar filtros anteriores
         $.fn.dataTable.ext.search.pop();
-        table.columns().search('').draw();
+        table.column(1).search('').draw();
         
         // Contador para filtros aplicados
         var filtrosAplicados = 0;
         
-        // Filtrar por rango de fechas
-        if (fechaInicio || fechaFin) {
-            $.fn.dataTable.ext.search.push(
-                function(settings, data, dataIndex) {
-                    // Extraer fecha de la celda
-                    var fechaComision = extraerFechaCelda(data[1]);
-                    
-                    // Si no se pudo extraer la fecha, no filtrar esta fila
-                    if (!fechaComision) return true;
-                    
-                    // Verificar si está en el rango
-                    if (fechaInicioObj && fechaFinObj) {
-                        return (fechaComision >= fechaInicioObj && fechaComision <= fechaFinObj);
-                    } else if (fechaInicioObj) {
-                        return (fechaComision >= fechaInicioObj);
-                    } else if (fechaFinObj) {
-                        return (fechaComision <= fechaFinObj);
-                    }
-                    return true;
-                }
-            );
+        // Filtrar por nivel de acceso
+        if (nivelAcceso) {
+            table.column(1).search(nivelAcceso).draw();
             filtrosAplicados++;
         }
         
-        // Filtrar por empleado
-        if (empleado) {
-            // Ajusta el índice de columna según tu tabla
-            table.column(2).search(empleado).draw();
+        // Filtrar por monto mínimo
+        if (montoMinimo) {
+            var montoMinimoNum = parseFloat(montoMinimo);
+            if (isNaN(montoMinimoNum) || montoMinimoNum < 0) {
+                mostrarAlerta("El monto mínimo debe ser un número válido", "warning");
+                return;
+            }
+            
+            $.fn.dataTable.ext.search.push(
+                function(settings, data, dataIndex) {
+                    var montoComision = extraerMonto(data[3]);
+                    if (!montoComision) return true;
+                    return montoComision >= montoMinimoNum;
+                }
+            );
             filtrosAplicados++;
         }
         
@@ -361,44 +376,29 @@ $(document).ready(function() {
             mostrarAlerta("No se ha seleccionado ningún filtro", "info");
         }
     });
-
-    // Función para resetear filtros
-    $('#btnResetComisiones').click(function() {
-        $('#fecha_inicio').val('');
-        $('#fecha_fin').val('');
-        $('#empleado_id').val('');
-        
-        // Limpiar todos los filtros
-        $.fn.dataTable.ext.search.pop();
-        table.search('').columns().search('').draw();
-        
-        // Mensaje de confirmación
-        mostrarAlerta("Filtros eliminados", "info");
-    });
     
     // Validación en tiempo real de las fechas
     $('#fecha_inicio, #fecha_fin').on('change', function() {
         var fechaInicio = $('#fecha_inicio').val();
         var fechaFin = $('#fecha_fin').val();
-        var inputId = $(this).attr('id');
-        
-        // Validar que no sea una fecha futura
-        var fechaSeleccionada = new Date($(this).val());
-        if (fechaSeleccionada > hoy) {
-            mostrarAlerta("No se permite seleccionar fechas futuras", "warning");
-            $(this).val(''); // Limpiar el campo
-            return;
-        }
         
         if (fechaInicio && fechaFin) {
-            var fechaInicioObj = new Date(fechaInicio);
-            var fechaFinObj = new Date(fechaFin);
+            var fechaInicioObj = validarFecha(fechaInicio, true);
+            var fechaFinObj = validarFecha(fechaFin, false);
             
-            if (fechaInicioObj > fechaFinObj) {
+            if (fechaInicioObj && fechaFinObj && fechaInicioObj > fechaFinObj) {
                 mostrarAlerta("La fecha de inicio no puede ser posterior a la fecha de fin", "warning");
-                // Limpiar solo el campo que el usuario está editando actualmente
-                $('#' + inputId).val('');
+                $(this).val('');
             }
+        }
+    });
+    
+    // Validación del monto mínimo
+    $('#monto_minimo').on('change', function() {
+        var monto = $(this).val();
+        if (monto && (isNaN(monto) || parseFloat(monto) < 0)) {
+            mostrarAlerta("El monto mínimo debe ser un número válido", "warning");
+            $(this).val('');
         }
     });
 });

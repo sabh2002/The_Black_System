@@ -39,8 +39,10 @@ urlpatterns = [
     # # Empleados
     path('empleados/', views.EmpleadoListView.as_view(), name='empleado_list'),
     path('empleados/crear/', views.EmpleadoCreateView.as_view(), name='empleado_create'),
-    path('empleados/comisiones/', views.ComisionListView.as_view(), name='comision_list'),
     path('empleados/<int:pk>/editar/', views.EmpleadoUpdateView.as_view(), name='empleado_update'),
     path('accounts/login/', views.ingresar, name='login'),
-    path('logout/', views.logout_view, name='logout')
+    path('logout/', views.logout_view, name='logout'),
+    path('comisiones/', views.ComisionListView.as_view(), name='comision_list'),
+    path('comisiones/<int:empleado_id>/', views.comision_detail, name='comision_detail'),
+    path('comisiones/<int:empleado_id>/pdf/', views.ComisionPDFView.as_view(), name='comision_pdf'),
 ]

@@ -1,0 +1,81 @@
+{% extends 'black_invoices/base/base.html' %}
+
+{% block titulo %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ titulo }}</h3>
+    </div>
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <h4>Información de la Factura</h4>
+                <p><strong>Número de Factura:</strong> {{ factura.id }}</p>
+                <p><strong>Fecha de Facturación:</strong> {{ factura.fecha_fac|date:"d/m/Y H:i" }}</p>
+                <p><strong>Método de Pago:</strong> {{ factura.get_metodo_pag_display }}</p>
+                <p><strong>Vendedor:</strong> {{ factura.empleado.nombre }} {{ factura.empleado.apellido }}</p>
+            </div>
+            <div class="col-md-6">
+                <h4>Información del Cliente</h4>
+                <p><strong>Cliente:</strong> 
+                    <a href="{% url 'black_invoices:cliente_detail' factura.cliente.pk %}">
+                        {{ factura.cliente.nombre }} {{ factura.cliente.apellido }}
+                    </a>
+                </p>
+                <p><strong>Email:</strong> {{ factura.cliente.email }}</p>
+                <p><strong>Teléfono:</strong> {{ factura.cliente.telefono }}</p>
+                <p><strong>Dirección:</strong> {{ factura.cliente.direccion }}</p>
+            </div>
+        </div>
+
+        <hr>
+
+        <h4>Detalles de la Factura</h4>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Producto</th>
+                        <th class="text-right">Cantidad</th>
+                        <th class="text-right">Precio Unitario</th>
+                        <th class="text-right">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for detalle in detalles %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'black_invoices:producto_detail' detalle.producto.pk %}">
+                                {{ detalle.producto.nombre }}
+                            </a>
+                        </td>
+                        <td class="text-right">{{ detalle.cantidad }}</td>
+                        <td class="text-right">${{ detalle.producto.precio|floatformat:2 }}</td>
+                        <td class="text-right">${{ detalle.sub_total|floatformat:2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center">No hay productos en esta factura.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-right"><strong>Total Factura:</strong></td>
+                        <td class="text-right"><strong>${{ factura.total_fac|floatformat:2 }}</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer">
+        <a href="{% url 'black_invoices:factura_list' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Volver a la Lista
+        </a>
+        <a href="{% url 'black_invoices:factura_pdf' factura.pk %}" class="btn btn-danger" target="_blank">
+            <i class="fas fa-file-pdf"></i> Descargar PDF
+        </a>
+    </div>
+</div>
+{% endblock %} 

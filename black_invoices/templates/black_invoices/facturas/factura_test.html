@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TEST - Detalle de Factura</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .debug { border: 2px solid red; padding: 10px; margin-bottom: 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>PLANTILLA DE PRUEBA</h1>
+    
+    <div class="debug">
+        <h2>INFORMACIÓN DE DEPURACIÓN</h2>
+        <p>Título: {{ titulo }}</p>
+        <p>Factura ID: {{ factura.id }}</p>
+        <p>Factura Total: {{ factura.total_fac }}</p>
+        <p>Cliente: {% if factura.cliente %}{{ factura.cliente.nombre }} {{ factura.cliente.apellido }}{% else %}No disponible{% endif %}</p>
+        <p>Empleado: {% if factura.empleado %}{{ factura.empleado.nombre }}{% else %}No disponible{% endif %}</p>
+        <p>Detalles Count: {% if detalles %}{{ detalles.count }}{% else %}0 o None{% endif %}</p>
+        <p>Detalles: {{ detalles }}</p>
+    </div>
+    
+    <h2>Detalle de Factura #{{ factura.id }}</h2>
+    
+    <h3>Información General</h3>
+    <p>Fecha: {{ factura.fecha_fac }}</p>
+    <p>Total: ${{ factura.total_fac }}</p>
+    <p>Método de Pago: {{ factura.metodo_pag }}</p>
+    
+    <h3>Cliente</h3>
+    {% if factura.cliente %}
+    <p>Nombre: {{ factura.cliente.nombre }} {{ factura.cliente.apellido }}</p>
+    <p>Email: {{ factura.cliente.email }}</p>
+    <p>Teléfono: {{ factura.cliente.telefono }}</p>
+    {% else %}
+    <p>Información del cliente no disponible</p>
+    {% endif %}
+    
+    <h3>Productos</h3>
+    {% if detalles %}
+        <table>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+                <th>Subtotal</th>
+            </tr>
+            {% for detalle in detalles %}
+            <tr>
+                <td>{{ detalle.producto.nombre }}</td>
+                <td>{{ detalle.cantidad }}</td>
+                <td>${{ detalle.producto.precio }}</td>
+                <td>${{ detalle.sub_total }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="3"><strong>Total</strong></td>
+                <td><strong>${{ factura.total_fac }}</strong></td>
+            </tr>
+        </table>
+    {% else %}
+        <p>No hay detalles de productos disponibles</p>
+    {% endif %}
+    
+    <p><a href="{% url 'black_invoices:factura_list' %}">Volver a la lista de facturas</a></p>
+</body>
+</html> 

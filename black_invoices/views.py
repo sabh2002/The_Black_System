@@ -346,11 +346,15 @@ class FacturaDetailView(LoginRequiredMixin, DetailView):
     model = Factura
     template_name = 'black_invoices/facturas/factura_detail.html'
     context_object_name = 'factura'
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Detalle de Factura'
-        context['detalles'] = self.object.detallefactura_set.all()
+        factura = self.get_object()
+        # El modelo Factura tiene un método get_detalles()
+        # que retorna DetalleFactura.objects.filter(factura=self)
+        # Lo usamos para cargar los detalles.
+        context['detalles'] = factura.get_detalles().order_by('id') 
+        context['titulo'] = f'Detalle de Factura N° {factura.id}' # Título para la página
         return context
 
 def ingresar(request):

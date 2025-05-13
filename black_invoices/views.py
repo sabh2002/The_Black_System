@@ -27,6 +27,8 @@ from reportlab.lib import colors
 from reportlab.platypus import Table, TableStyle
 import io
 from .mixins import EmpleadoRolMixin
+import os
+from django.conf import settings
 
 
 ###################     Dashboard       #################
@@ -896,93 +898,143 @@ def ingresar(request):
 #################    PDF    ######################
 class FacturaPDFView(LoginRequiredMixin, View):
     def get(self, request, pk):
-        # Obtener la factura
         try:
             factura = Factura.objects.get(pk=pk)
         except Factura.DoesNotExist:
             return HttpResponse("Factura no encontrada", status=404)
-        
-        # Crear el buffer y el canvas
+
         buffer = io.BytesIO()
         p = canvas.Canvas(buffer, pagesize=letter)
         width, height = letter
+
+        # --- Membrete y Logo ---
+        logo_path = os.path.join(settings.BASE_DIR, 'black_invoices/static/img/the_black.jpeg')
+        if os.path.exists(logo_path):
+            p.drawImage(logo_path, 40, height - 110, width=120, height=60, preserveAspectRatio=True, mask='auto')
         
-        # Encabezado
-        p.setFont("Helvetica-Bold", 16)
-        p.drawString(50, height - 50, "The Black System")
-        
-        p.setFont("Helvetica", 12)
-        p.drawString(50, height - 70, "Factura de Venta")
-        
-        # Datos de la factura
+        # Nombre de la empresa (ajustado a la izquierda)
         p.setFont("Helvetica-Bold", 12)
-        p.drawString(50, height - 100, f"Factura #{factura.id}")
-        p.drawString(300, height - 100, f"Fecha: {factura.fecha_fac.strftime('%d/%m/%Y')}")
+        p.drawString(180, height - 50, "INDUSTRIA & HERRAMIENTA EL NEGRITO, C.A.")
         
-        # Datos del cliente
-        p.setFont("Helvetica-Bold", 12)
-        p.drawString(50, height - 130, "Datos del Cliente:")
+        # RIF (ajustado para no sobreponerse)
+        p.setFont("Helvetica-Bold", 11)
+        p.drawString(180, height - 65, "RIF: J-406050717")
         
+        # Dirección y teléfonos
         p.setFont("Helvetica", 10)
-        p.drawString(50, height - 150, f"Cliente: {factura.cliente.nombre} {factura.cliente.apellido}")
-        p.drawString(50, height - 165, f"Email: {factura.cliente.email}")
-        p.drawString(50, height - 180, f"Teléfono: {factura.cliente.telefono}")
-        
-        # Datos del vendedor
-        p.setFont("Helvetica-Bold", 12)
-        p.drawString(300, height - 130, "Vendedor:")
-        
+        p.drawString(180, height - 80, "CR 10 ENTRE CALLES 4 Y 5 EDIF DOÑA EDITH PISO 1 OF 2")
+        p.drawString(180, height - 95, "BARRIO MATURIN GUANARE PORTUGUESA")
+        p.drawString(180, height - 110, "Teléfonos: 0257-5143082 / 0257-5143082")
+
+        # --- Datos generales ---
+        p.setFont("Helvetica-Bold", 13)
+        p.drawString(50, height - 130, "NOTA DE ENTREGA")
         p.setFont("Helvetica", 10)
-        p.drawString(300, height - 150, f"{factura.empleado.nombre} {factura.empleado.apellido}")
-        
-        # Tabla de productos
+        fecha_impresion = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+        p.drawString(400, height - 130, f"Fecha impresión: {fecha_impresion}")
+        p.drawString(400, height - 145, f"Nº Control: {factura.id:06d}")
+        p.drawString(400, height - 160, f"Fecha: {factura.fecha_fac.strftime('%d-%m-%Y %H:%M')}")
+        p.setFont("Helvetica-Bold", 10)
+        p.drawString(400, height - 175, f"VENDEDOR: {factura.empleado.nombre} {factura.empleado.apellido}")
+        p.setFont("Helvetica", 10)
+        p.drawString(400, height - 190, f"CONDICIÓN: {factura.get_metodo_pag_display()}")
+
+        # --- Datos del cliente ---
+        p.setFont("Helvetica-Bold", 10)
+        p.drawString(50, height - 160, f"CLIENTE:")
+        p.setFont("Helvetica", 10)
+        p.drawString(50, height - 175, f"TLF: {factura.cliente.telefono}")
+        p.drawString(50, height - 190, f"NOMBRE: {factura.cliente.nombre} {factura.cliente.apellido}")
+        p.drawString(50, height - 205, f"DIRECCIÓN FISCAL: {factura.cliente.direccion}")
+
+        # --- Tabla de productos ---
         detalles = factura.detallefactura_set.all()
+        data = [["#", "Código", "Producto", "Cant.", "Garantía", "Precio", "Desc.", "Total"]]
         
-        data = [["Producto", "Precio", "Cantidad", "Subtotal"]]
-        
-        for detalle in detalles:
+        for idx, detalle in enumerate(detalles, 1):
+            codigo = str(detalle.producto.id)  # Mostrar el id del producto
             data.append([
+                str(idx),
+                codigo,
                 detalle.producto.nombre,
-                f"${detalle.producto.precio}",
                 str(detalle.cantidad),
-                f"${detalle.sub_total}"
+                "Sí",  # Presentación (añadido según imagen)
+                f"{detalle.producto.precio:,.2f}",
+                "0,00",  # Descuento
+                f"{detalle.sub_total:,.2f}"
             ])
         
-        # Agregar total
-        data.append(["", "", "Total:", f"${factura.total_fac}"])
+        # Añadir solo una fila vacía para mantener el espacio
+        if len(data) < 3:  # Si solo tenemos el encabezado y un producto
+            data.append(["", "", "", "", "", "", "", ""])  # Solo una fila vacía
         
-        # Crear tabla
-        table = Table(data, colWidths=[200, 100, 100, 100])
+        # Añadir fila de totales
+        data.append(["", "", "", "", "", "", "TOTAL", f"{factura.total_fac:,.2f}"])
+        
+        # Crear tabla con 8 columnas (añadimos Presen.)
+        table = Table(data, colWidths=[25, 60, 160, 40, 50, 60, 50, 60])
         table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
             ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, 0), 12),
-            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-            ('BACKGROUND', (0, -1), (-1, -1), colors.beige),
-            ('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold'),
-            ('GRID', (0, 0), (-1, -2), 1, colors.black),
-            ('ALIGN', (1, 1), (-1, -1), 'RIGHT'),
+            ('FONTSIZE', (0, 0), (-1, 0), 9),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
+            ('GRID', (0, 0), (-1, -2), 0.5, colors.black),  # Grid para todas las filas excepto la última
+            ('LINEABOVE', (6, -1), (7, -1), 0.5, colors.black),  # Línea solo arriba de "TOTAL" y su valor
+            ('FONTSIZE', (0, 1), (-1, -1), 8),
+            ('ALIGN', (3, 1), (7, -1), 'RIGHT'),  # Alinear a la derecha desde Cant. hasta Total
+            ('FONTNAME', (6, -1), (7, -1), 'Helvetica-Bold'),  # Negrita para "TOTAL" y su valor
         ]))
         
-        # Dibujar tabla
         table.wrapOn(p, width, height)
-        table.drawOn(p, 50, height - 300)
-        
-        # Pie de página
+        table.drawOn(p, 40, height - 320 - 20 * min(len(data), 6))  # Ajustar altura según número de filas
+
+        # --- Sección de descuentos (como en la imagen 2) ---
         p.setFont("Helvetica", 8)
-        p.drawString(50, 30, "The Black System - Todos los derechos reservados")
+        p.drawString(430, 130, "DESC. POR PRODUCTOS")
+        p.drawString(550, 130, "0,00 BS")
+        p.drawString(430, 120, "DESC. (30.00)")
+        p.drawString(550, 120, "0,00 BS")
         
-        # Guardar PDF
+        # Línea horizontal debajo de descuentos
+        p.line(430, 115, 580, 115)
+        
+        # Total general
+        p.setFont("Helvetica-Bold", 9)
+        p.drawString(430, 100, "TOTAL")
+        p.drawString(550, 100, f"{factura.total_fac:,.2f} BS")
+
+        # --- Nota y pie de página ---
+        # Nota completa con saltos de línea adecuados
+        p.setFont("Helvetica", 8)
+        nota = "NO SE ACEPTAN PAGOS DE DIVISAS EN EFECTIVO HECHOS AL ASESOR DE VENTA NI AL SUPERVISOR, ASÍ COMO TAMPOCO BS EN EFECTIVO, PAGO MÓVIL O TRANSFERENCIAS A LAS CUENTAS PERSONALES DEL ASESOR O DEL SUPERVISOR. SOLO SE RECONOCERÁN LOS PAGOS HECHOS A LAS CUENTAS DE LA EMPRESA."
+        
+        # Dividir nota en líneas de máximo 100 caracteres
+        nota_lineas = []
+        for i in range(0, len(nota), 100):
+            nota_lineas.append(nota[i:i+100])
+        
+        # Dibujar cada línea de la nota
+        for i, linea in enumerate(nota_lineas):
+            p.drawString(40, 80 - (i * 10), linea)
+        
+        # Referencias y tasa de cambio
+        # p.drawString(40, 50, f"REFERENCIA: {getattr(factura, 'referencia', '')}")
+        # p.drawString(200, 50, f"T.C.: {getattr(factura, 'tasa_cambio', '---')}")
+        
+        # Paginación (ajustada para no sobreponerse)
+        p.drawString(470, 30, f"Página 1 de 1")
+        
+        # Footer
+        p.setFont("Helvetica", 8)
+        p.drawString(40, 30, "The Black System - Todos los derechos reservados")
+
         p.showPage()
         p.save()
-        
-        # Preparar respuesta
         buffer.seek(0)
         response = HttpResponse(buffer, content_type='application/pdf')
-        response['Content-Disposition'] = f'attachment; filename="Registro de Venta #{factura.id}.pdf"'
-        
+        response['Content-Disposition'] = f'attachment; filename="Recibo_Venta_{factura.id}.pdf"'
         return response
 
 def comision_detail(request, empleado_id):
@@ -1011,7 +1063,8 @@ def comision_detail(request, empleado_id):
             ventas_detalle.append({
                 'factura': venta.factura,
                 'comision': comision_venta,
-                'porcentaje': porcentaje
+                'porcentaje': porcentaje,
+                'venta_id': venta.id
             })
         porcentaje_promedio = ''
         if ventas_detalle:
@@ -1043,6 +1096,11 @@ class ComisionPDFView(LoginRequiredMixin, View):
             empleado = Empleado.objects.get(id=empleado_id)
             mes_actual = datetime.now().month
             anio_actual = datetime.now().year
+            
+            # Definir fecha actual
+            fecha_actual = datetime.now().strftime("%d/%m/%Y")
+            
+            # Obtener ventas completadas
             ventas = Ventas.objects.filter(
                 empleado=empleado,
                 factura__fecha_fac__month=mes_actual,
@@ -1050,6 +1108,8 @@ class ComisionPDFView(LoginRequiredMixin, View):
             ).exclude(status__vent_cancelada=True).filter(
                 Q(credito=False) | Q(credito=True, monto_pagado__gte=F('factura__total_fac'))
             )
+            
+            # Calcular comisiones
             total_comision = Decimal('0.00')
             ventas_detalle = []
             for venta in ventas:
@@ -1064,75 +1124,122 @@ class ComisionPDFView(LoginRequiredMixin, View):
                 ventas_detalle.append({
                     'factura': venta.factura,
                     'comision': comision_venta,
-                    'porcentaje': porcentaje
+                    'porcentaje': porcentaje,
+                    'venta_id': venta.id
                 })
+
+            # Crear el PDF
             buffer = io.BytesIO()
             p = canvas.Canvas(buffer, pagesize=letter)
             width, height = letter
-            p.setFont("Helvetica-Bold", 16)
-            p.drawString(50, height - 50, "The Black System")
-            p.setFont("Helvetica", 12)
-            p.drawString(50, height - 70, "Reporte de Comisión")
-            p.setFont("Helvetica", 10)
-            fecha_actual = datetime.now().strftime("%d/%m/%Y")
-            p.drawString(50, height - 90, f"Fecha: {fecha_actual}")
+            
+            # --- Membrete y Logo ---
+            logo_path = os.path.join(settings.BASE_DIR, 'black_invoices/static/img/the_black.jpeg')
+            if os.path.exists(logo_path):
+                p.drawImage(logo_path, 40, height - 110, width=120, height=60, preserveAspectRatio=True, mask='auto')
+            
+            # Nombre de la empresa y RIF
             p.setFont("Helvetica-Bold", 12)
-            p.drawString(50, height - 120, "Información del Empleado:")
+            p.drawString(180, height - 50, "INDUSTRIA & HERRAMIENTA EL NEGRITO, C.A.")
+            p.setFont("Helvetica-Bold", 11)
+            p.drawString(180, height - 65, "RIF: J-406050717")
+            
+            # Dirección y teléfonos
             p.setFont("Helvetica", 10)
-            p.drawString(50, height - 140, f"Nombre: {empleado.nombre} {empleado.apellido}")
-            p.drawString(50, height - 155, f"Nivel de Acceso: {empleado.nivel_acceso.nombre}")
+            p.drawString(180, height - 80, "CR 10 ENTRE CALLES 4 Y 5 EDIF DOÑA EDITH PISO 1 OF 2")
+            p.drawString(180, height - 95, "BARRIO MATURIN GUANARE PORTUGUESA")
+            p.drawString(180, height - 110, "Teléfonos: 0257-5143082 / 0257-5143082")
+            
+            # --- Título del reporte ---
+            p.setFont("Helvetica-Bold", 13)
+            p.drawString(50, height - 130, "REPORTE DE COMISIÓN")
+            
+            # --- Datos del empleado ---
             p.setFont("Helvetica-Bold", 12)
-            p.drawString(50, height - 185, "Resumen de Comisión:")
+            p.drawString(50, height - 160, "Información del Empleado:")
             p.setFont("Helvetica", 10)
-            p.drawString(50, height - 205, f"Ventas Completadas: {ventas.count()}")
-            p.drawString(50, height - 220, f"Total Comisión: ${total_comision:.2f}")
-            p.drawString(50, height - 235, f"Rangos de Comisión según monto de venta")
+            p.drawString(50, height - 180, f"Nombre: {empleado.nombre} {empleado.apellido}")
+            p.drawString(50, height - 195, f"Nivel de Acceso: {empleado.nivel_acceso.nombre}")
+            
+            # --- Añadir información de resumen de comisión ---
             p.setFont("Helvetica-Bold", 12)
-            p.drawString(50, height - 265, "Detalle de Ventas:")
+            p.drawString(50, height - 225, "Resumen de Comisión:")
+            p.setFont("Helvetica", 10)
+            p.drawString(50, height - 245, f"Ventas Completadas: {ventas.count()}")
+            p.drawString(50, height - 260, f"Total Comisión: ${total_comision:.2f}")
+            
+            # --- Detalle de las ventas (tabla) ---
+            p.setFont("Helvetica-Bold", 12)
+            p.drawString(50, height - 290, "Detalle de Ventas:")
+            
+            # Definir datos para la tabla
             data = [["Fecha", "Recibo #", "Cliente", "Total Venta", "% Comisión", "Comisión"]]
+            
             for venta in ventas_detalle:
                 data.append([
                     venta['factura'].fecha_fac.strftime("%d/%m/%Y"),
-                    str(venta['factura'].id),
+                    f"{venta['factura'].id}",
                     f"{venta['factura'].cliente.nombre} {venta['factura'].cliente.apellido}",
                     f"${venta['factura'].total_fac:.2f}",
                     f"{venta['porcentaje']}%",
                     f"${venta['comision']:.2f}"
                 ])
+            
+            # Si no hay ventas, añadir una fila de "Sin datos"
             if len(data) == 1:
-                data.append(["-", "-", "-", "-", "-", "-"])
-            # --- Ajuste visual de la tabla ---
-            # Definir anchos de columna y calcular el ancho total de la tabla
-            col_widths = [80, 60, 150, 100, 80, 100]
-            table_width = sum(col_widths)
-            x_table = (width - table_width) / 2  # Centrar la tabla
-            y_table = height - 300 - 20 * len(data)  # Reducir el espacio antes de la tabla
+                data.append(["Sin datos", "", "", "", "", ""])
+            
+            # Configurar ancho de columnas
+            col_widths = [70, 60, 150, 80, 80, 80]
+            
+            # Crear y configurar la tabla
             table = Table(data, colWidths=col_widths)
             table.setStyle(TableStyle([
                 ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
                 ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
                 ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                ('FONTSIZE', (0, 0), (-1, 0), 11),
-                ('BOTTOMPADDING', (0, 0), (-1, 0), 10),
-                ('GRID', (0, 0), (-1, -1), 1, colors.black),
-                ('FONTSIZE', (0, 1), (-1, -1), 10),
-                ('TOPPADDING', (0, 1), (-1, -1), 6),
-                ('BOTTOMPADDING', (0, 1), (-1, -1), 6),
+                ('FONTSIZE', (0, 0), (-1, 0), 10),
+                ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+                ('ALIGN', (3, 1), (5, -1), 'RIGHT'),  # Alinear columnas numéricas a la derecha
+                ('FONTSIZE', (0, 1), (-1, -1), 9),
             ]))
-            table.wrapOn(p, width, height)
-            table.drawOn(p, x_table, y_table)
+            
+            # Calcular posición de la tabla
+            table_height = len(data) * 20  # Estimación aproximada
+            table_y = height - 320 - table_height  # Ajustar según necesidad
+            
+            # Dibujar la tabla
+            table.wrapOn(p, width - 100, table_height)
+            table.drawOn(p, 50, max(table_y, 100))  # Mínimo 100 para evitar que se salga
+            
+            # --- Información adicional ---
+            # Si hay espacio, añadir información de rangos de comisión
+            rangos = ConsultaComision.objects.all().order_by('rango_inferior')
+            if rangos.exists() and table_y > 150:
+                p.setFont("Helvetica-Bold", 10)
+                p.drawString(50, table_y - 30, "Rangos de Comisión:")
+                
+                y_pos = table_y - 50
+                p.setFont("Helvetica", 9)
+                for i, rango in enumerate(rangos):
+                    p.drawString(50, y_pos - (i * 15), 
+                                f"${rango.rango_inferior:.2f} a ${rango.rango_superior:.2f}: {rango.porcentaje}%")
+            
+            # --- Pie de página ---
             p.setFont("Helvetica", 8)
-            p.drawString(50, 30, "The Black System - Todos los derechos reservados")
+            p.drawString(470, 30, f"Página 1 de 1")
+            p.drawString(40, 30, "The Black System - Todos los derechos reservados")
+            
+            # Finalizar y devolver PDF
             p.showPage()
             p.save()
             buffer.seek(0)
             response = HttpResponse(buffer, content_type='application/pdf')
             response['Content-Disposition'] = f'attachment; filename="Comision_{empleado.nombre}_{empleado.apellido}_{fecha_actual}.pdf"'
             return response
-        except Empleado.DoesNotExist:
-            messages.error(request, 'El empleado no existe.')
-            return redirect('black_invoices:comision_list')
+        
         except Exception as e:
             messages.error(request, f'Error al generar el PDF: {str(e)}')
             return redirect('black_invoices:comision_list')

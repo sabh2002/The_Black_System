@@ -1283,3 +1283,79 @@ class ComisionPDFView(LoginRequiredMixin, View):
         except Exception as e:
             messages.error(request, f'Error al generar el PDF: {str(e)}')
             return redirect('black_invoices:comision_list')
+        
+    
+from django.http import HttpResponse, JsonResponse
+from django.core.management import call_command
+from django.contrib.auth.decorators import login_required, user_passes_test # Para vistas basadas en funciones
+from django.utils.decorators import method_decorator
+import io
+import json # Para la importación, para leer el archivo temporalmente
+from datetime import datetime
+import os # Para manejar archivos temporales
+from django.conf import settings # Para la carpeta de archivos temporales
+from .forms.backup_forms import DatabaseImportForm # Importar el nuevo formulario
+from django.core.files.storage import FileSystemStorage    
+def export_database_view(request):
+    try:
+        # Usaremos un buffer en memoria para no escribir al disco innecesariamente en el servidor
+        buffer = io.StringIO()
+        call_command('dumpdata', 'black_invoices', indent=2, stdout=buffer) # Solo datos de black_invoices
+        # Si quieres TODO: call_command('dumpdata', indent=2, stdout=buffer, exclude=['contenttypes', 'auth.Permission'])
+        
+        buffer.seek(0)
+        
+        # Crear la respuesta HTTP para descargar el archivo
+        response = HttpResponse(buffer.getvalue(), content_type='application/json')
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        response['Content-Disposition'] = f'attachment; filename="backup_theblacksystem_{timestamp}.json"'
+        
+        messages.success(request, "Exportación de datos completada exitosamente.")
+        return response
+    except Exception as e:
+        messages.error(request, f"Error durante la exportación de datos: {str(e)}")
+        # Considera redirigir a una página de error o de vuelta a configuraciones
+        return redirect(request.META.get('HTTP_REFERER', reverse_lazy('black_invoices:inicio')))
+    
+def import_database_view(request):
+    if request.method == 'POST':
+        form = DatabaseImportForm(request.POST, request.FILES)
+        if form.is_valid():
+            backup_file = request.FILES['backup_file']
+            
+            # Guardar el archivo temporalmente de forma segura
+            fs = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'temp_backups')) # Crea una subcarpeta 'temp_backups' en tu MEDIA_ROOT
+            if not os.path.exists(fs.location):
+                os.makedirs(fs.location)
+            
+            filename = fs.save(backup_file.name, backup_file)
+            uploaded_file_path = fs.path(filename)
+
+            try:
+                # Validar que es un JSON (opcional pero recomendado)
+                with open(uploaded_file_path, 'r') as f:
+                    json.load(f) # Intenta parsear, si falla, no es JSON válido
+
+                # Ejecutar loaddata
+                # ¡ADVERTENCIA! loaddata puede sobreescribir datos si las PKs coinciden o causar errores.
+                # Es altamente recomendable que el admin sepa lo que está haciendo.
+                # Considera hacer un backup ANTES de importar.
+                call_command('loaddata', uploaded_file_path)
+                messages.success(request, "Importación de datos completada exitosamente.")
+            except json.JSONDecodeError:
+                messages.error(request, "Error: El archivo proporcionado no es un JSON válido.")
+            except Exception as e:
+                messages.error(request, f"Error durante la importación de datos: {str(e)}")
+            finally:
+                # Eliminar el archivo temporal después de usarlo
+                if os.path.exists(uploaded_file_path):
+                    os.remove(uploaded_file_path)
+            
+            return redirect('black_invoices:importar_datos') # Redirige a la misma página para ver el mensaje
+    else:
+        form = DatabaseImportForm()
+
+    return render(request, 'black_invoices/configuracion/importar_datos.html', {
+        'titulo': 'Importar Base de Datos',
+        'form': form
+    })

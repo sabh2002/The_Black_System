@@ -24,17 +24,21 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>{{titulo}}</h1>
+                        <!-- <h4><span style="background-color: black; color: #fff;">The</span> <span style="background-color: #fff;">Black</span> <span style="background-color: rgb(233, 10, 10); color:#fff;"> Bearings and Parts </span></h4> -->
+
+                        
+                        <div><img style="width: 90px; " src="{% static 'img/the_black.jpeg' %}" alt=""> <span style="background-color: black; color: #fff;">The</span> <span style="background-color: #fff;">Black</span> <span style="background-color: rgb(233, 10, 10); color:#fff;"> Bearings and Parts </span></div>
+
                     </div>
-                    <div class="col-sm-6">
+                    <!-- <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Inicio</a></li>
                         <li class="breadcrumb-item"><a href="#">Ventanas</a></li>
                         <li class="breadcrumb-item active">Ventana 1</li>
                         </ol>
+                    </div> -->
                     </div>
-                    </div>
-                </div><!-- /.container-fluid -->
+                </div>
                 </section>
             <section class="content">
                 
@@ -47,7 +51,7 @@
                         <!-- Default box -->
                         <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Titulo</h3>
+                            <h3 class="card-title">{{titulo}}</h3>
     
                             <div class="card-tools">
                             {% block tools %}

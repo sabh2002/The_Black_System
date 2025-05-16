@@ -1,0 +1,83 @@
+{% extends 'black_invoices/base/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>{{ titulo }}</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="{% url 'black_invoices:inicio' %}">Inicio</a></li>
+                    <li class="breadcrumb-item">Configuraciones</li>
+                    <li class="breadcrumb-item active">{{ titulo }}</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card card-warning">
+                    <div class="card-header">
+                        <h3 class="card-title">Subir Archivo de Respaldo (.json)</h3>
+                    </div>
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="card-body">
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                        {{ message|safe }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+
+                            <div class="alert alert-warning" role="alert">
+                                <h4 class="alert-heading">¡Atención!</h4>
+                                <p>La importación de datos puede sobrescribir o corromper la información existente si el archivo no es correcto o si hay conflictos de datos. Asegúrate de tener un respaldo reciente de tu base de datos actual antes de proceder.</p>
+                                <hr>
+                                <p class="mb-0">Se recomienda realizar esta operación en un entorno de pruebas primero o durante un período de bajo tráfico.</p>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="{{ form.backup_file.id_for_label }}">{{ form.backup_file.label }}</label>
+                                {{ form.backup_file }}
+                                {% if form.backup_file.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.backup_file.errors|join:", " }}
+                                    </div>
+                                {% endif %}
+                                {% if form.backup_file.help_text %}
+                                    <small class="form-text text-muted">{{ form.backup_file.help_text }}</small>
+                                {% endif %}
+                            </div>
+                             {% if form.non_field_errors %}
+                                <div class="alert alert-danger mt-2">
+                                    {% for error in form.non_field_errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-upload"></i> Importar Datos
+                            </button>
+                            <a href="{% url 'black_invoices:inicio' %}" class="btn btn-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

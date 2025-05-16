@@ -2,7 +2,7 @@ from datetime import datetime
 from decimal import Decimal
 import json
 import math as m
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
@@ -10,6 +10,8 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DetailView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
+
+from black_invoices.forms.user_profile_form import UserProfileForm
 from .models import *
 from .forms.producto_forms import ProductoForm
 from .forms.cliente_forms import ClienteForm
@@ -341,7 +343,7 @@ class FacturaListView(LoginRequiredMixin, ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Lista de Facturas'
+        context['titulo'] = 'Lista de Recibos'
         return context
 
 class FacturaDetailView(LoginRequiredMixin, DetailView):
@@ -684,7 +686,7 @@ class VentasPendientesView(EmpleadoRolMixin, ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Ventas Pendientes (Crédito)'
+        context['titulo'] = 'Abonos (Crédito)'
         return context
     
 class RegistrarPagoView(EmpleadoRolMixin, UpdateView):
@@ -875,7 +877,45 @@ class ComisionListView(LoginRequiredMixin, ListView):
             )
         
         return context
+    
+class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
+    model = Empleado
+    form_class = UserProfileForm 
+    template_name = 'black_invoices/usuarios/perfil_form.html' # Nueva plantilla
+    success_url = reverse_lazy('black_invoices:perfil_usuario_editar') # Redirige a la misma página
 
+    def get_object(self, queryset=None):
+        # Devuelve la instancia de Empleado asociada al usuario logueado.
+        # get_object_or_404 es más seguro aquí.
+        return get_object_or_404(Empleado, user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Configurar Mi Perfil'
+        context['action_text'] = 'Guardar Cambios'
+        return context
+
+    def form_valid(self, form):
+        # El método save del UserProfileForm ya maneja la actualización de User y Empleado.
+        form.save() 
+        messages.success(self.request, 'Tu perfil ha sido actualizado exitosamente.')
+        return super().form_valid(form) # Esto redirigirá a success_url
+
+    def form_invalid(self, form):
+        # Construir un mensaje de error más detallado para mostrar todos los errores
+        error_list_html = "<ul>"
+        for field, errors in form.errors.items():
+            field_label = form.fields[field].label if field != '__all__' and field in form.fields else "Error general"
+            for error in errors:
+                error_list_html += f"<li><strong>{field_label}:</strong> {error}</li>"
+        if form.non_field_errors():
+             for error in form.non_field_errors():
+                error_list_html += f"<li><strong>Error general:</strong> {error}</li>"
+        error_list_html += "</ul>"
+        
+        messages.error(self.request, f"Error al actualizar el perfil. Por favor, corrija los problemas indicados:{error_list_html}", extra_tags='safe')
+        return super().form_invalid(form)
+    
 def logout_view(request):
     logout(request)
     return redirect('black_invoices:login')

@@ -3,7 +3,6 @@
 
 {% block content %}
 <div class="row">
-    <!-- Estadísticas -->
     <div class="col-lg-4 col-md-6">
         <div class="small-box bg-info">
             <div class="inner">
@@ -31,17 +30,15 @@
 
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">{{ titulo }}</h3>
-    </div>
+        <h3 class="card-title">{{ titulo }}</h3> </div>
     <div class="card-body">
-        <!-- Filtros personalizados -->
         <div class="row mb-4">
             <div class="col-md-3">
-                <label for="fecha_inicio">Fecha Inicio:</label>
+                <label for="fecha_inicio">Fecha Inicio (para cálculo):</label>
                 <input type="date" class="form-control" id="fecha_inicio">
             </div>
             <div class="col-md-3">
-                <label for="fecha_fin">Fecha Fin:</label>
+                <label for="fecha_fin">Fecha Fin (para cálculo):</label>
                 <input type="date" class="form-control" id="fecha_fin">
             </div>
             <div class="col-md-2">
@@ -54,13 +51,13 @@
                 </select>
             </div>
             <div class="col-md-2">
-                <label for="monto_minimo">Monto Mínimo:</label>
+                <label for="monto_minimo">Comisión Mínima:</label>
                 <input type="number" class="form-control" id="monto_minimo" min="0" step="0.01" placeholder="0.00">
             </div>
             <div class="col-md-2">
                 <label>&nbsp;</label>
                 <button id="btnFiltrarComisiones" class="btn btn-info form-control">
-                    <i class="fas fa-filter"></i> Filtrar
+                    <i class="fas fa-filter"></i> Filtrar / Recalcular
                 </button>
             </div>
         </div>
@@ -73,7 +70,6 @@
                     <th>Ventas Completadas</th>
                     <th>Comisión</th>
                     <th>Acciones</th>
-
                 </tr>
             </thead>
             <tbody>
@@ -88,11 +84,10 @@
                             <i class="fas fa-eye"></i> Detalles
                         </a>
                     </td>
-
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="4" class="text-center">No hay comisiones disponibles</td>
+                    <td colspan="5" class="text-center">No hay comisiones disponibles para el periodo y filtros seleccionados</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -102,36 +97,41 @@
 {% endblock %}
 
 {% block extra_js %}
-<!-- DataTables -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.bootstrap4.min.css">
+
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.bootstrap4.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script> <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.colVis.min.js"></script>
 
 <script>
+    const imageUrl = "{% static 'img/the_black.jpeg' %}"; // URL de la imagen estática de Django
+
 $(document).ready(function() {
-    // Definir personalización para exportaciones
     var fechaActual = new Date().toLocaleDateString('es-ES');
     var hoy = new Date();
-    // Establecer la hora a 23:59:59 para incluir todo el día de hoy
     hoy.setHours(23, 59, 59, 999);
     
-    // Establecer valores máximos para los campos de fecha (no permitir fechas futuras)
-    var fechaMaxima = hoy.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+    var fechaMaxima = hoy.toISOString().split('T')[0];
     $('#fecha_inicio').attr('max', fechaMaxima);
     $('#fecha_fin').attr('max', fechaMaxima);
     
-    var tituloReporte = 'Reporte de Comisiones - ' + fechaActual;
+    // Título general para el nombre del archivo y similar
+    var tituloReporteArchivo = 'Reporte de Comisiones - ' + fechaActual;
     
-    // Inicializar DataTable
+    // --- INICIO: Definiciones para el Membrete (reutilizadas) ---
+    var nombreEmpresa = 'INDUSTRIA & HERRAMIENTA EL NEGRITO, C.A.';
+    var rifEmpresa = 'RIF: J-406050717';
+    var direccionEmpresa = 'CR 10 ENTRE CALLES 4 Y 5 EDIF DOÑA EDITH PISO 1 OF 2 BARRIO MATURIN GUANARE PORTUGUESA';
+    var telefonosEmpresa = 'Teléfonos: 0257-5143082 / 0257-5143082';
+    // Título específico que aparecerá en el cuerpo del reporte, debajo del membrete
+    var tituloDelMembreteReporte = 'REPORTE DE COMISIONES'; 
+    // --- FIN: Definiciones para el Membrete ---
+    
     var table = $('#tabla-comisiones').DataTable({
         "responsive": true,
         "lengthChange": true,
@@ -144,71 +144,63 @@ $(document).ready(function() {
             {
                 extend: 'colvis',
                 text: '<i class="fas fa-columns"></i> Columnas',
-                className: 'btn btn-secondary'
+                className: 'btn btn-info'
             },
             {
                 extend: 'excel',
                 text: '<i class="fas fa-file-excel"></i> Excel',
                 className: 'btn btn-success',
-                title: tituloReporte,
-                messageTop: 'The Black System - Reporte de Comisiones',
+                title: tituloReporteArchivo,
+                messageTop: nombreEmpresa + '\n' + rifEmpresa + '\n' + direccionEmpresa + '\n' + telefonosEmpresa + '\n\n' + tituloDelMembreteReporte + '\n\nThe Black System - ' + tituloReporteArchivo,
                 exportOptions: {
-                    columns: ':visible:not(:last-child)' // Exportar todas excepto la última columna (acciones)
+                    columns: [0, 1, 2, 3], // Empleado, Nivel, Ventas, Comisión
+                    format: {
+                        body: function ( data, row, column, node ) {
+                            // Quitar el símbolo '$' de la columna "Comisión" (índice 3) para Excel
+                            if (column === 3) { 
+                                return data.replace('$', '').trim();
+                            }
+                            return data;
+                        }
+                    }
                 }
             },
-            {
-                extend: 'pdf',
-                text: '<i class="fas fa-file-pdf"></i> PDF',
-                className: 'btn btn-danger',
-                title: tituloReporte,
-                messageTop: 'The Black System - Reporte de Comisiones',
-                exportOptions: {
-                    columns: ':visible:not(:last-child)'
-                },
-                customize: function(doc) {
-                    doc.pageMargins = [20, 20, 20, 20];
-                    doc.defaultStyle.fontSize = 10;
-                    doc.styles.tableHeader.fontSize = 11;
-                    doc.styles.tableHeader.fillColor = '#212529';
-                    doc.styles.title.fontSize = 14;
-                    doc.styles.title.alignment = 'center';
-                    
-                    // Agregar pie de página
-                    doc['footer'] = function(page, pages) {
-                        return {
-                            columns: [
-                                {
-                                    alignment: 'left',
-                                    text: ['Creado el: ', { text: fechaActual }]
-                                },
-                                {
-                                    alignment: 'right',
-                                    text: ['Página ', { text: page.toString() }, ' de ', { text: pages.toString() }]
-                                }
-                            ],
-                            margin: [20, 0]
-                        };
-                    };
-                }
-            },
+            // BOTÓN PDF ELIMINADO
             {
                 extend: 'print',
                 text: '<i class="fas fa-print"></i> Imprimir',
-                className: 'btn btn-primary',
-                title: tituloReporte,
-                messageTop: 'The Black System - Reporte de Comisiones',
+                className: 'btn btn-dark', 
+                title: tituloReporteArchivo, 
                 exportOptions: {
-                    columns: ':visible:not(:last-child)'
+                    columns: [0, 1, 2, 3] // Empleado, Nivel, Ventas, Comisión
+                    // No se necesita format.body aquí si las celdas son texto plano
                 },
                 customize: function(win) {
                     $(win.document.body).css('font-size', '10pt');
+                    $(win.document.body).find('h1').remove(); 
+
+                    var membreteHTML = `
+                        <div style="margin-bottom: 20px; overflow: auto; padding: 0 20px;">
+                            ${imageUrl ? `<div style="float: left; width: 25%;"><img src="${imageUrl}" style="width: 150px; height: auto;" alt="Logo"></div>` : '<div style="float: left; width: 25%;"></div>'}
+                            <div style="float: right; width: ${imageUrl ? '75%' : '100%'}; text-align: right;">
+                                <h3 style="margin:0; font-size: 14px;">${nombreEmpresa}</h3>
+                                <p style="margin:0; font-size: 9px;">${rifEmpresa}</p>
+                                <p style="margin:0; font-size: 9px;">${direccionEmpresa}</p>
+                                <p style="margin:0; font-size: 9px;">${telefonosEmpresa}</p>
+                            </div>
+                        </div>
+                        <div style="clear: both;"></div>
+                        <h4 style="text-align: center; font-size: 12px; margin-top: 10px; margin-bottom: 15px;">The Black System - ${tituloDelMembreteReporte}</h4>
+                    `;
+
+                    $(win.document.body).prepend(membreteHTML);
+                    
                     $(win.document.body).find('table')
                         .addClass('compact')
                         .css('font-size', 'inherit');
                         
-                    // Agregar pie de página con fecha
                     $(win.document.body).append(
-                        '<div style="text-align: center; margin-top: 20px;">' +
+                        '<div style="text-align: center; margin-top: 20px; font-size: 8pt;">' +
                         '<p>Creado el: ' + fechaActual + '</p>' +
                         '</div>'
                     );
@@ -241,27 +233,20 @@ $(document).ready(function() {
             "buttons": {
                 "colvis": "Columnas",
                 "excel": "Excel",
-                "pdf": "PDF",
+                // "pdf": "PDF", // Eliminado
                 "print": "Imprimir"
             }
         }
     });
     
-    // Función para mostrar mensajes de alerta
+    // --- INICIO: TU CÓDIGO DE FILTROS Y VALIDACIONES (MANTENIDO) ---
     function mostrarAlerta(mensaje, tipo) {
-        // Eliminar alertas previas
         $('.alert-filtros').remove();
-        
-        // Crear nueva alerta
         var alertaHTML = '<div class="alert alert-' + tipo + ' alert-dismissible fade show alert-filtros" role="alert">' +
                          mensaje +
                          '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
                          '<span aria-hidden="true">&times;</span></button></div>';
-        
-        // Insertar alerta solo en el card-body de la tabla de comisiones
         $('#tabla-comisiones').closest('.card-body').prepend(alertaHTML);
-        
-        // Auto-cerrar después de 5 segundos
         setTimeout(function() {
             $('.alert-filtros').fadeOut('slow', function() {
                 $(this).remove();
@@ -269,25 +254,19 @@ $(document).ready(function() {
         }, 5000);
     }
     
-    // Función para validar fechas
     function validarFecha(fechaStr, esInicio) {
         try {
             if (!fechaStr) return null;
-            
-            var fecha = new Date(fechaStr);
-            
-            // Verificar si la fecha es válida
+            var fecha = new Date(fechaStr + "T00:00:00");
             if (isNaN(fecha.getTime())) {
                 throw new Error("Fecha inválida");
             }
-            
-            // Verificar si es una fecha futura
-            if (fecha > hoy) {
+            var hoySinHora = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+            if (fecha > hoySinHora) {
                 var mensaje = esInicio ? "La fecha de inicio" : "La fecha de fin";
                 mostrarAlerta(mensaje + " no puede ser una fecha futura", "warning");
                 return null;
             }
-            
             return fecha;
         } catch(error) {
             mostrarAlerta("Error al procesar la fecha: " + fechaStr, "danger");
@@ -295,112 +274,110 @@ $(document).ready(function() {
         }
     }
     
-    // Función para extraer monto de la celda
     function extraerMonto(dataCell) {
         try {
-            // Extraer el monto de la celda (formato $XX.XX)
             var montoStr = dataCell.replace('$', '').trim();
             var monto = parseFloat(montoStr);
-            
             if (isNaN(monto)) {
-                throw new Error("Monto inválido");
+                // No lanzar error, simplemente devolver null si no es un número válido
+                // para que el filtro pueda decidir si incluir o excluir la fila.
+                return null; 
             }
-            
             return monto;
         } catch(error) {
-            console.error("Error al procesar el monto:", error);
+            console.error("Error al procesar el monto:", error, "Data:", dataCell);
             return null;
         }
     }
     
-    // Función para aplicar filtros
     $('#btnFiltrarComisiones').click(function() {
-        var fechaInicio = $('#fecha_inicio').val();
-        var fechaFin = $('#fecha_fin').val();
+        // NOTA: Los filtros de fecha (fecha_inicio, fecha_fin) aquí usualmente implicarían
+        // una recarga de datos desde el servidor con esos parámetros para recalcular las comisiones.
+        // El código DataTables a continuación filtra la tabla YA CARGADA.
+        // Si el botón debe RECARGAR la página con nuevos parámetros de fecha,
+        // necesitarías un 'form' o una petición AJAX para actualizar 'comisiones_data'.
+
         var nivelAcceso = $('#nivel_acceso').val();
-        var montoMinimo = $('#monto_minimo').val();
+        var montoMinimoStr = $('#monto_minimo').val();
         
-        // Validar fechas
-        var fechaInicioObj = validarFecha(fechaInicio, true);
-        var fechaFinObj = validarFecha(fechaFin, false);
+        // Limpiar filtros DataTables anteriores (excepto los de fecha que son para recálculo)
+        $.fn.dataTable.ext.search.pop(); // Limpiar filtro de monto
+        table.column(1).search(nivelAcceso ? '^' + nivelAcceso + '$' : '', true, false); // Filtro Nivel (columna 1)
         
-        // Si el inicio o fin son inválidos (incluyendo fechas futuras), no continuar
-        if ((fechaInicio && !fechaInicioObj) || (fechaFin && !fechaFinObj)) {
-            return;
-        }
-        
-        // Si ambas fechas están presentes, verificar que la fecha de inicio no sea posterior a la fecha de fin
-        if (fechaInicioObj && fechaFinObj && fechaInicioObj > fechaFinObj) {
-            mostrarAlerta("La fecha de inicio no puede ser posterior a la fecha de fin", "warning");
-            return;
-        }
-        
-        // Limpiar filtros anteriores
-        $.fn.dataTable.ext.search.pop();
-        table.column(1).search('').draw();
-        
-        // Contador para filtros aplicados
-        var filtrosAplicados = 0;
-        
-        // Filtrar por nivel de acceso
-        if (nivelAcceso) {
-            table.column(1).search(nivelAcceso).draw();
-            filtrosAplicados++;
-        }
-        
-        // Filtrar por monto mínimo
-        if (montoMinimo) {
-            var montoMinimoNum = parseFloat(montoMinimo);
+        var filtrosAplicadosEnTabla = 0;
+        if(nivelAcceso) filtrosAplicadosEnTabla++;
+
+        if (montoMinimoStr) {
+            var montoMinimoNum = parseFloat(montoMinimoStr);
             if (isNaN(montoMinimoNum) || montoMinimoNum < 0) {
-                mostrarAlerta("El monto mínimo debe ser un número válido", "warning");
-                return;
+                mostrarAlerta("El monto mínimo de comisión debe ser un número válido y no negativo.", "warning");
+                // No aplicar este filtro si es inválido, pero continuar con otros filtros
+            } else {
+                $.fn.dataTable.ext.search.push(
+                    function(settings, data, dataIndex) {
+                        var montoComision = extraerMonto(data[3]); // Columna Comisión (índice 3)
+                        // Si no se puede extraer el monto, se considera que no cumple el filtro (o true si prefieres incluirlo)
+                        if (montoComision === null) return false; 
+                        return montoComision >= montoMinimoNum;
+                    }
+                );
+                filtrosAplicadosEnTabla++;
             }
-            
-            $.fn.dataTable.ext.search.push(
-                function(settings, data, dataIndex) {
-                    var montoComision = extraerMonto(data[3]);
-                    if (!montoComision) return true;
-                    return montoComision >= montoMinimoNum;
-                }
-            );
-            filtrosAplicados++;
         }
         
-        // Aplicar todos los filtros
-        table.draw();
+        table.draw(); // Aplicar filtros de DataTables
         
-        // Mostrar mensaje de filtros aplicados
-        if (filtrosAplicados > 0) {
-            mostrarAlerta("Filtros aplicados correctamente", "success");
+        // El mensaje de alerta debería indicar qué se hizo. 
+        // Si el botón "Filtrar" también hace una recarga de página para las fechas,
+        // este mensaje podría no ser tan relevante o necesitaría lógica adicional.
+        if (filtrosAplicadosEnTabla > 0) {
+            mostrarAlerta("Filtros de tabla aplicados (Nivel, Comisión Mínima). Para cambios de fecha, la página puede recargarse.", "success");
         } else {
-            mostrarAlerta("No se ha seleccionado ningún filtro", "info");
+             // Si no se aplicaron filtros de tabla, pero se presionó el botón,
+             // podría ser solo para las fechas.
+            mostrarAlerta("Filtros de Nivel/Comisión no especificados. Si cambió fechas, la página puede recargarse.", "info");
         }
+        // Aquí podrías añadir lógica para recargar la página con los parámetros de fecha si es necesario:
+        // Ejemplo: window.location.href = window.location.pathname + '?fecha_inicio=' + fechaInicio + '&fecha_fin=' + fechaFin;
+        // (asegúrate de manejar los otros filtros también en la URL si el backend los espera)
     });
     
-    // Validación en tiempo real de las fechas
+    // No hay botón de reset específico para filtros de comisiones en tu HTML,
+    // si lo añades, necesitarías una función similar a btnResetFacturas.
+    // Por ahora, la limpieza se hace al inicio de btnFiltrarComisiones.
+
     $('#fecha_inicio, #fecha_fin').on('change', function() {
-        var fechaInicio = $('#fecha_inicio').val();
-        var fechaFin = $('#fecha_fin').val();
+        var fechaInicioStr = $('#fecha_inicio').val();
+        var fechaFinStr = $('#fecha_fin').val();
+        var inputId = $(this).attr('id');
         
-        if (fechaInicio && fechaFin) {
-            var fechaInicioObj = validarFecha(fechaInicio, true);
-            var fechaFinObj = validarFecha(fechaFin, false);
+        if( $(this).val() ) {
+            var fechaActualInput = validarFecha($(this).val(), inputId === 'fecha_inicio');
+            if (!fechaActualInput) {
+                 $(this).val('');
+                return; 
+            }
+        }
+        
+        if (fechaInicioStr && fechaFinStr) {
+            var fechaInicioObj = validarFecha(fechaInicioStr, true);
+            var fechaFinObj = validarFecha(fechaFinStr, false);
             
             if (fechaInicioObj && fechaFinObj && fechaInicioObj > fechaFinObj) {
                 mostrarAlerta("La fecha de inicio no puede ser posterior a la fecha de fin", "warning");
-                $(this).val('');
+                $('#' + inputId).val('');
             }
         }
     });
     
-    // Validación del monto mínimo
     $('#monto_minimo').on('change', function() {
         var monto = $(this).val();
         if (monto && (isNaN(monto) || parseFloat(monto) < 0)) {
-            mostrarAlerta("El monto mínimo debe ser un número válido", "warning");
+            mostrarAlerta("El monto mínimo de comisión debe ser un número válido y no negativo.", "warning");
             $(this).val('');
         }
     });
+    // --- FIN: TU CÓDIGO DE FILTROS Y VALIDACIONES ---
 });
 </script>
 {% endblock %}

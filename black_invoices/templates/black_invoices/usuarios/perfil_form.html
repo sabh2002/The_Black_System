@@ -1,0 +1,86 @@
+{% extends 'black_invoices/base/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card card-primary mt-3">
+                    <div class="card-header">
+                        <h3 class="card-title">{{ titulo|default:"Configurar Perfil" }}</h3>
+                    </div>
+                    <form method="post" novalidate> {# novalidate para que el navegador no interfiera con la validación de Django #}
+                        {% csrf_token %}
+                        <div class="card-body">
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                        {{ message|safe }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+
+                            {% if form.non_field_errors %}
+                                <div class="alert alert-danger">
+                                    {% for error in form.non_field_errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="{{ form.nombre.id_for_label }}">{{ form.nombre.label }}</label>
+                                    {{ form.nombre }}
+                                    {% if form.nombre.errors %}<div class="invalid-feedback d-block">{{ form.nombre.errors|join:", " }}</div>{% endif %}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="{{ form.apellido.id_for_label }}">{{ form.apellido.label }}</label>
+                                    {{ form.apellido }}
+                                    {% if form.apellido.errors %}<div class="invalid-feedback d-block">{{ form.apellido.errors|join:", " }}</div>{% endif %}
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+                                {{ form.username }}
+                                {% if form.username.help_text %}<small class="form-text text-muted">{{ form.username.help_text|safe }}</small>{% endif %}
+                                {% if form.username.errors %}<div class="invalid-feedback d-block">{{ form.username.errors|join:", " }}</div>{% endif %}
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                                {{ form.email }}
+                                {% if form.email.errors %}<div class="invalid-feedback d-block">{{ form.email.errors|join:", " }}</div>{% endif %}
+                            </div>
+
+                            <hr>
+                            <p class="text-muted">Cambiar contraseña (opcional):</p>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="{{ form.new_password.id_for_label }}">{{ form.new_password.label }}</label>
+                                    {{ form.new_password }}
+                                    {% if form.new_password.errors %}<div class="invalid-feedback d-block">{{ form.new_password.errors|join:", " }}</div>{% endif %}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="{{ form.confirm_new_password.id_for_label }}">{{ form.confirm_new_password.label }}</label>
+                                    {{ form.confirm_new_password }}
+                                    {% if form.confirm_new_password.errors %}<div class="invalid-feedback d-block">{{ form.confirm_new_password.errors|join:", " }}</div>{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">{{ action_text|default:"Guardar Cambios" }}</button>
+                            <a href="{% url 'black_invoices:inicio' %}" class="btn btn-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

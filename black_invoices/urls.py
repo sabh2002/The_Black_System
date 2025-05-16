@@ -45,4 +45,6 @@ urlpatterns = [
     path('comisiones/', views.ComisionListView.as_view(), name='comision_list'),
     path('comisiones/<int:empleado_id>/', views.comision_detail, name='comision_detail'),
     path('comisiones/<int:empleado_id>/pdf/', views.ComisionPDFView.as_view(), name='comision_pdf'),
+    path('perfil/editar/', views.UserProfileUpdateView.as_view(), name='perfil_usuario_editar'), # URL para editar perfil
+
 ]

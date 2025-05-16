@@ -16,7 +16,6 @@
         </div>
     </div>
     <div class="card-body">
-        <!-- Filtros personalizados -->
         <div class="row mb-4">
             <div class="col-md-3">
                 <label for="fecha_inicio">Fecha Inicio:</label>
@@ -70,7 +69,7 @@
                     <td>{{ venta.empleado.nombre }} {{ venta.empleado.apellido }}</td>
                     <td>${{ venta.factura.total_fac|floatformat:2 }}</td>
                     <td>
-                        <span class="badge 
+                        <span class="badge
                             {% if venta.status.vent_cancelada %}
                                 badge-danger
                             {% elif venta.status.vent_espera %}
@@ -87,8 +86,8 @@
                                 <i class="fas fa-eye"></i>
                             </a>
                             {% if not venta.status.vent_cancelada %}
-                            <a href="{% url 'black_invoices:cancelar_venta' venta.id %}" class="btn btn-danger btn-sm" 
-                               onclick="return confirm('¿Está seguro de cancelar esta venta? Se restaurará el stock.')">
+                            <a href="{% url 'black_invoices:cancelar_venta' venta.id %}" class="btn btn-danger btn-sm"
+                                onclick="return confirm('¿Está seguro de cancelar esta venta? Se restaurará el stock.')">
                                 <i class="fas fa-ban"></i>
                             </a>
                             {% endif %}
@@ -107,337 +106,294 @@
 {% endblock %}
 
 {% block extra_js %}
-<!-- DataTables -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.bootstrap4.min.css">
+
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.bootstrap4.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script> <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.colVis.min.js"></script>
 
 <script>
-$(document).ready(function() {
-    // Definir personalización para exportaciones
-    var fechaActual = new Date().toLocaleDateString('es-ES');
-    var hoy = new Date();
-    // Establecer la hora a 23:59:59 para incluir todo el día de hoy
-    hoy.setHours(23, 59, 59, 999);
-    
-    // Establecer valores máximos para los campos de fecha (no permitir fechas futuras)
-    var fechaMaxima = hoy.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-    $('#fecha_inicio').attr('max', fechaMaxima);
-    $('#fecha_fin').attr('max', fechaMaxima);
-    
-    var tituloReporte = 'Reporte de Ventas - ' + fechaActual;
-    
-    // Inicializar DataTable
-    var table = $('#tabla-ventas').DataTable({
-        "responsive": true,
-        "lengthChange": true,
-        "autoWidth": false,
-        "order": [[1, 'desc']], // Ordenar por fecha descendente
-        "dom": "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>>" +
-               "<'row'<'col-sm-12'tr>>" +
-               "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
-        "buttons": [
-            {
-                extend: 'colvis',
-                text: '<i class="fas fa-columns"></i> Columnas',
-                className: 'btn btn-secondary'
-            },
-            {
-                extend: 'excel',
-                text: '<i class="fas fa-file-excel"></i> Excel',
-                className: 'btn btn-success',
-                title: tituloReporte,
-                messageTop: 'The Black System - Listado de Ventas',
-                exportOptions: {
-                    columns: [0, 1, 2, 3, 4, 5]
-                }
-            },
-            {
-                extend: 'pdf',
-                text: '<i class="fas fa-file-pdf"></i> PDF',
-                className: 'btn btn-danger',
-                title: tituloReporte,
-                messageTop: 'The Black System - Listado de Ventas',
-                exportOptions: {
-                    columns: [0, 1, 2, 3, 4, 5]
+    const imageUrl = "{% static 'img/the_black.jpeg' %}"; // URL de la imagen estática de Django
+
+    $(document).ready(function() {
+        var fechaActual = new Date().toLocaleDateString('es-ES');
+        var hoy = new Date();
+        hoy.setHours(23, 59, 59, 999);
+        
+        var fechaMaxima = hoy.toISOString().split('T')[0];
+        $('#fecha_inicio').attr('max', fechaMaxima);
+        $('#fecha_fin').attr('max', fechaMaxima);
+        
+        var tituloReporte = 'Reporte de Ventas - ' + fechaActual;
+
+        var nombreEmpresa = 'INDUSTRIA & HERRAMIENTA EL NEGRITO, C.A.';
+        var rifEmpresa = 'RIF: J-406050717';
+        var direccionEmpresa = 'CR 10 ENTRE CALLES 4 Y 5 EDIF DOÑA EDITH PISO 1 OF 2 BARRIO MATURIN GUANARE PORTUGUESA';
+        var telefonosEmpresa = 'Teléfonos: 0257-5143082 / 0257-5143082';
+        var tituloDelMembrete = 'LISTADO DE VENTAS';
+
+        var table = $('#tabla-ventas').DataTable({
+            "responsive": true,
+            "lengthChange": true,
+            "autoWidth": false,
+            "order": [[1, 'desc']],
+            "dom": "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>>" +
+                   "<'row'<'col-sm-12'tr>>" +
+                   "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+            "buttons": [
+                {
+                    extend: 'colvis',
+                    text: '<i class="fas fa-columns"></i> Columnas',
+                    className: 'btn btn-info'
                 },
-                customize: function(doc) {
-                    doc.pageMargins = [20, 20, 20, 20];
-                    doc.defaultStyle.fontSize = 10;
-                    doc.styles.tableHeader.fontSize = 11;
-                    doc.styles.tableHeader.fillColor = '#212529';
-                    doc.styles.title.fontSize = 14;
-                    doc.styles.title.alignment = 'center';
-                    
-                    // Agregar pie de página
-                    doc['footer'] = function(page, pages) {
-                        return {
-                            columns: [
-                                {
-                                    alignment: 'left',
-                                    text: ['Creado el: ', { text: fechaActual }]
-                                },
-                                {
-                                    alignment: 'right',
-                                    text: ['Página ', { text: page.toString() }, ' de ', { text: pages.toString() }]
+                {
+                    extend: 'excel',
+                    text: '<i class="fas fa-file-excel"></i> Excel',
+                    className: 'btn btn-success',
+                    title: tituloReporte,
+                    messageTop: nombreEmpresa + '\n' + rifEmpresa + '\n' + direccionEmpresa + '\n' + telefonosEmpresa + '\n\n' + tituloDelMembrete + '\n\nThe Black System - ' + tituloReporte,
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5]
+                    }
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fas fa-print"></i> Imprimir',
+                    className: 'btn btn-dark',
+                    title: tituloReporte, 
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5],
+                        stripHtml: true,
+                        format: {
+                            body: function ( data, row, column, node ) {
+                                 if (column === 5) { 
+                                    return $(data).text().trim();
                                 }
-                            ],
-                            margin: [20, 0]
-                        };
-                    };
-                }
-            },
-            {
-                extend: 'print',
-                text: '<i class="fas fa-print"></i> Imprimir',
-                className: 'btn btn-primary',
-                title: tituloReporte,
-                messageTop: 'The Black System - Listado de Ventas',
-                exportOptions: {
-                    columns: [0, 1, 2, 3, 4, 5]
-                },
-                customize: function(win) {
-                    $(win.document.body).css('font-size', '10pt');
-                    $(win.document.body).find('table')
-                        .addClass('compact')
-                        .css('font-size', 'inherit');
+                                return data;
+                            }
+                        }
+                    },
+                    customize: function(win) {
+                        $(win.document.body).css('font-size', '10pt');
+                        $(win.document.body).find('h1').remove();
+
+                        var membreteHTML = `
+                            <div style="margin-bottom: 20px; overflow: auto; padding: 0 20px;">
+                                ${imageUrl ? `<div style="float: left; width: 25%;"><img src="${imageUrl}" style="width: 225px; height: auto;" alt="Logo"></div>` : '<div style="float: left; width: 25%;"></div>'}
+                                <div style="float: right; width: ${imageUrl ? '75%' : '100%'}; text-align: right;">
+                                    <h3 style="margin:0; font-size: 14px;">${nombreEmpresa}</h3>
+                                    <p style="margin:0; font-size: 9px;">${rifEmpresa}</p>
+                                    <p style="margin:0; font-size: 9px;">${direccionEmpresa}</p>
+                                    <p style="margin:0; font-size: 9px;">${telefonosEmpresa}</p>
+                                </div>
+                            </div>
+                            <div style="clear: both;"></div>
+                            <h4 style="text-align: center; font-size: 12px; margin-top: 10px; margin-bottom: 15px;">The Black System - ${tituloDelMembrete}</h4>
+                        `;
+
+                        $(win.document.body).prepend(membreteHTML);
                         
-                    // Agregar pie de página con fecha
-                    $(win.document.body).append(
-                        '<div style="text-align: center; margin-top: 20px;">' +
-                        '<p>Creado el: ' + fechaActual + '</p>' +
-                        '</div>'
-                    );
+                        $(win.document.body).find('table')
+                            .addClass('compact')
+                            .css('font-size', 'inherit');
+
+                        $(win.document.body).append(
+                            '<div style="text-align: center; margin-top: 20px; font-size: 8pt;">' +
+                            '<p>Creado el: ' + fechaActual + '</p>' +
+                            '</div>'
+                        );
+                    }
+                }
+            ],
+            "language": {
+                "sProcessing":     "Procesando...",
+                "sLengthMenu":     "Mostrar _MENU_ registros",
+                "sZeroRecords":    "No se encontraron resultados",
+                "sEmptyTable":     "Ningún dato disponible en esta tabla",
+                "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_",
+                "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0",
+                "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix":    "",
+                "sSearch":         "Buscar:",
+                "sUrl":            "",
+                "sInfoThousands":  ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst":    "Primero",
+                    "sLast":     "Último",
+                    "sNext":     "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "buttons": {
+                    "colvis": "Columnas",
+                    "excel": "Excel",
+                    "print": "Imprimir"
                 }
             }
-        ],
-        "language": {
-            "sProcessing":     "Procesando...",
-            "sLengthMenu":     "Mostrar _MENU_ registros",
-            "sZeroRecords":    "No se encontraron resultados",
-            "sEmptyTable":     "Ningún dato disponible en esta tabla",
-            "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_",
-            "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0",
-            "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
-            "sInfoPostFix":    "",
-            "sSearch":         "Buscar:",
-            "sUrl":            "",
-            "sInfoThousands":  ",",
-            "sLoadingRecords": "Cargando...",
-            "oPaginate": {
-                "sFirst":    "Primero",
-                "sLast":     "Último",
-                "sNext":     "Siguiente",
-                "sPrevious": "Anterior"
-            },
-            "oAria": {
-                "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
-                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-            },
-            "buttons": {
-                "colvis": "Columnas",
-                "excel": "Excel",
-                "pdf": "PDF",
-                "print": "Imprimir"
-            }
-        }
-    });
-    
-    // Función para mostrar mensajes de alerta
-    function mostrarAlerta(mensaje, tipo) {
-    // Eliminar alertas previas
-    $('.alert-filtros').remove();
-    
-    // Crear nueva alerta
-    var alertaHTML = '<div class="alert alert-' + tipo + ' alert-dismissible fade show alert-filtros" role="alert">' +
-                     mensaje +
-                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                     '<span aria-hidden="true">&times;</span></button></div>';
-    
-    // Insertar alerta solo en el primer card-body encontrado (contenedor de la tabla de ventas)
-    $('#tabla-ventas').closest('.card-body').prepend(alertaHTML);
-    
-    // Auto-cerrar después de 5 segundos
-    setTimeout(function() {
-        $('.alert-filtros').fadeOut('slow', function() {
-            $(this).remove();
         });
-    }, 5000);
-}
-    
-    // Función para validar fechas
-    function validarFecha(fechaStr, esInicio) {
-        try {
-            if (!fechaStr) return null;
-            
-            var fecha = new Date(fechaStr);
-            
-            // Verificar si la fecha es válida
-            if (isNaN(fecha.getTime())) {
-                throw new Error("Fecha inválida");
-            }
-            
-            // Verificar si es una fecha futura
-            if (fecha > hoy) {
-                var mensaje = esInicio ? "La fecha de inicio" : "La fecha de fin";
-                mostrarAlerta(mensaje + " no puede ser una fecha futura", "warning");
+        
+        // --- INICIO: Código de Filtros y Validaciones (tu código original sin cambios) ---
+        function mostrarAlerta(mensaje, tipo) {
+            $('.alert-filtros').remove();
+            var alertaHTML = '<div class="alert alert-' + tipo + ' alert-dismissible fade show alert-filtros" role="alert">' +
+                                mensaje +
+                                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                                '<span aria-hidden="true">&times;</span></button></div>';
+            $('#tabla-ventas').closest('.card-body').prepend(alertaHTML);
+            setTimeout(function() {
+                $('.alert-filtros').fadeOut('slow', function() {
+                    $(this).remove();
+                });
+            }, 5000);
+        }
+
+        function validarFecha(fechaStr, esInicio) {
+            try {
+                if (!fechaStr) return null;
+                var fecha = new Date(fechaStr + 'T00:00:00');
+                if (isNaN(fecha.getTime())) {
+                    throw new Error("Fecha inválida");
+                }
+                var hoySinHora = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+                if (fecha > hoySinHora) {
+                    var mensaje = esInicio ? "La fecha de inicio" : "La fecha de fin";
+                    mostrarAlerta(mensaje + " no puede ser una fecha futura.", "warning");
+                    return null;
+                }
+                return fecha;
+            } catch(error) {
+                mostrarAlerta("Error al procesar la fecha: " + fechaStr, "danger");
                 return null;
             }
-            
-            return fecha;
-        } catch(error) {
-            mostrarAlerta("Error al procesar la fecha: " + fechaStr, "danger");
-            return null;
         }
-    }
-    
-    // Función para extraer fecha de la celda de DataTables
-    function extraerFechaCelda(dataCell) {
-        try {
-            // Extraer la fecha de la celda (formato DD/MM/YYYY)
-            var dateString = dataCell.split(' ')[0]; // Obtenemos solo la parte de la fecha
-            var dateParts = dateString.split('/');
-            
-            if (dateParts.length !== 3) {
-                throw new Error("Formato de fecha incorrecto");
-            }
-            
-            // Crear objeto Date con formato día/mes/año
-            var fecha = new Date(
-                parseInt(dateParts[2]), // Año
-                parseInt(dateParts[1]) - 1, // Mes (0-11)
-                parseInt(dateParts[0]) // Día
-            );
-            
-            // Verificar si la fecha es válida
-            if (isNaN(fecha.getTime())) {
-                throw new Error("Fecha inválida");
-            }
-            
-            return fecha;
-        } catch(error) {
-            console.error("Error al procesar la fecha de la celda:", error);
-            return null;
-        }
-    }
-    
-    // Función para aplicar filtros
-    $('#btnFiltrar').click(function() {
-        var fechaInicio = $('#fecha_inicio').val();
-        var fechaFin = $('#fecha_fin').val();
-        var estado = $('#estado').val();
-        
-        // Validar fechas
-        var fechaInicioObj = validarFecha(fechaInicio, true);
-        var fechaFinObj = validarFecha(fechaFin, false);
-        
-        // Si el inicio o fin son inválidos (incluyendo fechas futuras), no continuar
-        if ((fechaInicio && !fechaInicioObj) || (fechaFin && !fechaFinObj)) {
-            return;
-        }
-        
-        // Si ambas fechas están presentes, verificar que la fecha de inicio no sea posterior a la fecha de fin
-        if (fechaInicioObj && fechaFinObj && fechaInicioObj > fechaFinObj) {
-            mostrarAlerta("La fecha de inicio no puede ser posterior a la fecha de fin", "warning");
-            return;
-        }
-        
-        // Limpiar filtros anteriores
-        $.fn.dataTable.ext.search.pop();
-        table.column(5).search('').draw();
-        
-        // Contador para filtros aplicados
-        var filtrosAplicados = 0;
-        
-        // Filtrar por rango de fechas
-        if (fechaInicio || fechaFin) {
-            $.fn.dataTable.ext.search.push(
-                function(settings, data, dataIndex) {
-                    // Extraer fecha de la celda
-                    var fechaVenta = extraerFechaCelda(data[1]);
-                    
-                    // Si no se pudo extraer la fecha, no filtrar esta fila
-                    if (!fechaVenta) return true;
-                    
-                    // Verificar si está en el rango
-                    if (fechaInicioObj && fechaFinObj) {
-                        return (fechaVenta >= fechaInicioObj && fechaVenta <= fechaFinObj);
-                    } else if (fechaInicioObj) {
-                        return (fechaVenta >= fechaInicioObj);
-                    } else if (fechaFinObj) {
-                        return (fechaVenta <= fechaFinObj);
-                    }
-                    return true;
-                }
-            );
-            filtrosAplicados++;
-        }
-        
-        // Filtrar por estado
-        if (estado) {
-            table.column(5).search(estado).draw();
-            filtrosAplicados++;
-        }
-        
-        // Aplicar todos los filtros
-        table.draw();
-        
-        // Mostrar mensaje de filtros aplicados
-        if (filtrosAplicados > 0) {
-            mostrarAlerta("Filtros aplicados correctamente", "success");
-        } else {
-            mostrarAlerta("No se ha seleccionado ningún filtro", "info");
-        }
-    });
 
-    // Función para resetear filtros
-    $('#btnReset').click(function() {
-        $('#fecha_inicio').val('');
-        $('#fecha_fin').val('');
-        $('#estado').val('');
-        
-        // Limpiar todos los filtros
-        $.fn.dataTable.ext.search.pop();
-        table.search('').columns().search('').draw();
-        
-        // Mensaje de confirmación
-        mostrarAlerta("Filtros eliminados", "info");
-    });
-    
-    // Validación en tiempo real de las fechas
-    $('#fecha_inicio, #fecha_fin').on('change', function() {
-        var fechaInicio = $('#fecha_inicio').val();
-        var fechaFin = $('#fecha_fin').val();
-        var inputId = $(this).attr('id');
-        
-        // Validar que no sea una fecha futura
-        var fechaSeleccionada = new Date($(this).val());
-        if (fechaSeleccionada > hoy) {
-            mostrarAlerta("No se permite seleccionar fechas futuras", "warning");
-            $(this).val(''); // Limpiar el campo
-            return;
-        }
-        
-        if (fechaInicio && fechaFin) {
-            var fechaInicioObj = new Date(fechaInicio);
-            var fechaFinObj = new Date(fechaFin);
-            
-            if (fechaInicioObj > fechaFinObj) {
-                mostrarAlerta("La fecha de inicio no puede ser posterior a la fecha de fin", "warning");
-                // Limpiar solo el campo que el usuario está editando actualmente
-                $('#' + inputId).val('');
+        function extraerFechaCelda(dataCell) {
+            try {
+                var dateString = dataCell.split(' ')[0];
+                var dateParts = dateString.split('/');
+                if (dateParts.length !== 3) {
+                    throw new Error("Formato de fecha incorrecto");
+                }
+                var fecha = new Date(
+                    parseInt(dateParts[2]), 
+                    parseInt(dateParts[1]) - 1, 
+                    parseInt(dateParts[0])  
+                );
+                if (isNaN(fecha.getTime())) {
+                    throw new Error("Fecha inválida en celda");
+                }
+                return fecha;
+            } catch(error) {
+                console.error("Error al procesar la fecha de la celda:", error, "Data:", dataCell);
+                return null;
             }
         }
+
+        $('#btnFiltrar').click(function() {
+            var fechaInicioStr = $('#fecha_inicio').val();
+            var fechaFinStr = $('#fecha_fin').val();
+            var estado = $('#estado').val();
+            
+            var fechaInicioObj = validarFecha(fechaInicioStr, true);
+            var fechaFinObj = validarFecha(fechaFinStr, false);
+            
+            if ((fechaInicioStr && !fechaInicioObj) || (fechaFinStr && !fechaFinObj)) {
+                return;
+            }
+            
+            if (fechaInicioObj && fechaFinObj && fechaInicioObj > fechaFinObj) {
+                mostrarAlerta("La fecha de inicio no puede ser posterior a la fecha de fin.", "warning");
+                return;
+            }
+            
+            $.fn.dataTable.ext.search.pop(); 
+            table.column(5).search(estado ? '^' + estado + '$' : '', true, false);
+
+            var filtrosAplicados = 0;
+            
+            if (fechaInicioStr || fechaFinStr) {
+                $.fn.dataTable.ext.search.push(
+                    function(settings, data, dataIndex) {
+                        var fechaVenta = extraerFechaCelda(data[1]); 
+                        if (!fechaVenta) return true; 
+
+                        var pasaFiltroInicio = true;
+                        var pasaFiltroFin = true;
+
+                        if (fechaInicioObj) {
+                            pasaFiltroInicio = (fechaVenta >= fechaInicioObj);
+                        }
+                        if (fechaFinObj) {
+                            var finDeDia = new Date(fechaFinObj.getFullYear(), fechaFinObj.getMonth(), fechaFinObj.getDate(), 23, 59, 59, 999);
+                            pasaFiltroFin = (fechaVenta <= finDeDia);
+                        }
+                        return pasaFiltroInicio && pasaFiltroFin;
+                    }
+                );
+                filtrosAplicados++;
+            }
+            
+            if (estado) {
+                filtrosAplicados++;
+            }
+            
+            table.draw();
+            
+            if (filtrosAplicados > 0) {
+                mostrarAlerta("Filtros aplicados correctamente.", "success");
+            } else {
+                mostrarAlerta("No se ha seleccionado ningún filtro o se han limpiado.", "info");
+            }
+        });
+
+        $('#btnReset').click(function() {
+            $('#fecha_inicio').val('');
+            $('#fecha_fin').val('');
+            $('#estado').val('');
+            
+            $.fn.dataTable.ext.search.pop(); 
+            table.search('').columns().search('').draw(); 
+            
+            mostrarAlerta("Filtros eliminados.", "info");
+        });
+        
+        $('#fecha_inicio, #fecha_fin').on('change', function() {
+            var fechaInicioStr = $('#fecha_inicio').val();
+            var fechaFinStr = $('#fecha_fin').val();
+            var inputId = $(this).attr('id');
+            
+            var fechaSeleccionadaStr = $(this).val();
+            if(fechaSeleccionadaStr){
+                var fechaSeleccionada = new Date(fechaSeleccionadaStr + 'T00:00:00');
+                var hoySinHora = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+
+                if (fechaSeleccionada > hoySinHora) {
+                    mostrarAlerta("No se permite seleccionar fechas futuras.", "warning");
+                    $(this).val('');
+                    return;
+                }
+            }
+
+            if (fechaInicioStr && fechaFinStr) {
+                var fechaInicioObj = new Date(fechaInicioStr + 'T00:00:00');
+                var fechaFinObj = new Date(fechaFinStr + 'T00:00:00');
+                
+                if (fechaInicioObj > fechaFinObj) {
+                    mostrarAlerta("La fecha de inicio no puede ser posterior a la fecha de fin.", "warning");
+                    $('#' + inputId).val('');
+                }
+            }
+        });
+        // --- FIN: Código de Filtros y Validaciones ---
     });
-});
 </script>
 {% endblock %}

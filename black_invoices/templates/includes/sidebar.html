@@ -163,7 +163,7 @@
                         <li class="nav-item">
                             <a href="{% url 'black_invoices:ventas_pendientes' %}" class="nav-link">
                                 <i class="fas fa-clock nav-icon"></i>
-                                <p>Ventas pendientes</p>
+                                <p>Abonos</p>
                             </a>
                         </li>
                         <!-- <li class="nav-item">
@@ -204,7 +204,14 @@
                 <li class="nav-item">
                     <a href="{% url 'black_invoices:comision_list' %}" class="nav-link">
                         <i class="nav-icon fas fa-money-bill"></i>
-                        <p>Comisiones</p>
+                        {% if user.is_authenticated %}
+                            {% if user.empleado.nivel_acceso.nombre == 'Administrador' %}
+                                <p>Comisiones</p>
+                                {% else %}
+                                <p>Tus comisiones</p>
+                            {% endif %}
+                        {% endif %}
+                        
                     </a>
                 </li>
                 <!-- <li class="nav-item">
@@ -256,7 +263,7 @@
                         </li>
                         <!-- Menu Footer-->
                         <li class="user-footer">
-                            <a href="#" class="btn btn-default btn-flat">Perfil</a>
+                            <a href="{% url 'black_invoices:perfil_usuario_editar' %}" class="btn btn-default btn-flat">Perfil</a>
                             <a href="{% url 'black_invoices:logout' %}" class="btn btn-default btn-flat float-right">
                                 <i class="fas fa-sign-out-alt mr-2"></i> Cerrar sesión
                             </a>

@@ -1,7 +1,5 @@
-from django.contrib import admin
+# Actualización del admin.py para el modelo Cliente
 
-# Register your models here.
-# admin.py
 from django.contrib import admin
 from .models import *
 
@@ -14,9 +12,65 @@ class EmpleadoAdmin(admin.ModelAdmin):
 
 @admin.register(Cliente)
 class ClienteAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'apellido', 'email', 'telefono')
-    search_fields = ('nombre', 'apellido', 'email')
-    list_filter = ('nombre', 'apellido')
+    list_display = ('cedula_formateada', 'nombre_completo', 'telefono', 'email', 'fecha_registro')
+    list_filter = ('fecha_registro', 'fecha_actualizacion')
+    search_fields = ('cedula', 'nombre', 'apellido', 'telefono')
+    ordering = ('apellido', 'nombre')
+    date_hierarchy = 'fecha_registro'
+    
+    # Campos de solo lectura
+    readonly_fields = ('fecha_registro', 'fecha_actualizacion')
+    
+    # Organización de campos en el formulario de admin
+    fieldsets = (
+        ('Información Personal', {
+            'fields': ('cedula', 'nombre', 'apellido')
+        }),
+        ('Información de Contacto', {
+            'fields': ('telefono', 'email', 'direccion')
+        }),
+        ('Información del Sistema', {
+            'fields': ('fecha_registro', 'fecha_actualizacion'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    def nombre_completo(self, obj):
+        """Mostrar nombre completo en la lista"""
+        return obj.nombre_completo
+    nombre_completo.short_description = 'Nombre Completo'
+    
+    def cedula_formateada(self, obj):
+        """Mostrar cédula formateada en la lista"""
+        return obj.cedula_formateada
+    cedula_formateada.short_description = 'Cédula'
+    
+    # Acciones personalizadas
+    actions = ['exportar_clientes_csv']
+    
+    def exportar_clientes_csv(self, request, queryset):
+        """Acción personalizada para exportar clientes seleccionados"""
+        import csv
+        from django.http import HttpResponse
+        
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="clientes.csv"'
+        
+        writer = csv.writer(response)
+        writer.writerow(['Cédula', 'Nombre', 'Apellido', 'Teléfono', 'Email', 'Dirección'])
+        
+        for cliente in queryset:
+            writer.writerow([
+                cliente.cedula,
+                cliente.nombre,
+                cliente.apellido,
+                cliente.telefono,
+                cliente.email or 'No registrado',
+                cliente.direccion
+            ])
+        
+        return response
+    exportar_clientes_csv.short_description = "Exportar clientes seleccionados a CSV"
 
 @admin.register(Producto)
 class ProductoAdmin(admin.ModelAdmin):
@@ -29,7 +83,7 @@ class ProductoAdmin(admin.ModelAdmin):
 class FacturaAdmin(admin.ModelAdmin):
     list_display = ('id', 'cliente', 'empleado', 'fecha_fac', 'total_fac', 'metodo_pag')
     list_filter = ('metodo_pag', 'fecha_fac')
-    search_fields = ('cliente__nombre', 'empleado__nombre')
+    search_fields = ('cliente__cedula', 'cliente__nombre', 'empleado__nombre')
     date_hierarchy = 'fecha_fac'
 
 @admin.register(DetalleFactura)

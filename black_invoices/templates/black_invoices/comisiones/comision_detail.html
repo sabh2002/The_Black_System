@@ -67,6 +67,23 @@
 
                 <!-- Tabla de Ventas -->
                 <h4 style="margin-bottom: 10px;">Detalle de Ventas</h4>
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <label for="filtro_porcentaje">Filtrar por % Comisión:</label>
+                        <select class="form-control" id="filtro_porcentaje">
+                            <option value="">Todos los porcentajes</option>
+                            <option value="5">5%</option>
+                            <option value="10">10%</option>
+                            <option value="15">15%</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label>&nbsp;</label>
+                        <button id="btnLimpiarFiltro" class="btn btn-secondary form-control">
+                            <i class="fas fa-times"></i> Limpiar Filtro
+                        </button>
+                    </div>
+                </div>
                 <table id="tabla-ventas" class="table table-bordered table-striped">
                     <thead>
                         <tr>
@@ -318,6 +335,69 @@ $(document).ready(function() {
                 "print": "Imprimir"
             }
         }
+    });
+    // Funciones para el filtro de porcentaje de comisión
+    function extraerPorcentaje(dataCell) {
+        try {
+            var porcentajeStr = dataCell.replace('%', '').trim();
+            var porcentaje = parseFloat(porcentajeStr);
+            if (isNaN(porcentaje)) {
+                return null;
+            }
+            return porcentaje;
+        } catch(error) {
+            console.error("Error al procesar el porcentaje:", error, "Data:", dataCell);
+            return null;
+        }
+    }
+
+    function mostrarAlerta(mensaje, tipo) {
+        $('.alert-filtros').remove();
+        var alertaHTML = '<div class="alert alert-' + tipo + ' alert-dismissible fade show alert-filtros" role="alert">' +
+                        mensaje +
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                        '<span aria-hidden="true">&times;</span></button></div>';
+        $('#tabla-ventas').closest('.card-body').prepend(alertaHTML);
+        setTimeout(function() {
+            $('.alert-filtros').fadeOut('slow', function() {
+                $(this).remove();
+            });
+        }, 5000);
+    }
+
+    // Event listener para el filtro de porcentaje
+    $('#filtro_porcentaje').on('change', function() {
+        var porcentajeSeleccionado = $(this).val();
+        
+        // Limpiar filtros anteriores
+        $.fn.dataTable.ext.search.pop();
+        
+        if (porcentajeSeleccionado) {
+            var porcentajeNum = parseFloat(porcentajeSeleccionado);
+            
+            // Agregar filtro personalizado
+            $.fn.dataTable.ext.search.push(
+                function(settings, data, dataIndex) {
+                    var porcentajeVenta = extraerPorcentaje(data[4]); // Columna "% Comisión"
+                    if (porcentajeVenta === null) return false;
+                    return porcentajeVenta === porcentajeNum;
+                }
+            );
+            
+            tableDetalleComision.draw();
+            mostrarAlerta("Filtro aplicado: Mostrando solo ventas con " + porcentajeSeleccionado + "% de comisión", "success");
+        } else {
+            tableDetalleComision.draw();
+            mostrarAlerta("Filtro eliminado: Mostrando todas las ventas", "info");
+        }
+    });
+
+    // Event listener para limpiar filtro
+    $('#btnLimpiarFiltro').click(function() {
+        $('#filtro_porcentaje').val('');
+        $.fn.dataTable.ext.search.pop();
+        tableDetalleComision.draw();
+        mostrarAlerta("Filtro de porcentaje eliminado", "info");
     });
     
     // El JS que me pasaste para esta vista no tenía la lógica de filtros complejos como las otras.

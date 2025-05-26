@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from decimal import Decimal
 import json
 import math as m
@@ -31,6 +31,7 @@ import io
 from .mixins import EmpleadoRolMixin
 import os
 from django.conf import settings
+from .models import *
 
 
 ###################     Dashboard       #################
@@ -124,12 +125,27 @@ class ClienteListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Lista de Clientes'
         context['create_url'] = reverse_lazy('black_invoices:cliente_create')
+        
+        # Estadísticas adicionales
+        clientes = self.get_queryset()
+        hoy = date.today()
+        
+        context['estadisticas'] = {
+            'total_clientes': clientes.count(),
+            'con_email': clientes.filter(email__isnull=False).exclude(email='').count(),
+            'registrados_hoy': clientes.filter(fecha_registro__date=hoy).count(),
+            'registrados_mes': clientes.filter(
+                fecha_registro__month=hoy.month,
+                fecha_registro__year=hoy.year
+            ).count()
+        }
+        
         return context
 
 class ClienteCreateView(LoginRequiredMixin, CreateView):
     model = Cliente
     form_class = ClienteForm
-    template_name = 'black_invoices/clientes/clientes_form.html'
+    template_name = 'black_invoices/clientes/cliente_form.html'
     success_url = reverse_lazy('black_invoices:cliente_list')
     
     def get_context_data(self, **kwargs):
@@ -139,8 +155,19 @@ class ClienteCreateView(LoginRequiredMixin, CreateView):
         return context
     
     def form_valid(self, form):
-        messages.success(self.request, 'Cliente registrado exitosamente.')
+        messages.success(
+            self.request, 
+            f'Cliente {form.instance.nombre_completo} (Cédula: {form.instance.cedula_formateada}) registrado exitosamente.'
+        )
         return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        messages.error(
+            self.request,
+            'Por favor corrija los errores en el formulario.'
+        )
+        return super().form_invalid(form)
+
 class ClienteDetailView(LoginRequiredMixin, DetailView):
     model = Cliente
     template_name = 'black_invoices/clientes/cliente_detail.html'
@@ -149,20 +176,82 @@ class ClienteDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         cliente = self.get_object()
+        
         # Obtener historial de ventas/facturas del cliente
-        context['facturas'] = Factura.objects.filter(cliente=cliente).order_by('-fecha_fac')
+        facturas = Factura.objects.filter(cliente=cliente).order_by('-fecha_fac')
+        context['facturas'] = facturas
+        
+        # Estadísticas del cliente
+        context['estadisticas_cliente'] = {
+            'total_facturas': facturas.count(),
+            'total_gastado': sum(f.total_fac for f in facturas),
+            'ultima_compra': facturas.first().fecha_fac if facturas.exists() else None,
+            'primera_compra': facturas.last().fecha_fac if facturas.exists() else None,
+        }
+        
         return context
+
 class ClienteUpdateView(LoginRequiredMixin, UpdateView):
     model = Cliente
+    form_class = ClienteForm
     template_name = 'black_invoices/clientes/cliente_form.html'
-    fields = ['nombre', 'apellido', 'email', 'telefono', 'direccion']
     
     def get_success_url(self):
         return reverse_lazy('black_invoices:cliente_detail', kwargs={'pk': self.object.pk})
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = f'Editar Cliente: {self.object.nombre_completo}'
+        context['action'] = 'Actualizar'
+        return context
+    
     def form_valid(self, form):
-        messages.success(self.request, 'Cliente actualizado exitosamente')
+        messages.success(
+            self.request, 
+            f'Cliente {form.instance.nombre_completo} actualizado exitosamente'
+        )
         return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        messages.error(
+            self.request,
+            'Por favor corrija los errores en el formulario.'
+        )
+        return super().form_invalid(form)
+
+# Función de búsqueda avanzada (opcional para AJAX)
+def buscar_cliente_por_cedula(request):
+    """
+    Función para búsqueda AJAX de cliente por cédula
+    """
+    if request.method == 'GET' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        cedula = request.GET.get('cedula', '')
+        
+        if cedula:
+            try:
+                # Normalizar cédula
+                cedula_normalizada = cedula.replace('-', '').upper()
+                cliente = Cliente.objects.get(cedula=cedula_normalizada)
+                
+                data = {
+                    'encontrado': True,
+                    'cliente': {
+                        'id': cliente.id,
+                        'nombre_completo': cliente.nombre_completo,
+                        'cedula_formateada': cliente.cedula_formateada,
+                        'telefono': cliente.telefono,
+                        'direccion': cliente.direccion,
+                        'email': cliente.email or 'No registrado'
+                    }
+                }
+            except Cliente.DoesNotExist:
+                data = {'encontrado': False, 'mensaje': 'Cliente no encontrado'}
+        else:
+            data = {'encontrado': False, 'mensaje': 'Cédula requerida'}
+        
+        return JsonResponse(data)
+    
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
     
 ######################      PRODUCTOS       ###############
 class ProductoListView(LoginRequiredMixin, ListView):
@@ -253,7 +342,76 @@ class ProductoUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         messages.success(self.request, f'Producto {self.object.nombre} actualizado exitosamente.')
         return super().form_valid(form)
-
+class ProductosMasVendidosView(LoginRequiredMixin, ListView):
+    model = Producto
+    template_name = 'black_invoices/productos/productos_mas_vendidos.html'
+    context_object_name = 'productos'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Productos Más Vendidos'
+        
+        # Obtener parámetros de fecha del request
+        fecha_inicio = self.request.GET.get('fecha_inicio')
+        fecha_fin = self.request.GET.get('fecha_fin')
+        
+        # Filtros base
+        filtros = {}
+        
+        if fecha_inicio:
+            try:
+                fecha_inicio_obj = datetime.strptime(fecha_inicio, '%Y-%m-%d').date()
+                filtros['factura__fecha_fac__date__gte'] = fecha_inicio_obj
+                context['fecha_inicio'] = fecha_inicio
+            except ValueError:
+                pass
+                
+        if fecha_fin:
+            try:
+                fecha_fin_obj = datetime.strptime(fecha_fin, '%Y-%m-%d').date()
+                filtros['factura__fecha_fac__date__lte'] = fecha_fin_obj
+                context['fecha_fin'] = fecha_fin
+            except ValueError:
+                pass
+        
+        # Si no hay filtros de fecha, usar el mes actual por defecto
+        if not fecha_inicio and not fecha_fin:
+            hoy = datetime.now().date()
+            inicio_mes = hoy.replace(day=1)
+            filtros['factura__fecha_fac__date__gte'] = inicio_mes
+            context['periodo_default'] = f"Mes actual ({inicio_mes.strftime('%B %Y')})"
+        
+        # Consulta principal: productos más vendidos
+        productos_vendidos = DetalleFactura.objects.filter(
+            **filtros
+        ).exclude(
+            factura__ventas__status__vent_cancelada=True  # Excluir ventas canceladas
+        ).values(
+            'producto__id',
+            'producto__nombre', 
+            'producto__precio'
+        ).annotate(
+            total_vendido=Sum('cantidad'),
+            total_ingresos=Sum(F('cantidad') * F('producto__precio')),
+            numero_ventas=Count('factura', distinct=True)
+        ).order_by('-total_vendido')
+        
+        context['productos_vendidos'] = productos_vendidos
+        
+        # Estadísticas adicionales
+        if productos_vendidos:
+            context['producto_top'] = productos_vendidos[0]
+            context['total_productos_diferentes'] = productos_vendidos.count()
+            context['total_unidades_vendidas'] = sum(p['total_vendido'] for p in productos_vendidos)
+            context['total_ingresos_productos'] = sum(p['total_ingresos'] for p in productos_vendidos)
+        else:
+            context['producto_top'] = None
+            context['total_productos_diferentes'] = 0
+            context['total_unidades_vendidas'] = 0
+            context['total_ingresos_productos'] = 0
+            
+        return context
+    
 ########################        EMPLEADOS       #############
 class EmpleadoListView(EmpleadoRolMixin, ListView):
     model = Empleado
@@ -1359,3 +1517,229 @@ def import_database_view(request):
         'titulo': 'Importar Base de Datos',
         'form': form
     })
+    
+from reportlab.lib.units import inch # Para márgenes más intuitivos
+
+class ProductosMasVendidosPDFView(LoginRequiredMixin, View):
+    def get(self, request):
+        try:
+            # ... (tu código para obtener filtros y productos_vendidos es el mismo) ...
+            fecha_inicio = request.GET.get('fecha_inicio')
+            fecha_fin = request.GET.get('fecha_fin')
+            
+            filtros = {}
+            periodo_texto = "Período no especificado" # Default
+            
+            if fecha_inicio:
+                try:
+                    fecha_inicio_obj = datetime.strptime(fecha_inicio, '%Y-%m-%d').date()
+                    filtros['factura__fecha_fac__date__gte'] = fecha_inicio_obj
+                    periodo_texto = f"Desde: {fecha_inicio_obj.strftime('%d/%m/%Y')} "
+                except ValueError: pass
+                    
+            if fecha_fin:
+                try:
+                    fecha_fin_obj = datetime.strptime(fecha_fin, '%Y-%m-%d').date()
+                    filtros['factura__fecha_fac__date__lte'] = fecha_fin_obj
+                    if fecha_inicio: # Si ya hay texto de inicio
+                        periodo_texto += f"Hasta: {fecha_fin_obj.strftime('%d/%m/%Y')}"
+                    else:
+                        periodo_texto = f"Hasta: {fecha_fin_obj.strftime('%d/%m/%Y')}"
+                except ValueError: pass
+            
+            if not fecha_inicio and not fecha_fin:
+                hoy = datetime.now().date()
+                inicio_mes = hoy.replace(day=1)
+                # Por defecto, si no hay filtro, podrías querer el mes actual o todo.
+                # Aquí asumo mes actual si no se especifica nada.
+                filtros['factura__fecha_fac__date__gte'] = inicio_mes 
+                filtros['factura__fecha_fac__date__lte'] = hoy # Hasta hoy
+                periodo_texto = f"Período: {inicio_mes.strftime('%B %Y')}"
+
+
+            productos_vendidos = DetalleFactura.objects.filter(
+                **filtros
+            ).exclude(
+                factura__ventas__status__vent_cancelada=True
+            ).values(
+                'producto__nombre', 
+                'producto__precio'
+            ).annotate(
+                total_vendido=Sum('cantidad'),
+                total_ingresos=Sum(F('cantidad') * F('producto__precio')),
+                numero_ventas=Count('factura', distinct=True)
+            ).order_by('-total_vendido')[:20]
+
+
+            buffer = io.BytesIO()
+            p = canvas.Canvas(buffer, pagesize=letter)
+            width, height = letter
+
+            # Márgenes
+            margin_left = 0.75 * inch
+            margin_right = 0.75 * inch
+            margin_top = 0.75 * inch
+            margin_bottom = 0.75 * inch
+            
+            content_width = width - margin_left - margin_right
+            
+            # Posición Y actual, comenzando desde arriba (después del margen superior)
+            current_y = height - margin_top
+
+            # --- Membrete y Logo ---
+            logo_path = os.path.join(settings.BASE_DIR, 'black_invoices/static/img/the_black.jpeg')
+            logo_height = 60 # Altura estimada del logo + texto empresa
+            if os.path.exists(logo_path):
+                p.drawImage(logo_path, margin_left, current_y - 70, width=120, height=60, 
+                            preserveAspectRatio=True, mask='auto')
+            
+            p.setFont("Helvetica-Bold", 12)
+            p.drawString(margin_left + 140, current_y - 10, "INDUSTRIA & HERRAMIENTA EL NEGRITO, C.A.")
+            p.setFont("Helvetica-Bold", 11)
+            p.drawString(margin_left + 140, current_y - 25, "RIF: J-406050717")
+            p.setFont("Helvetica", 10)
+            p.drawString(margin_left + 140, current_y - 40, "CR 10 ENTRE CALLES 4 Y 5 EDIF DOÑA EDITH PISO 1 OF 2")
+            p.drawString(margin_left + 140, current_y - 55, "BARRIO MATURIN GUANARE PORTUGUESA")
+            p.drawString(margin_left + 140, current_y - 70, "Teléfonos: 0257-5143082 / 0257-5143082")
+            current_y -= (logo_height + 30) # Espacio para el membrete + un poco más
+
+            # --- Título del reporte ---
+            p.setFont("Helvetica-Bold", 14)
+            p.drawString(margin_left, current_y, "REPORTE - PRODUCTOS MÁS VENDIDOS")
+            current_y -= 20 
+
+            # --- Período y Fecha de generación ---
+            p.setFont("Helvetica", 11)
+            p.drawString(margin_left, current_y, periodo_texto)
+            fecha_actual_str = datetime.now().strftime("%d/%m/%Y %H:%M")
+            p.drawRightString(width - margin_right, current_y, f"Generado: {fecha_actual_str}")
+            current_y -= 30 # Espacio
+
+            # --- Estadísticas generales (RESUMEN) ---
+            if productos_vendidos:
+                producto_top = productos_vendidos[0]
+                total_unidades = sum(item['total_vendido'] for item in productos_vendidos)
+                total_ingresos_global = sum(item['total_ingresos'] for item in productos_vendidos)
+                
+                p.setFont("Helvetica-Bold", 11)
+                p.drawString(margin_left, current_y, "RESUMEN:")
+                current_y -= 20
+                p.setFont("Helvetica", 10)
+                
+                resumen_y_start = current_y
+                p.drawString(margin_left, current_y, f"Producto #1: {producto_top['producto__nombre']}")
+                current_y -= 15
+                p.drawString(margin_left, current_y, f"Unidades vendidas (Top 1): {producto_top['total_vendido']}")
+                current_y = resumen_y_start # Volver al Y del inicio de la segunda columna de resumen
+                
+                p.drawString(margin_left + content_width / 2, current_y, f"Total productos diferentes (Top 20): {productos_vendidos.count()}")
+                current_y -= 15
+                p.drawString(margin_left + content_width / 2, current_y, f"Total unidades vendidas (Top 20): {total_unidades}")
+                current_y -= 15
+                p.drawString(margin_left + content_width / 2, current_y, f"Total ingresos (Top 20): ${total_ingresos_global:,.2f}")
+                current_y -= 30 # Espacio después del resumen
+            else:
+                p.setFont("Helvetica", 10)
+                p.drawString(margin_left, current_y, "No hay datos de resumen para el período seleccionado.")
+                current_y -= 30
+
+
+            # --- Tabla de productos ---
+            p.setFont("Helvetica-Bold", 12)
+            p.drawString(margin_left, current_y, "DETALLE DE PRODUCTOS:")
+            current_y -= 25 # Espacio antes de la tabla (un poco más)
+            
+            data = [["#", "Producto", "Unid. Vendidas", "Precio Unit.", "Ventas", "Total Ingresos"]]
+            
+            for idx, producto in enumerate(productos_vendidos, 1):
+                nombre_prod = producto['producto__nombre']
+                # El truncado se manejará mejor con el wordwrap de la tabla
+                data.append([
+                    str(idx),
+                    nombre_prod,
+                    str(producto['total_vendido']),
+                    f"${producto['producto__precio']:,.2f}",
+                    str(producto['numero_ventas']),
+                    f"${producto['total_ingresos']:,.2f}"
+                ])
+            
+            if not productos_vendidos: # Si no hay productos en la lista
+                data.append(["", "No hay productos para detallar en el período.", "", "", "", ""])
+            
+            # Anchos de columna ajustados para usar mejor el content_width
+            # Suma debe ser igual o menor a content_width
+            # Ejemplo: # (5%), Producto (35%), Unid. (15%), Precio (15%), Ventas (10%), Ingresos (20%)
+            col_widths = [
+                0.05 * content_width, # #
+                0.30 * content_width, # Producto (más espacio)
+                0.15 * content_width, # Unid. Vendidas
+                0.15 * content_width, # Precio Unit.
+                0.10 * content_width, # Ventas
+                0.25 * content_width  # Total Ingresos (más espacio)
+            ]
+            
+            table = Table(data, colWidths=col_widths, repeatRows=1) # repeatRows=1 para repetir encabezado en nueva página
+            table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, 0), 8),
+                ('BOTTOMPADDING', (0, 0), (-1, 0), 5),
+                ('TOPPADDING', (0, 0), (-1, 0), 5),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+                ('ALIGN', (2, 1), (2, -1), 'CENTER'), # Unid. Vendidas centrado
+                ('ALIGN', (4, 1), (4, -1), 'CENTER'), # Ventas (número) centrado
+                ('ALIGN', (3, 1), (3, -1), 'RIGHT'),  # Precio Unit. a la derecha
+                ('ALIGN', (5, 1), (5, -1), 'RIGHT'),  # Total Ingresos a la derecha
+                ('FONTSIZE', (0, 1), (-1, -1), 7),
+                ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                ('LEFTPADDING', (1,1), (1,-1), 2), # Padding para columna producto
+                ('RIGHTPADDING', (1,1), (1,-1), 2),
+                # ('WORDWRAP', (1, 0), (1, -1), 'CJK') # Usar CJK para mejor word wrap si hay caracteres especiales
+                                                    # O simplemente no especificar y dejar que ReportLab maneje
+            ]))
+            
+            # Usar wrapOn para obtener el ancho y alto reales que la tabla ocupará
+            table_width_actual, table_height_actual = table.wrapOn(p, content_width, current_y - margin_bottom)
+
+            # Calcular la posición Y para dibujar la tabla
+            # Se resta la altura de la tabla desde la posición Y actual
+            # Esto asegura que la tabla comience DESPUÉS del texto "DETALLE DE PRODUCTOS:"
+            table_draw_y = current_y - table_height_actual
+            
+            # Si la tabla es muy grande y se sale del margen inferior, la movemos a una nueva página
+            if table_draw_y < margin_bottom:
+                p.showPage() # Nueva página
+                current_y = height - margin_top # Reiniciar Y para la nueva página
+                # Redibujar membrete en la nueva página si es necesario (o usar PageTemplates de Platypus)
+                # Por simplicidad aquí, no lo redibujo, pero para reportes multi-página es crucial
+                # O mejor aún, usar el sistema de flujo de Platypus (Story) para manejo automático de páginas.
+                # Aquí solo ajustamos el Y para la tabla en la nueva página:
+                table_draw_y = current_y - table_height_actual 
+                # Podrías necesitar redibujar el título "DETALLE DE PRODUCTOS" también si va a una nueva página.
+
+
+            table.drawOn(p, margin_left, table_draw_y)
+            current_y = table_draw_y - 20 # Espacio después de la tabla
+
+            # --- Pie de página ---
+            p.setFont("Helvetica", 8)
+            p.line(margin_left, margin_bottom + 15, width - margin_right, margin_bottom + 15) # Línea arriba del footer
+            p.drawString(width - margin_right - p.stringWidth("Página 1 de 1", "Helvetica", 8), margin_bottom, f"Página 1 de 1") # Alineado a la derecha
+            p.drawString(margin_left, margin_bottom, "The Black System - Todos los derechos reservados")
+
+            p.showPage()
+            p.save()
+            buffer.seek(0)
+            
+            response = HttpResponse(buffer, content_type='application/pdf')
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            response['Content-Disposition'] = f'attachment; filename="Productos_Mas_Vendidos_{timestamp}.pdf"'
+            return response
+            
+        except Exception as e:
+            messages.error(request, f'Error al generar el reporte PDF: {str(e)}')
+            # Considera redirigir a una página más genérica o a la página anterior
+            # si 'productos_mas_vendidos' no existe o no es el lugar correcto.
+            return redirect(request.META.get('HTTP_REFERER', reverse_lazy('black_invoices:inicio')))

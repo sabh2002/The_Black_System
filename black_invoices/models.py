@@ -1,7 +1,8 @@
 from django.utils import timezone
 from django.db import models
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, RegexValidator, MaxValueValidator
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 
 
 # Create your models here.
@@ -18,41 +19,125 @@ class NivelAcceso(models.Model):
     
 
 class Cliente(models.Model):
-
-    nombre = models.CharField(max_length=20, verbose_name= "Nombre")
+    # Validador para cédula venezolana (V o E seguido de 6-8 dígitos)
+    cedula_validator = RegexValidator(
+        regex=r'^[VE]-?\d{6,8}$',
+        message='La cédula debe tener el formato V12345678 o E12345678'
+    )
+    
+    cedula = models.CharField(
+        max_length=12, 
+        unique=True,
+        validators=[cedula_validator],
+        verbose_name="Cédula",
+        help_text="Formato: V12345678 o E12345678"
+    )
+    nombre = models.CharField(max_length=20, verbose_name="Nombre")
     apellido = models.CharField(max_length=20, verbose_name='Apellido')
-    email = models.EmailField(max_length=254, unique=True)
-    telefono = models.CharField(max_length=15, verbose_name = "Telefono")
-    direccion = models.CharField(max_length=200, verbose_name = "Direccion")
+    
+    # Hacer email opcional y no único
+    email = models.EmailField(
+        max_length=254, 
+        blank=True, 
+        null=True,
+        verbose_name="Correo Electrónico (Opcional)"
+    )
+    
+    telefono = models.CharField(max_length=15, verbose_name="Teléfono")
+    direccion = models.CharField(max_length=200, verbose_name="Dirección")
+    
+    # Campos de auditoría
+    fecha_registro = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Fecha de Registro"
+    )
+    fecha_actualizacion = models.DateTimeField(
+        auto_now=True,
+        verbose_name="Última Actualización"
+    )
 
     class Meta:
         verbose_name = "Cliente"
         verbose_name_plural = "Clientes"
-        ordering = ['apellido','nombre']
+        ordering = ['apellido', 'nombre']
 
     def __str__(self):
+        return f"{self.cedula} - {self.nombre} {self.apellido}"
+    
+    def clean(self):
+        """Validaciones personalizadas"""
+        super().clean()
+        
+        # Normalizar cédula (remover guiones y convertir a mayúsculas)
+        if self.cedula:
+            self.cedula = self.cedula.replace('-', '').upper()
+            
+            # Validar que tenga el formato correcto después de normalizar
+            if not self.cedula.startswith(('V', 'E')):
+                raise ValidationError({'cedula': 'La cédula debe comenzar con V o E'})
+            
+            # Validar que después de V o E solo haya números
+            numero_parte = self.cedula[1:]
+            if not numero_parte.isdigit():
+                raise ValidationError({'cedula': 'Después de V o E solo debe haber números'})
+            
+            # Validar longitud de la parte numérica
+            if len(numero_parte) < 6 or len(numero_parte) > 8:
+                raise ValidationError({'cedula': 'La cédula debe tener entre 6 y 8 dígitos después de V o E'})
+    
+    def save(self, *args, **kwargs):
+        self.full_clean()  # Ejecutar validaciones antes de guardar
+        super().save(*args, **kwargs)
+    
+    @property
+    def nombre_completo(self):
+        """Retorna el nombre completo del cliente"""
         return f"{self.nombre} {self.apellido}"
+    
+    @property
+    def cedula_formateada(self):
+        """Retorna la cédula con formato legible"""
+        if self.cedula and len(self.cedula) > 1:
+            return f"{self.cedula[0]}-{self.cedula[1:]}"
+        return self.cedula
 
 class Producto(models.Model):
+    # Constantes para validaciones
+    PRECIO_MINIMO = 0.01
+    PRECIO_MAXIMO = 5000.00
+    STOCK_MINIMO = 0
+    STOCK_MAXIMO = 100000
 
-    nombre = models.CharField(max_length=20,
-                               verbose_name= "Nombre",
-                                 unique=True)
+    nombre = models.CharField(
+        max_length=20,
+        verbose_name="Nombre",
+        unique=True
+    )
     
-    descripcion = models.TextField(max_length=200,
-                                    verbose_name='Descripcion',
-                                    help_text="Describe las características del producto")
+    descripcion = models.TextField(
+        max_length=200,
+        verbose_name='Descripción',
+        help_text="Describe las características del producto"
+    )
     
-    precio = models.DecimalField(max_digits=10,
-                                decimal_places = 2,
-                                verbose_name = "Precio",
-                                validators= [MinValueValidator(0.01)],
-                                help_text="Precio en dólares/euros")
+    precio = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name="Precio",
+        validators=[
+            MinValueValidator(PRECIO_MINIMO, message=f"El precio no puede ser menor a ${PRECIO_MINIMO}"),
+            MaxValueValidator(PRECIO_MAXIMO, message=f"El precio no puede ser mayor a ${PRECIO_MAXIMO:,.2f}")
+        ],
+        help_text=f"Precio en dólares (Máximo: ${PRECIO_MAXIMO:,.2f})"
+    )
     
-    
-    stock = models.PositiveIntegerField(  # Añadimos control de inventario
+    stock = models.PositiveIntegerField(
         default=0,
-        verbose_name="Stock disponible"
+        verbose_name="Stock disponible",
+        validators=[
+            MaxValueValidator(STOCK_MAXIMO, message=f"El stock no puede ser mayor a {STOCK_MAXIMO:,} unidades")
+        ],
+        help_text=f"Cantidad disponible (Máximo: {STOCK_MAXIMO:,} unidades)"
     )
 
     activo = models.BooleanField(
@@ -67,7 +152,7 @@ class Producto(models.Model):
 
     updated_at = models.DateTimeField(
         auto_now=True,
-        verbose_name="Ultima modificacion"
+        verbose_name="Última modificación"
     )
 
     class Meta:
@@ -78,9 +163,93 @@ class Producto(models.Model):
     def __str__(self):
         return self.nombre
     
+    def clean(self):
+        """Validaciones personalizadas del modelo"""
+        super().clean()
+        
+        # Validación de precio
+        if self.precio is not None:
+            if self.precio < self.PRECIO_MINIMO:
+                raise ValidationError({
+                    'precio': f'El precio no puede ser menor a ${self.PRECIO_MINIMO}'
+                })
+            elif self.precio > self.PRECIO_MAXIMO:
+                raise ValidationError({
+                    'precio': f'El precio no puede ser mayor a ${self.PRECIO_MAXIMO:,.2f}'
+                })
+        
+        # Validación de stock
+        if self.stock is not None:
+            if self.stock < self.STOCK_MINIMO:
+                raise ValidationError({
+                    'stock': f'El stock no puede ser menor a {self.STOCK_MINIMO}'
+                })
+            elif self.stock > self.STOCK_MAXIMO:
+                raise ValidationError({
+                    'stock': f'El stock no puede ser mayor a {self.STOCK_MAXIMO:,} unidades'
+                })
+    
+    def save(self, *args, **kwargs):
+        """Ejecutar validaciones antes de guardar"""
+        self.full_clean()
+        super().save(*args, **kwargs)
+    
     def stock_available(self):
+        """Verifica si hay stock disponible"""
         return self.stock > 0
     
+    def is_low_stock(self, threshold=5):
+        """Verifica si el stock está bajo"""
+        return self.stock <= threshold
+    
+    def get_stock_status(self):
+        """Retorna el estado del stock"""
+        if self.stock <= 0:
+            return 'sin_stock'
+        elif self.stock <= 5:
+            return 'stock_bajo'
+        elif self.stock <= 20:
+            return 'stock_medio'
+        else:
+            return 'stock_alto'
+    
+    def get_stock_badge_class(self):
+        """Retorna la clase CSS para el badge de stock"""
+        status = self.get_stock_status()
+        return {
+            'sin_stock': 'badge-danger',
+            'stock_bajo': 'badge-warning',
+            'stock_medio': 'badge-info',
+            'stock_alto': 'badge-success'
+        }.get(status, 'badge-secondary')
+    
+    def precio_en_rango_permitido(self):
+        """Verifica si el precio está en el rango permitido"""
+        return self.PRECIO_MINIMO <= self.precio <= self.PRECIO_MAXIMO
+    
+    def stock_en_rango_permitido(self):
+        """Verifica si el stock está en el rango permitido"""
+        return self.STOCK_MINIMO <= self.stock <= self.STOCK_MAXIMO
+    
+    @classmethod
+    def get_productos_precio_alto(cls):
+        """Retorna productos con precio cercano al límite (>$4000)"""
+        return cls.objects.filter(precio__gte=4000, activo=True)
+    
+    @classmethod
+    def get_productos_stock_alto(cls):
+        """Retorna productos con stock alto (>50000)"""
+        return cls.objects.filter(stock__gte=50000, activo=True)
+    
+    @classmethod
+    def get_limites_validacion(cls):
+        """Retorna los límites de validación para uso en formularios/templates"""
+        return {
+            'precio_minimo': cls.PRECIO_MINIMO,
+            'precio_maximo': cls.PRECIO_MAXIMO,
+            'stock_minimo': cls.STOCK_MINIMO,
+            'stock_maximo': cls.STOCK_MAXIMO
+        }
 class Empleado(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Usuario')

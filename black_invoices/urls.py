@@ -48,6 +48,9 @@ urlpatterns = [
     path('perfil/editar/', views.UserProfileUpdateView.as_view(), name='perfil_usuario_editar'),
     path('configuracion/exportar-datos/', views.export_database_view, name='exportar_datos'),
     path('configuracion/importar-datos/', views.import_database_view, name='importar_datos'),
+    path('productos/mas-vendidos/', views.ProductosMasVendidosView.as_view(), name='productos_mas_vendidos'),
+    path('productos/mas-vendidos/pdf', views.ProductosMasVendidosPDFView.as_view(), name='productos_mas_vendidos_pdf'),
+
     # ...
 # URL para editar perfil
 

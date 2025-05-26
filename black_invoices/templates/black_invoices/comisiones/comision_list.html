@@ -50,16 +50,20 @@
                     <option value="Supervisor">Supervisor</option>
                 </select>
             </div>
-            <div class="col-md-2">
-                <label for="monto_minimo">Comisión Mínima:</label>
-                <input type="number" class="form-control" id="monto_minimo" min="0" step="0.01" placeholder="0.00">
-            </div>
-            <div class="col-md-2">
-                <label>&nbsp;</label>
-                <button id="btnFiltrarComisiones" class="btn btn-info form-control">
-                    <i class="fas fa-filter"></i> Filtrar / Recalcular
-                </button>
-            </div>
+            <div class="col-md-1">
+               <label for="monto_minimo">Com. Mín:</label>
+               <input type="number" class="form-control" id="monto_minimo" min="0" step="0.01" placeholder="0.00">
+           </div>
+           <div class="col-md-1">
+               <label for="monto_maximo">Com. Máx:</label>
+               <input type="number" class="form-control" id="monto_maximo" min="0" step="0.01" placeholder="999.99">
+           </div>
+           <div class="col-md-2">
+               <label>&nbsp;</label>
+               <button id="btnFiltrarComisiones" class="btn btn-info form-control">
+                   <i class="fas fa-filter"></i> Filtrar / Recalcular
+               </button>
+           </div>
         </div>
 
         <table id="tabla-comisiones" class="table table-bordered table-striped">
@@ -362,29 +366,68 @@ $(document).ready(function() {
         var filtrosAplicadosEnTabla = 0;
         if(nivelAcceso) filtrosAplicadosEnTabla++;
 
-        if (montoMinimoStr) {
-            var montoMinimoNum = parseFloat(montoMinimoStr);
-            if (isNaN(montoMinimoNum) || montoMinimoNum < 0) {
-                mostrarAlerta("El monto mínimo de comisión debe ser un número válido y no negativo.", "warning");
-            } else {
-                $.fn.dataTable.ext.search.push(
-                    function(settings, data, dataIndex) {
-                        var montoComision = extraerMonto(data[3]); 
-                        if (montoComision === null) return false; 
-                        return montoComision >= montoMinimoNum;
-                    }
-                );
-                filtrosAplicadosEnTabla++;
-            }
-        }
+               var montoMaximoStr = $('#monto_maximo').val();
+       
+       // Validar montos
+       var montoMinimoNum = null;
+       var montoMaximoNum = null;
+       
+       if (montoMinimoStr) {
+           montoMinimoNum = parseFloat(montoMinimoStr);
+           if (isNaN(montoMinimoNum) || montoMinimoNum < 0) {
+               mostrarAlerta("El monto mínimo de comisión debe ser un número válido y no negativo.", "warning");
+               return;
+           }
+       }
+       
+       if (montoMaximoStr) {
+           montoMaximoNum = parseFloat(montoMaximoStr);
+           if (isNaN(montoMaximoNum) || montoMaximoNum < 0) {
+               mostrarAlerta("El monto máximo de comisión debe ser un número válido y no negativo.", "warning");
+               return;
+           }
+       }
+       
+       // Validar que mínimo no sea mayor que máximo
+       if (montoMinimoNum !== null && montoMaximoNum !== null && montoMinimoNum > montoMaximoNum) {
+           mostrarAlerta("El monto mínimo no puede ser mayor que el monto máximo.", "warning");
+           return;
+       }
+       
+       // Aplicar filtros de monto
+       if (montoMinimoNum !== null || montoMaximoNum !== null) {
+           $.fn.dataTable.ext.search.push(
+               function(settings, data, dataIndex) {
+                   var montoComision = extraerMonto(data[3]);
+                   if (montoComision === null) return false;
+                   
+                   var pasaMinimo = (montoMinimoNum === null) || (montoComision >= montoMinimoNum);
+                   var pasaMaximo = (montoMaximoNum === null) || (montoComision <= montoMaximoNum);
+                   
+                   return pasaMinimo && pasaMaximo;
+               }
+           );
+           filtrosAplicadosEnTabla++;
+       }
         
         table.draw(); 
         
         if (filtrosAplicadosEnTabla > 0) {
-            mostrarAlerta("Filtros de tabla aplicados (Nivel, Comisión Mínima). Para cambios de fecha, la página puede recargarse.", "success");
-        } else {
-            mostrarAlerta("Filtros de Nivel/Comisión no especificados. Si cambió fechas, la página puede recargarse.", "info");
-        }
+           var filtrosTexto = [];
+           if (nivelAcceso) filtrosTexto.push("Nivel");
+           if (montoMinimoNum !== null || montoMaximoNum !== null) {
+               if (montoMinimoNum !== null && montoMaximoNum !== null) {
+                   filtrosTexto.push("Comisión entre $" + montoMinimoNum + " y $" + montoMaximoNum);
+               } else if (montoMinimoNum !== null) {
+                   filtrosTexto.push("Comisión mínima $" + montoMinimoNum);
+               } else {
+                   filtrosTexto.push("Comisión máxima $" + montoMaximoNum);
+               }
+           }
+           mostrarAlerta("Filtros aplicados: " + filtrosTexto.join(", ") + ". Para cambios de fecha, la página puede recargarse.", "success");
+       } else {
+           mostrarAlerta("Filtros no especificados. Si cambió fechas, la página puede recargarse.", "info");
+       }
     });
     
     $('#fecha_inicio, #fecha_fin').on('change', function() {
@@ -418,6 +461,38 @@ $(document).ready(function() {
             $(this).val('');
         }
     });
+     $('#monto_maximo').on('change', function() {
+       var monto = $(this).val();
+       if (monto && (isNaN(monto) || parseFloat(monto) < 0)) {
+           mostrarAlerta("El monto máximo de comisión debe ser un número válido y no negativo.", "warning");
+           $(this).val('');
+           return;
+       }
+       
+       // Validar que no sea menor que el mínimo
+       var montoMinimo = $('#monto_minimo').val();
+       if (monto && montoMinimo && parseFloat(monto) < parseFloat(montoMinimo)) {
+           mostrarAlerta("El monto máximo no puede ser menor que el monto mínimo.", "warning");
+           $(this).val('');
+       }
+   });
+   
+   // Validación cruzada para mínimo cuando hay máximo
+   $('#monto_minimo').on('change', function() {
+       var monto = $(this).val();
+       if (monto && (isNaN(monto) || parseFloat(monto) < 0)) {
+           mostrarAlerta("El monto mínimo de comisión debe ser un número válido y no negativo.", "warning");
+           $(this).val('');
+           return;
+       }
+       
+       // Validar que no sea mayor que el máximo
+       var montoMaximo = $('#monto_maximo').val();
+       if (monto && montoMaximo && parseFloat(monto) > parseFloat(montoMaximo)) {
+           mostrarAlerta("El monto mínimo no puede ser mayor que el monto máximo.", "warning");
+           $(this).val('');
+       }
+   });
     // --- FIN: TU CÓDIGO DE FILTROS Y VALIDACIONES ---
 });
 </script>

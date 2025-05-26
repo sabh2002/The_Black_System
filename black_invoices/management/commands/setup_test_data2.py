@@ -135,11 +135,11 @@ class Command(BaseCommand):
                 )
                 empleados.append(empleado)
 
-            # 5. Clientes (mantenemos igual)
-            # 5. Clientes
+            # 5. Clientes - ACTUALIZADO CON CÉDULAS
             self.stdout.write('Creando clientes...')
             clientes_data = [
                 {
+                    "cedula": "V12345678",
                     "nombre": "Maria",
                     "apellido": "Garcia",
                     "email": "mariagarcia@gmail.com",
@@ -147,6 +147,7 @@ class Command(BaseCommand):
                     "direccion": "Urb Sol del este, Calle 3, Casa #12"
                 },
                 {
+                    "cedula": "V23456789",
                     "nombre": "Jose",
                     "apellido": "Rodriguez",
                     "email": "joserodriguez@outlook.com",
@@ -154,6 +155,7 @@ class Command(BaseCommand):
                     "direccion": "Barrio Santa Maria, Calle Principal"
                 },
                 {
+                    "cedula": "V34567890",
                     "nombre": "Carlos",
                     "apellido": "Hernandez",
                     "email": "carloshernandez@gmail.com",
@@ -161,6 +163,7 @@ class Command(BaseCommand):
                     "direccion": "Urb Juan Pablo, Edificio A, Piso 2"
                 },
                 {
+                    "cedula": "V45678901",
                     "nombre": "Ana",
                     "apellido": "Martinez",
                     "email": "anamartinez@outlook.com",
@@ -168,6 +171,7 @@ class Command(BaseCommand):
                     "direccion": "Barrio la Arenosa, Sector 2"
                 },
                 {
+                    "cedula": "V56789012",
                     "nombre": "Luis",
                     "apellido": "Gonzalez",
                     "email": "luisgonzalez@gmail.com",
@@ -175,6 +179,7 @@ class Command(BaseCommand):
                     "direccion": "Barrio los Cortijos, Calle 5"
                 },
                 {
+                    "cedula": "V67890123",
                     "nombre": "Carmen",
                     "apellido": "Lopez",
                     "email": "carmenlopez@outlook.com",
@@ -182,6 +187,7 @@ class Command(BaseCommand):
                     "direccion": "Urb El Placer, Casa #34"
                 },
                 {
+                    "cedula": "V78901234",
                     "nombre": "Juan",
                     "apellido": "Perez",
                     "email": "juanperez@gmail.com",
@@ -189,6 +195,7 @@ class Command(BaseCommand):
                     "direccion": "Barrio Los proceres, Calle 8"
                 },
                 {
+                    "cedula": "V89012345",
                     "nombre": "Sofia",
                     "apellido": "Diaz",
                     "email": "sofiadiaz@outlook.com",
@@ -196,6 +203,7 @@ class Command(BaseCommand):
                     "direccion": "Barrio La Pastora, Sector Central"
                 },
                 {
+                    "cedula": "V90123456",
                     "nombre": "Pedro",
                     "apellido": "Sanchez",
                     "email": "pedrosanchez@gmail.com",
@@ -203,6 +211,7 @@ class Command(BaseCommand):
                     "direccion": "Barrio el Progreso, Calle 10"
                 },
                 {
+                    "cedula": "V11223344",
                     "nombre": "Isabel",
                     "apellido": "Ramirez",
                     "email": "isabelramirez@outlook.com",
@@ -210,6 +219,7 @@ class Command(BaseCommand):
                     "direccion": "Urb La Granja, Casa #7"
                 },
                 {
+                    "cedula": "V22334455",
                     "nombre": "Miguel",
                     "apellido": "Torres",
                     "email": "migueltorres@gmail.com",
@@ -217,6 +227,7 @@ class Command(BaseCommand):
                     "direccion": "Ubr Villa Guanare, Bloque 4"
                 },
                 {
+                    "cedula": "E33445566",
                     "nombre": "Elena",
                     "apellido": "Flores",
                     "email": "elenaflores@outlook.com",
@@ -224,6 +235,7 @@ class Command(BaseCommand):
                     "direccion": "Urb Sol del este, Calle 7"
                 },
                 {
+                    "cedula": "V44556677",
                     "nombre": "Ricardo",
                     "apellido": "Vargas",
                     "email": "ricardovargas@gmail.com",
@@ -231,6 +243,7 @@ class Command(BaseCommand):
                     "direccion": "Barrio Santa Maria, Sector 3"
                 },
                 {
+                    "cedula": "V55667788",
                     "nombre": "Patricia",
                     "apellido": "Rojas",
                     "email": "patriciarojas@outlook.com",
@@ -238,6 +251,7 @@ class Command(BaseCommand):
                     "direccion": "Urb Juan Pablo, Edificio B"
                 },
                 {
+                    "cedula": "V66778899",
                     "nombre": "Fernando",
                     "apellido": "Mendoza",
                     "email": "fernandomendoza@gmail.com",
@@ -245,6 +259,7 @@ class Command(BaseCommand):
                     "direccion": "Barrio la Arenosa, Calle 12"
                 },
                 {
+                    "cedula": "V77889900",
                     "nombre": "Adriana",
                     "apellido": "Castillo",
                     "email": "adrianacastillo@outlook.com",
@@ -252,6 +267,7 @@ class Command(BaseCommand):
                     "direccion": "Barrio los Cortijos, Sector Norte"
                 },
                 {
+                    "cedula": "E88990011",
                     "nombre": "Jorge",
                     "apellido": "Nunez",
                     "email": "jorgenunez@gmail.com",
@@ -259,6 +275,7 @@ class Command(BaseCommand):
                     "direccion": "Urb El Placer, Casa #21"
                 },
                 {
+                    "cedula": "V99001122",
                     "nombre": "Gabriela",
                     "apellido": "Silva",
                     "email": "gabrielasilva@outlook.com",
@@ -266,6 +283,7 @@ class Command(BaseCommand):
                     "direccion": "Barrio Los proceres, Calle 15"
                 },
                 {
+                    "cedula": "V10112233",
                     "nombre": "Raul",
                     "apellido": "Molina",
                     "email": "raulmolina@gmail.com",
@@ -273,6 +291,7 @@ class Command(BaseCommand):
                     "direccion": "Barrio La Pastora, Sector Este"
                 },
                 {
+                    "cedula": "V21223344",
                     "nombre": "Daniela",
                     "apellido": "Reyes",
                     "email": "danielareyes@outlook.com",
@@ -280,9 +299,11 @@ class Command(BaseCommand):
                     "direccion": "Barrio el Progreso, Calle 8"
                 }
             ]
+            
             clientes = []
             for data in clientes_data:
                 cliente = Cliente.objects.create(
+                    cedula=data["cedula"],
                     nombre=data["nombre"],
                     apellido=data["apellido"],
                     email=data["email"],
@@ -290,7 +311,7 @@ class Command(BaseCommand):
                     direccion=data["direccion"]
                 )
                 clientes.append(cliente)
-            
+                self.stdout.write(f'Cliente creado: {cliente.cedula} - {cliente.nombre_completo}')
 
             # 6. Productos
             self.stdout.write('Creando productos...')
@@ -343,12 +364,12 @@ class Command(BaseCommand):
                         producto.save()
                     
                     DetalleFactura.objects.create(
-                    factura=factura,
-                    tipo_factura=tipo_credito if es_credito else tipo_contado,  # Añadir esta línea
-                    producto=producto,
-                    cantidad=cantidad,
-                    sub_total=subtotal
-                )
+                        factura=factura,
+                        tipo_factura=tipo_credito if es_credito else tipo_contado,
+                        producto=producto,
+                        cantidad=cantidad,
+                        sub_total=subtotal
+                    )
                 
                 # Actualizar total de factura
                 factura.total_fac = total_factura

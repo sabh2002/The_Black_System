@@ -1,0 +1,5386 @@
+[
+{
+  "model": "black_invoices.nivelacceso",
+  "pk": 1,
+  "fields": {
+    "nombre": "Administrador",
+    "descripcion": "Acceso total al sistema"
+  }
+},
+{
+  "model": "black_invoices.nivelacceso",
+  "pk": 2,
+  "fields": {
+    "nombre": "Vendedor",
+    "descripcion": "Acceso a ventas y facturas"
+  }
+},
+{
+  "model": "black_invoices.nivelacceso",
+  "pk": 3,
+  "fields": {
+    "nombre": "Supervisor",
+    "descripcion": "Supervisión de vendedores y reportes"
+  }
+},
+{
+  "model": "black_invoices.cliente",
+  "pk": 1,
+  "fields": {
+    "nombre": "Maria",
+    "apellido": "Garcia",
+    "email": "mariagarcia@gmail.com",
+    "telefono": "04163354478",
+    "direccion": "Urb Sol del este, Calle 3, Casa #12"
+  }
+},
+{
+  "model": "black_invoices.cliente",
+  "pk": 2,
+  "fields": {
+    "nombre": "Jose",
+    "apellido": "Rodriguez",
+    "email": "joserodriguez@outlook.com",
+    "telefono": "04263352234",
+    "direccion": "Barrio Santa Maria, Calle Principal"
+  }
+},
+{
+  "model": "black_invoices.cliente",
+  "pk": 3,
+  "fields": {
+    "nombre": "Carlos",
+    "apellido": "Hernandez",
+    "email": "carloshernandez@gmail.com",
+    "telefono": "04123356689",
+    "direccion": "Urb Juan Pablo, Edificio A, Piso 2"
+  }
+},
+{
+  "model": "black_invoices.cliente",
+  "pk": 4,
+  "fields": {
+    "nombre": "Ana",
+    "apellido": "Martinez",
+    "email": "anamartinez@outlook.com",
+    "telefono": "04243351123",
+    "direccion": "Barrio la Arenosa, Sector 2"
+  }
+},
+{
+  "model": "black_invoices.cliente",
+  "pk": 5,
+  "fields": {
+    "nombre": "Luis",
+    "apellido": "Gonzalez",
+    "email": "luisgonzalez@gmail.com",
+    "telefono": "04143357745",
+    "direccion": "Barrio los Cortijos, Calle 5"
+  }
+},
+{
+  "model": "black_invoices.cliente",
+  "pk": 6,
+  "fields": {
+    "nombre": "Carmen",
+    "apellido": "Lopez",
+    "email": "carmenlopez@outlook.com",
+    "telefono": "04163358896",
+    "direccion": "Urb El Placer, Casa #34"
+  }
+},
+{
+  "model": "black_invoices.cliente",
+  "pk": 7,
+  "fields": {
+    "nombre": "Juan",
+    "apellido": "Perez",
+    "email": "juanperez@gmail.com",
+    "telefono": "04263351234",
+    "direccion": "Barrio Los proceres, Calle 8"
+  }
+},
+{
+  "model": "black_invoices.cliente",
+  "pk": 8,
+  "fields": {
+    "nombre": "Sofia",
+    "apellido": "Diaz",
+    "email": "sofiadiaz@outlook.com",
+    "telefono": "04123354567",
+    "direccion": "Barrio La Pastora, Sector Central"
+  }
+},
+{
+  "model": "black_invoices.cliente",
+  "pk": 9,
+  "fields": {
+    "nombre": "Pedro",
+    "apellido": "Sanchez",
+    "email": "pedrosanchez@gmail.com",
+    "telefono": "04243357890",
+    "direccion": "Barrio el Progreso, Calle 10"
+  }
+},
+{
+  "model": "black_invoices.cliente",
+  "pk": 10,
+  "fields": {
+    "nombre": "Isabel",
+    "apellido": "Ramirez",
+    "email": "isabelramirez@outlook.com",
+    "telefono": "04143352345",
+    "direccion": "Urb La Granja, Casa #7"
+  }
+},
+{
+  "model": "black_invoices.cliente",
+  "pk": 11,
+  "fields": {
+    "nombre": "Miguel",
+    "apellido": "Torres",
+    "email": "migueltorres@gmail.com",
+    "telefono": "04163355678",
+    "direccion": "Ubr Villa Guanare, Bloque 4"
+  }
+},
+{
+  "model": "black_invoices.cliente",
+  "pk": 12,
+  "fields": {
+    "nombre": "Elena",
+    "apellido": "Flores",
+    "email": "elenaflores@outlook.com",
+    "telefono": "04263353456",
+    "direccion": "Urb Sol del este, Calle 7"
+  }
+},
+{
+  "model": "black_invoices.cliente",
+  "pk": 13,
+  "fields": {
+    "nombre": "Ricardo",
+    "apellido": "Vargas",
+    "email": "ricardovargas@gmail.com",
+    "telefono": "04123356789",
+    "direccion": "Barrio Santa Maria, Sector 3"
+  }
+},
+{
+  "model": "black_invoices.cliente",
+  "pk": 14,
+  "fields": {
+    "nombre": "Patricia",
+    "apellido": "Rojas",
+    "email": "patriciarojas@outlook.com",
+    "telefono": "04243350123",
+    "direccion": "Urb Juan Pablo, Edificio B"
+  }
+},
+{
+  "model": "black_invoices.cliente",
+  "pk": 15,
+  "fields": {
+    "nombre": "Fernando",
+    "apellido": "Mendoza",
+    "email": "fernandomendoza@gmail.com",
+    "telefono": "04143354456",
+    "direccion": "Barrio la Arenosa, Calle 12"
+  }
+},
+{
+  "model": "black_invoices.cliente",
+  "pk": 16,
+  "fields": {
+    "nombre": "Adrianaa",
+    "apellido": "Castilloss",
+    "email": "adrianacastillo@outlook.com",
+    "telefono": "04163358901",
+    "direccion": "Barrio los Cortijos, Sector Norte"
+  }
+},
+{
+  "model": "black_invoices.cliente",
+  "pk": 17,
+  "fields": {
+    "nombre": "Jorge",
+    "apellido": "Nunez",
+    "email": "jorgenunez@gmail.com",
+    "telefono": "04263351234",
+    "direccion": "Urb El Placer, Casa #21"
+  }
+},
+{
+  "model": "black_invoices.cliente",
+  "pk": 18,
+  "fields": {
+    "nombre": "Gabriela",
+    "apellido": "Silva",
+    "email": "gabrielasilva@outlook.com",
+    "telefono": "04123354567",
+    "direccion": "Barrio Los proceres, Calle 15"
+  }
+},
+{
+  "model": "black_invoices.cliente",
+  "pk": 19,
+  "fields": {
+    "nombre": "Raul",
+    "apellido": "Molina",
+    "email": "raulmolina@gmail.com",
+    "telefono": "04243357890",
+    "direccion": "Barrio La Pastora, Sector Este"
+  }
+},
+{
+  "model": "black_invoices.cliente",
+  "pk": 20,
+  "fields": {
+    "nombre": "Daniela",
+    "apellido": "Reyes",
+    "email": "danielareyes@outlook.com",
+    "telefono": "04143352345",
+    "direccion": "Barrio el Progreso, Calle 8"
+  }
+},
+{
+  "model": "black_invoices.producto",
+  "pk": 1,
+  "fields": {
+    "nombre": "Pistón",
+    "descripcion": "Refacción Pistón de alta calidad para vehículos",
+    "precio": "176.65",
+    "stock": 52,
+    "activo": true,
+    "created_at": "2025-04-28T14:44:04.209Z",
+    "updated_at": "2025-04-28T14:44:04.836Z"
+  }
+},
+{
+  "model": "black_invoices.producto",
+  "pk": 2,
+  "fields": {
+    "nombre": "Anillos",
+    "descripcion": "Refacción Anillos de alta calidad para vehículos",
+    "precio": "259.70",
+    "stock": 13,
+    "activo": true,
+    "created_at": "2025-04-28T14:44:04.211Z",
+    "updated_at": "2025-04-28T14:44:04.829Z"
+  }
+},
+{
+  "model": "black_invoices.producto",
+  "pk": 3,
+  "fields": {
+    "nombre": "Biela",
+    "descripcion": "Refacción Biela de alta calidad para vehículos",
+    "precio": "187.92",
+    "stock": 33,
+    "activo": true,
+    "created_at": "2025-04-28T14:44:04.211Z",
+    "updated_at": "2025-04-28T14:44:04.999Z"
+  }
+},
+{
+  "model": "black_invoices.producto",
+  "pk": 4,
+  "fields": {
+    "nombre": "Válvulas",
+    "descripcion": "Refacción Válvulas de alta calidad para vehículos",
+    "precio": "55.86",
+    "stock": 33,
+    "activo": true,
+    "created_at": "2025-04-28T14:44:04.212Z",
+    "updated_at": "2025-04-28T14:44:04.904Z"
+  }
+},
+{
+  "model": "black_invoices.producto",
+  "pk": 5,
+  "fields": {
+    "nombre": "Bomba de aceite",
+    "descripcion": "Refacción Bomba de aceite de alta calidad para vehículos",
+    "precio": "180.98",
+    "stock": 36,
+    "activo": true,
+    "created_at": "2025-04-28T14:44:04.212Z",
+    "updated_at": "2025-04-28T14:44:04.820Z"
+  }
+},
+{
+  "model": "black_invoices.producto",
+  "pk": 6,
+  "fields": {
+    "nombre": "Cojinetes",
+    "descripcion": "Refacción Cojinetes de alta calidad para vehículos",
+    "precio": "274.07",
+    "stock": 44,
+    "activo": true,
+    "created_at": "2025-04-28T14:44:04.213Z",
+    "updated_at": "2025-04-28T14:44:05.021Z"
+  }
+},
+{
+  "model": "black_invoices.producto",
+  "pk": 7,
+  "fields": {
+    "nombre": "Árbol de levas",
+    "descripcion": "Refacción Árbol de levas de alta calidad para vehículos",
+    "precio": "286.23",
+    "stock": 31,
+    "activo": true,
+    "created_at": "2025-04-28T14:44:04.214Z",
+    "updated_at": "2025-04-28T14:44:04.776Z"
+  }
+},
+{
+  "model": "black_invoices.producto",
+  "pk": 8,
+  "fields": {
+    "nombre": "Cigüeñal",
+    "descripcion": "Refacción Cigüeñal de alta calidad para vehículos",
+    "precio": "141.95",
+    "stock": 22,
+    "activo": true,
+    "created_at": "2025-04-28T14:44:04.214Z",
+    "updated_at": "2025-04-28T14:44:04.913Z"
+  }
+},
+{
+  "model": "black_invoices.producto",
+  "pk": 9,
+  "fields": {
+    "nombre": "Pastillas",
+    "descripcion": "Refacción Pastillas de alta calidad para vehículos",
+    "precio": "135.78",
+    "stock": 59,
+    "activo": true,
+    "created_at": "2025-04-28T14:44:04.216Z",
+    "updated_at": "2025-04-28T14:44:04.936Z"
+  }
+},
+{
+  "model": "black_invoices.producto",
+  "pk": 10,
+  "fields": {
+    "nombre": "Discos",
+    "descripcion": "Refacción Discos de alta calidad para vehículos",
+    "precio": "148.07",
+    "stock": 3,
+    "activo": true,
+    "created_at": "2025-04-28T14:44:04.217Z",
+    "updated_at": "2025-04-28T14:44:04.892Z"
+  }
+},
+{
+  "model": "black_invoices.producto",
+  "pk": 11,
+  "fields": {
+    "nombre": "Zapatas",
+    "descripcion": "Refacción Zapatas de alta calidad para vehículos",
+    "precio": "122.20",
+    "stock": 79,
+    "activo": true,
+    "created_at": "2025-04-28T14:44:04.220Z",
+    "updated_at": "2025-04-28T14:44:04.975Z"
+  }
+},
+{
+  "model": "black_invoices.producto",
+  "pk": 12,
+  "fields": {
+    "nombre": "Cilindro maestro",
+    "descripcion": "Refacción Cilindro maestro de alta calidad para vehículos",
+    "precio": "88.35",
+    "stock": 63,
+    "activo": true,
+    "created_at": "2025-04-28T14:44:04.220Z",
+    "updated_at": "2025-04-28T14:44:05.084Z"
+  }
+},
+{
+  "model": "black_invoices.producto",
+  "pk": 13,
+  "fields": {
+    "nombre": "Calibradores",
+    "descripcion": "Refacción Calibradores de alta calidad para vehículos",
+    "precio": "209.03",
+    "stock": 37,
+    "activo": true,
+    "created_at": "2025-04-28T14:44:04.221Z",
+    "updated_at": "2025-04-28T14:44:05.061Z"
+  }
+},
+{
+  "model": "black_invoices.producto",
+  "pk": 14,
+  "fields": {
+    "nombre": "Mangueras",
+    "descripcion": "Refacción Mangueras de alta calidad para vehículos",
+    "precio": "188.70",
+    "stock": 11,
+    "activo": true,
+    "created_at": "2025-04-28T14:44:04.222Z",
+    "updated_at": "2025-04-28T14:44:05.079Z"
+  }
+},
+{
+  "model": "black_invoices.producto",
+  "pk": 15,
+  "fields": {
+    "nombre": "Amortiguadores",
+    "descripcion": "Refacción Amortiguadores de alta calidad para vehículos",
+    "precio": "97.73",
+    "stock": 0,
+    "activo": true,
+    "created_at": "2025-04-28T14:44:04.223Z",
+    "updated_at": "2025-04-29T03:30:21.053Z"
+  }
+},
+{
+  "model": "black_invoices.producto",
+  "pk": 16,
+  "fields": {
+    "nombre": "Resortes",
+    "descripcion": "Refacción Resortes de alta calidad para vehículos",
+    "precio": "87.41",
+    "stock": 43,
+    "activo": true,
+    "created_at": "2025-04-28T14:44:04.224Z",
+    "updated_at": "2025-04-28T14:44:04.918Z"
+  }
+},
+{
+  "model": "black_invoices.producto",
+  "pk": 17,
+  "fields": {
+    "nombre": "Rótulas",
+    "descripcion": "Refacción Rótulas de alta calidad para vehículos",
+    "precio": "282.24",
+    "stock": 12,
+    "activo": true,
+    "created_at": "2025-04-28T14:44:04.225Z",
+    "updated_at": "2025-04-28T14:44:05.072Z"
+  }
+},
+{
+  "model": "black_invoices.producto",
+  "pk": 18,
+  "fields": {
+    "nombre": "Brazos de control",
+    "descripcion": "Refacción Brazos de control de alta calidad para vehículos",
+    "precio": "144.25",
+    "stock": 65,
+    "activo": true,
+    "created_at": "2025-04-28T14:44:04.226Z",
+    "updated_at": "2025-04-28T14:44:04.868Z"
+  }
+},
+{
+  "model": "black_invoices.producto",
+  "pk": 19,
+  "fields": {
+    "nombre": "Bujes",
+    "descripcion": "Refacción Bujes de alta calidad para vehículos",
+    "precio": "213.72",
+    "stock": 86,
+    "activo": true,
+    "created_at": "2025-04-28T14:44:04.227Z",
+    "updated_at": "2025-04-28T14:44:04.963Z"
+  }
+},
+{
+  "model": "black_invoices.producto",
+  "pk": 20,
+  "fields": {
+    "nombre": "Terminales",
+    "descripcion": "Refacción Terminales de alta calidad para vehículos",
+    "precio": "276.64",
+    "stock": 68,
+    "activo": true,
+    "created_at": "2025-04-28T14:44:04.228Z",
+    "updated_at": "2025-04-28T14:44:05.056Z"
+  }
+},
+{
+  "model": "black_invoices.producto",
+  "pk": 21,
+  "fields": {
+    "nombre": "Embrague",
+    "descripcion": "Refacción Embrague de alta calidad para vehículos",
+    "precio": "67.45",
+    "stock": 31,
+    "activo": true,
+    "created_at": "2025-04-28T14:44:04.229Z",
+    "updated_at": "2025-04-28T14:44:04.603Z"
+  }
+},
+{
+  "model": "black_invoices.producto",
+  "pk": 22,
+  "fields": {
+    "nombre": "Volante motor",
+    "descripcion": "Refacción Volante motor de alta calidad para vehículos",
+    "precio": "71.72",
+    "stock": 55,
+    "activo": true,
+    "created_at": "2025-04-28T14:44:04.230Z",
+    "updated_at": "2025-04-28T14:44:05.051Z"
+  }
+},
+{
+  "model": "black_invoices.producto",
+  "pk": 23,
+  "fields": {
+    "nombre": "Caja de cambios",
+    "descripcion": "Refacción Caja de cambios de alta calidad para vehículos",
+    "precio": "232.59",
+    "stock": 68,
+    "activo": true,
+    "created_at": "2025-04-28T14:44:04.231Z",
+    "updated_at": "2025-04-28T14:44:05.004Z"
+  }
+},
+{
+  "model": "black_invoices.producto",
+  "pk": 24,
+  "fields": {
+    "nombre": "Diferencial",
+    "descripcion": "Refacción Diferencial de alta calidad para vehículos",
+    "precio": "188.52",
+    "stock": 56,
+    "activo": true,
+    "created_at": "2025-04-28T14:44:04.232Z",
+    "updated_at": "2025-04-28T14:44:04.853Z"
+  }
+},
+{
+  "model": "black_invoices.producto",
+  "pk": 25,
+  "fields": {
+    "nombre": "Cardán",
+    "descripcion": "Refacción Cardán de alta calidad para vehículos",
+    "precio": "29.73",
+    "stock": 44,
+    "activo": true,
+    "created_at": "2025-04-28T14:44:04.232Z",
+    "updated_at": "2025-04-28T14:44:05.030Z"
+  }
+},
+{
+  "model": "black_invoices.producto",
+  "pk": 26,
+  "fields": {
+    "nombre": "Juntas homocinéticas",
+    "descripcion": "Refacción Juntas homocinéticas de alta calidad para vehículos",
+    "precio": "232.19",
+    "stock": 71,
+    "activo": true,
+    "created_at": "2025-04-28T14:44:04.234Z",
+    "updated_at": "2025-04-28T14:44:04.607Z"
+  }
+},
+{
+  "model": "black_invoices.empleado",
+  "pk": 1,
+  "fields": {
+    "user": 1,
+    "nombre": "Juan",
+    "apellido": "Pérez",
+    "nivel_acceso": 2,
+    "fecha_contratacion": "2025-04-28",
+    "activo": false
+  }
+},
+{
+  "model": "black_invoices.empleado",
+  "pk": 2,
+  "fields": {
+    "user": 2,
+    "nombre": "María",
+    "apellido": "González",
+    "nivel_acceso": 2,
+    "fecha_contratacion": "2025-04-28",
+    "activo": false
+  }
+},
+{
+  "model": "black_invoices.empleado",
+  "pk": 3,
+  "fields": {
+    "user": 3,
+    "nombre": "Carlos",
+    "apellido": "Rodríguez",
+    "nivel_acceso": 3,
+    "fecha_contratacion": "2025-04-28",
+    "activo": true
+  }
+},
+{
+  "model": "black_invoices.empleado",
+  "pk": 4,
+  "fields": {
+    "user": 4,
+    "nombre": "Ana",
+    "apellido": "Martínez",
+    "nivel_acceso": 1,
+    "fecha_contratacion": "2025-04-28",
+    "activo": true
+  }
+},
+{
+  "model": "black_invoices.empleado",
+  "pk": 5,
+  "fields": {
+    "user": 5,
+    "nombre": "Simon",
+    "apellido": "Briceño",
+    "nivel_acceso": 1,
+    "fecha_contratacion": "2025-04-28",
+    "activo": true
+  }
+},
+{
+  "model": "black_invoices.empleado",
+  "pk": 6,
+  "fields": {
+    "user": 6,
+    "nombre": "Jose",
+    "apellido": "Casique",
+    "nivel_acceso": 2,
+    "fecha_contratacion": "2025-04-28",
+    "activo": true
+  }
+},
+{
+  "model": "black_invoices.empleado",
+  "pk": 7,
+  "fields": {
+    "user": 7,
+    "nombre": "Carlos",
+    "apellido": "Castro",
+    "nivel_acceso": 2,
+    "fecha_contratacion": "2025-05-13",
+    "activo": true
+  }
+},
+{
+  "model": "black_invoices.consultacomision",
+  "pk": 1,
+  "fields": {
+    "rango_inferior": "0.00",
+    "rango_superior": "1000.00",
+    "porcentaje": "5.00"
+  }
+},
+{
+  "model": "black_invoices.consultacomision",
+  "pk": 2,
+  "fields": {
+    "rango_inferior": "1001.00",
+    "rango_superior": "5000.00",
+    "porcentaje": "10.00"
+  }
+},
+{
+  "model": "black_invoices.consultacomision",
+  "pk": 3,
+  "fields": {
+    "rango_inferior": "5001.00",
+    "rango_superior": "999999.99",
+    "porcentaje": "15.00"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 1,
+  "fields": {
+    "empleado": 2,
+    "monto_venta": "1078.91",
+    "fecha_comision": "2025-04-28T14:44:04.268Z",
+    "venta": 1,
+    "total_comision": "107.89"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 2,
+  "fields": {
+    "empleado": 4,
+    "monto_venta": "555.42",
+    "fecha_comision": "2025-04-28T14:44:04.289Z",
+    "venta": 2,
+    "total_comision": "27.77"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 3,
+  "fields": {
+    "empleado": 3,
+    "monto_venta": "495.69",
+    "fecha_comision": "2025-04-28T14:44:04.308Z",
+    "venta": 3,
+    "total_comision": "24.78"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 4,
+  "fields": {
+    "empleado": 4,
+    "monto_venta": "2122.46",
+    "fecha_comision": "2025-04-28T14:44:04.335Z",
+    "venta": 4,
+    "total_comision": "212.25"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 5,
+  "fields": {
+    "empleado": 3,
+    "monto_venta": "1056.69",
+    "fecha_comision": "2025-04-28T14:44:04.361Z",
+    "venta": 5,
+    "total_comision": "105.67"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 6,
+  "fields": {
+    "empleado": 4,
+    "monto_venta": "201.41",
+    "fecha_comision": "2025-04-28T14:44:04.375Z",
+    "venta": 6,
+    "total_comision": "10.07"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 7,
+  "fields": {
+    "empleado": 2,
+    "monto_venta": "1412.63",
+    "fecha_comision": "2025-04-28T14:44:04.394Z",
+    "venta": 7,
+    "total_comision": "141.26"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 8,
+  "fields": {
+    "empleado": 3,
+    "monto_venta": "697.77",
+    "fecha_comision": "2025-04-28T14:44:04.403Z",
+    "venta": 8,
+    "total_comision": "34.89"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 9,
+  "fields": {
+    "empleado": 2,
+    "monto_venta": "1326.29",
+    "fecha_comision": "2025-04-28T14:44:04.432Z",
+    "venta": 9,
+    "total_comision": "132.63"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 10,
+  "fields": {
+    "empleado": 1,
+    "monto_venta": "834.69",
+    "fecha_comision": "2025-04-28T14:44:04.449Z",
+    "venta": 10,
+    "total_comision": "41.73"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 11,
+  "fields": {
+    "empleado": 3,
+    "monto_venta": "697.77",
+    "fecha_comision": "2025-04-28T14:44:04.457Z",
+    "venta": 11,
+    "total_comision": "34.89"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 12,
+  "fields": {
+    "empleado": 1,
+    "monto_venta": "627.09",
+    "fecha_comision": "2025-04-28T14:44:04.463Z",
+    "venta": 12,
+    "total_comision": "31.35"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 13,
+  "fields": {
+    "empleado": 1,
+    "monto_venta": "1202.62",
+    "fecha_comision": "2025-04-28T14:44:04.477Z",
+    "venta": 13,
+    "total_comision": "120.26"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 14,
+  "fields": {
+    "empleado": 3,
+    "monto_venta": "1968.87",
+    "fecha_comision": "2025-04-28T14:44:04.502Z",
+    "venta": 14,
+    "total_comision": "196.89"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 15,
+  "fields": {
+    "empleado": 2,
+    "monto_venta": "621.45",
+    "fecha_comision": "2025-04-28T14:44:04.517Z",
+    "venta": 15,
+    "total_comision": "31.07"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 16,
+  "fields": {
+    "empleado": 4,
+    "monto_venta": "1259.67",
+    "fecha_comision": "2025-04-28T14:44:04.541Z",
+    "venta": 16,
+    "total_comision": "125.97"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 17,
+  "fields": {
+    "empleado": 3,
+    "monto_venta": "2007.67",
+    "fecha_comision": "2025-04-28T14:44:04.566Z",
+    "venta": 17,
+    "total_comision": "200.77"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 18,
+  "fields": {
+    "empleado": 1,
+    "monto_venta": "1076.10",
+    "fecha_comision": "2025-04-28T14:44:04.581Z",
+    "venta": 18,
+    "total_comision": "107.61"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 19,
+  "fields": {
+    "empleado": 2,
+    "monto_venta": "1741.03",
+    "fecha_comision": "2025-04-28T14:44:04.602Z",
+    "venta": 19,
+    "total_comision": "174.10"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 20,
+  "fields": {
+    "empleado": 1,
+    "monto_venta": "1364.59",
+    "fecha_comision": "2025-04-28T14:44:04.623Z",
+    "venta": 20,
+    "total_comision": "136.46"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 21,
+  "fields": {
+    "empleado": 4,
+    "monto_venta": "1253.86",
+    "fecha_comision": "2025-04-28T14:44:04.640Z",
+    "venta": 21,
+    "total_comision": "125.39"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 22,
+  "fields": {
+    "empleado": 4,
+    "monto_venta": "1160.16",
+    "fecha_comision": "2025-04-28T14:44:04.652Z",
+    "venta": 22,
+    "total_comision": "116.02"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 23,
+  "fields": {
+    "empleado": 2,
+    "monto_venta": "874.97",
+    "fecha_comision": "2025-04-28T14:44:04.663Z",
+    "venta": 23,
+    "total_comision": "43.75"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 24,
+  "fields": {
+    "empleado": 2,
+    "monto_venta": "71.72",
+    "fecha_comision": "2025-04-28T14:44:04.669Z",
+    "venta": 24,
+    "total_comision": "3.59"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 25,
+  "fields": {
+    "empleado": 2,
+    "monto_venta": "553.28",
+    "fecha_comision": "2025-04-28T14:44:04.674Z",
+    "venta": 25,
+    "total_comision": "27.66"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 26,
+  "fields": {
+    "empleado": 1,
+    "monto_venta": "816.26",
+    "fecha_comision": "2025-04-28T14:44:04.687Z",
+    "venta": 26,
+    "total_comision": "40.81"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 27,
+  "fields": {
+    "empleado": 3,
+    "monto_venta": "2185.98",
+    "fecha_comision": "2025-04-28T14:44:04.702Z",
+    "venta": 27,
+    "total_comision": "218.60"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 28,
+  "fields": {
+    "empleado": 2,
+    "monto_venta": "1781.96",
+    "fecha_comision": "2025-04-28T14:44:04.717Z",
+    "venta": 28,
+    "total_comision": "178.20"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 29,
+  "fields": {
+    "empleado": 4,
+    "monto_venta": "276.64",
+    "fecha_comision": "2025-04-28T14:44:04.722Z",
+    "venta": 29,
+    "total_comision": "13.83"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 30,
+  "fields": {
+    "empleado": 1,
+    "monto_venta": "1597.42",
+    "fecha_comision": "2025-04-28T14:44:04.737Z",
+    "venta": 30,
+    "total_comision": "159.74"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 31,
+  "fields": {
+    "empleado": 2,
+    "monto_venta": "1350.06",
+    "fecha_comision": "2025-04-28T14:44:04.751Z",
+    "venta": 31,
+    "total_comision": "135.01"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 32,
+  "fields": {
+    "empleado": 2,
+    "monto_venta": "467.95",
+    "fecha_comision": "2025-04-28T14:44:04.761Z",
+    "venta": 32,
+    "total_comision": "23.40"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 33,
+  "fields": {
+    "empleado": 4,
+    "monto_venta": "1749.86",
+    "fecha_comision": "2025-04-28T14:44:04.776Z",
+    "venta": 33,
+    "total_comision": "174.99"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 34,
+  "fields": {
+    "empleado": 4,
+    "monto_venta": "1855.20",
+    "fecha_comision": "2025-04-28T14:44:04.785Z",
+    "venta": 34,
+    "total_comision": "185.52"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 35,
+  "fields": {
+    "empleado": 2,
+    "monto_venta": "144.25",
+    "fecha_comision": "2025-04-28T14:44:04.790Z",
+    "venta": 35,
+    "total_comision": "7.21"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 36,
+  "fields": {
+    "empleado": 2,
+    "monto_venta": "1307.04",
+    "fecha_comision": "2025-04-28T14:44:04.800Z",
+    "venta": 36,
+    "total_comision": "130.70"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 37,
+  "fields": {
+    "empleado": 3,
+    "monto_venta": "810.68",
+    "fecha_comision": "2025-04-28T14:44:04.815Z",
+    "venta": 37,
+    "total_comision": "40.53"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 38,
+  "fields": {
+    "empleado": 4,
+    "monto_venta": "1531.83",
+    "fecha_comision": "2025-04-28T14:44:04.835Z",
+    "venta": 38,
+    "total_comision": "153.18"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 39,
+  "fields": {
+    "empleado": 3,
+    "monto_venta": "501.37",
+    "fecha_comision": "2025-04-28T14:44:04.846Z",
+    "venta": 39,
+    "total_comision": "25.07"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 40,
+  "fields": {
+    "empleado": 1,
+    "monto_venta": "1166.51",
+    "fecha_comision": "2025-04-28T14:44:04.860Z",
+    "venta": 40,
+    "total_comision": "116.65"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 41,
+  "fields": {
+    "empleado": 3,
+    "monto_venta": "1073.24",
+    "fecha_comision": "2025-04-28T14:44:04.878Z",
+    "venta": 41,
+    "total_comision": "107.32"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 42,
+  "fields": {
+    "empleado": 2,
+    "monto_venta": "507.98",
+    "fecha_comision": "2025-04-28T14:44:04.903Z",
+    "venta": 42,
+    "total_comision": "25.40"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 43,
+  "fields": {
+    "empleado": 4,
+    "monto_venta": "574.04",
+    "fecha_comision": "2025-04-28T14:44:04.930Z",
+    "venta": 43,
+    "total_comision": "28.70"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 44,
+  "fields": {
+    "empleado": 2,
+    "monto_venta": "861.09",
+    "fecha_comision": "2025-04-28T14:44:04.951Z",
+    "venta": 44,
+    "total_comision": "43.05"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 45,
+  "fields": {
+    "empleado": 2,
+    "monto_venta": "1531.89",
+    "fecha_comision": "2025-04-28T14:44:04.974Z",
+    "venta": 45,
+    "total_comision": "153.19"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 46,
+  "fields": {
+    "empleado": 3,
+    "monto_venta": "1631.38",
+    "fecha_comision": "2025-04-28T14:44:04.997Z",
+    "venta": 46,
+    "total_comision": "163.14"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 47,
+  "fields": {
+    "empleado": 3,
+    "monto_venta": "1028.94",
+    "fecha_comision": "2025-04-28T14:44:05.015Z",
+    "venta": 47,
+    "total_comision": "102.89"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 48,
+  "fields": {
+    "empleado": 1,
+    "monto_venta": "1591.76",
+    "fecha_comision": "2025-04-28T14:44:05.040Z",
+    "venta": 48,
+    "total_comision": "159.18"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 49,
+  "fields": {
+    "empleado": 1,
+    "monto_venta": "1974.07",
+    "fecha_comision": "2025-04-28T14:44:05.071Z",
+    "venta": 49,
+    "total_comision": "197.41"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 50,
+  "fields": {
+    "empleado": 2,
+    "monto_venta": "1307.28",
+    "fecha_comision": "2025-04-28T14:44:05.098Z",
+    "venta": 50,
+    "total_comision": "130.73"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 51,
+  "fields": {
+    "empleado": 5,
+    "monto_venta": "176.65",
+    "fecha_comision": "2025-04-28T15:51:38.886Z",
+    "venta": 51,
+    "total_comision": "8.83"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 52,
+  "fields": {
+    "empleado": 5,
+    "monto_venta": "232.19",
+    "fecha_comision": "2025-04-28T15:52:46.240Z",
+    "venta": 52,
+    "total_comision": "11.61"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 53,
+  "fields": {
+    "empleado": 5,
+    "monto_venta": "0.00",
+    "fecha_comision": "2025-04-28T16:02:38.831Z",
+    "venta": 53,
+    "total_comision": "0.00"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 54,
+  "fields": {
+    "empleado": 5,
+    "monto_venta": "0.00",
+    "fecha_comision": "2025-04-28T16:11:09.022Z",
+    "venta": 54,
+    "total_comision": "0.00"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 55,
+  "fields": {
+    "empleado": 6,
+    "monto_venta": "0.00",
+    "fecha_comision": "2025-04-28T20:19:12.988Z",
+    "venta": 55,
+    "total_comision": "0.00"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 56,
+  "fields": {
+    "empleado": 6,
+    "monto_venta": "0.00",
+    "fecha_comision": "2025-04-28T20:20:25.972Z",
+    "venta": 56,
+    "total_comision": "0.00"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 57,
+  "fields": {
+    "empleado": 6,
+    "monto_venta": "0.00",
+    "fecha_comision": "2025-04-28T20:33:27.435Z",
+    "venta": 57,
+    "total_comision": "0.00"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 58,
+  "fields": {
+    "empleado": 6,
+    "monto_venta": "0.00",
+    "fecha_comision": "2025-04-28T20:34:10.310Z",
+    "venta": 58,
+    "total_comision": "0.00"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 59,
+  "fields": {
+    "empleado": 6,
+    "monto_venta": "0.00",
+    "fecha_comision": "2025-04-28T20:37:57.234Z",
+    "venta": 59,
+    "total_comision": "0.00"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 60,
+  "fields": {
+    "empleado": 6,
+    "monto_venta": "950.46",
+    "fecha_comision": "2025-04-28T20:50:14.175Z",
+    "venta": 60,
+    "total_comision": "47.52"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 61,
+  "fields": {
+    "empleado": 6,
+    "monto_venta": "706.60",
+    "fecha_comision": "2025-04-28T20:52:31.831Z",
+    "venta": 61,
+    "total_comision": "35.33"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 62,
+  "fields": {
+    "empleado": 5,
+    "monto_venta": "377.40",
+    "fecha_comision": "2025-04-28T21:25:05.964Z",
+    "venta": 62,
+    "total_comision": "18.87"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 63,
+  "fields": {
+    "empleado": 5,
+    "monto_venta": "667.61",
+    "fecha_comision": "2025-04-28T21:25:49.318Z",
+    "venta": 63,
+    "total_comision": "33.38"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 64,
+  "fields": {
+    "empleado": 5,
+    "monto_venta": "1030.30",
+    "fecha_comision": "2025-04-28T21:35:09.958Z",
+    "venta": 64,
+    "total_comision": "103.03"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 65,
+  "fields": {
+    "empleado": 5,
+    "monto_venta": "244.10",
+    "fecha_comision": "2025-05-02T19:40:04.599Z",
+    "venta": 65,
+    "total_comision": "12.20"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 66,
+  "fields": {
+    "empleado": 5,
+    "monto_venta": "244.10",
+    "fecha_comision": "2025-05-09T02:50:30.462Z",
+    "venta": 66,
+    "total_comision": "12.20"
+  }
+},
+{
+  "model": "black_invoices.comision",
+  "pk": 67,
+  "fields": {
+    "empleado": 5,
+    "monto_venta": "135.78",
+    "fecha_comision": "2025-05-09T02:50:46.414Z",
+    "venta": 67,
+    "total_comision": "6.79"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 1,
+  "fields": {
+    "empleado": 2,
+    "factura": 1,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.260Z",
+    "credito": false,
+    "monto_pagado": "1078.91"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 2,
+  "fields": {
+    "empleado": 4,
+    "factura": 2,
+    "status": 2,
+    "fecha_venta": "2025-04-28T14:44:04.285Z",
+    "credito": true,
+    "monto_pagado": "0.00"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 3,
+  "fields": {
+    "empleado": 3,
+    "factura": 3,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.302Z",
+    "credito": false,
+    "monto_pagado": "495.69"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 4,
+  "fields": {
+    "empleado": 4,
+    "factura": 4,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.332Z",
+    "credito": false,
+    "monto_pagado": "2122.46"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 5,
+  "fields": {
+    "empleado": 3,
+    "factura": 5,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.356Z",
+    "credito": false,
+    "monto_pagado": "1056.69"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 6,
+  "fields": {
+    "empleado": 4,
+    "factura": 6,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.370Z",
+    "credito": false,
+    "monto_pagado": "201.41"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 7,
+  "fields": {
+    "empleado": 2,
+    "factura": 7,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.390Z",
+    "credito": false,
+    "monto_pagado": "1412.63"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 8,
+  "fields": {
+    "empleado": 3,
+    "factura": 8,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.400Z",
+    "credito": false,
+    "monto_pagado": "697.77"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 9,
+  "fields": {
+    "empleado": 2,
+    "factura": 9,
+    "status": 2,
+    "fecha_venta": "2025-04-28T14:44:04.428Z",
+    "credito": true,
+    "monto_pagado": "0.00"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 10,
+  "fields": {
+    "empleado": 1,
+    "factura": 10,
+    "status": 2,
+    "fecha_venta": "2025-04-28T14:44:04.446Z",
+    "credito": true,
+    "monto_pagado": "0.00"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 11,
+  "fields": {
+    "empleado": 3,
+    "factura": 11,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.454Z",
+    "credito": false,
+    "monto_pagado": "697.77"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 12,
+  "fields": {
+    "empleado": 1,
+    "factura": 12,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.461Z",
+    "credito": false,
+    "monto_pagado": "627.09"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 13,
+  "fields": {
+    "empleado": 1,
+    "factura": 13,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.473Z",
+    "credito": false,
+    "monto_pagado": "1202.62"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 14,
+  "fields": {
+    "empleado": 3,
+    "factura": 14,
+    "status": 2,
+    "fecha_venta": "2025-04-28T14:44:04.500Z",
+    "credito": true,
+    "monto_pagado": "0.00"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 15,
+  "fields": {
+    "empleado": 2,
+    "factura": 15,
+    "status": 2,
+    "fecha_venta": "2025-04-28T14:44:04.514Z",
+    "credito": true,
+    "monto_pagado": "481.73"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 16,
+  "fields": {
+    "empleado": 4,
+    "factura": 16,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.538Z",
+    "credito": false,
+    "monto_pagado": "1259.67"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 17,
+  "fields": {
+    "empleado": 3,
+    "factura": 17,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.563Z",
+    "credito": false,
+    "monto_pagado": "2007.67"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 18,
+  "fields": {
+    "empleado": 1,
+    "factura": 18,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.578Z",
+    "credito": false,
+    "monto_pagado": "1076.10"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 19,
+  "fields": {
+    "empleado": 2,
+    "factura": 19,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.599Z",
+    "credito": false,
+    "monto_pagado": "1741.03"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 20,
+  "fields": {
+    "empleado": 1,
+    "factura": 20,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.620Z",
+    "credito": false,
+    "monto_pagado": "1364.59"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 21,
+  "fields": {
+    "empleado": 4,
+    "factura": 21,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.638Z",
+    "credito": false,
+    "monto_pagado": "1253.86"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 22,
+  "fields": {
+    "empleado": 4,
+    "factura": 22,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.651Z",
+    "credito": false,
+    "monto_pagado": "1160.16"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 23,
+  "fields": {
+    "empleado": 2,
+    "factura": 23,
+    "status": 2,
+    "fecha_venta": "2025-04-28T14:44:04.661Z",
+    "credito": true,
+    "monto_pagado": "612.48"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 24,
+  "fields": {
+    "empleado": 2,
+    "factura": 24,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.667Z",
+    "credito": true,
+    "monto_pagado": "71.72"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 25,
+  "fields": {
+    "empleado": 2,
+    "factura": 25,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.672Z",
+    "credito": false,
+    "monto_pagado": "553.28"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 26,
+  "fields": {
+    "empleado": 1,
+    "factura": 26,
+    "status": 2,
+    "fecha_venta": "2025-04-28T14:44:04.685Z",
+    "credito": true,
+    "monto_pagado": "320.11"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 27,
+  "fields": {
+    "empleado": 3,
+    "factura": 27,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.700Z",
+    "credito": false,
+    "monto_pagado": "2185.98"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 28,
+  "fields": {
+    "empleado": 2,
+    "factura": 28,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.715Z",
+    "credito": false,
+    "monto_pagado": "1781.96"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 29,
+  "fields": {
+    "empleado": 4,
+    "factura": 29,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.720Z",
+    "credito": false,
+    "monto_pagado": "276.64"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 30,
+  "fields": {
+    "empleado": 1,
+    "factura": 30,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.735Z",
+    "credito": false,
+    "monto_pagado": "1597.42"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 31,
+  "fields": {
+    "empleado": 2,
+    "factura": 31,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.749Z",
+    "credito": false,
+    "monto_pagado": "1350.06"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 32,
+  "fields": {
+    "empleado": 2,
+    "factura": 32,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.759Z",
+    "credito": false,
+    "monto_pagado": "467.95"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 33,
+  "fields": {
+    "empleado": 4,
+    "factura": 33,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.774Z",
+    "credito": false,
+    "monto_pagado": "1749.86"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 34,
+  "fields": {
+    "empleado": 4,
+    "factura": 34,
+    "status": 2,
+    "fecha_venta": "2025-04-28T14:44:04.783Z",
+    "credito": true,
+    "monto_pagado": "1223.48"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 35,
+  "fields": {
+    "empleado": 2,
+    "factura": 35,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.789Z",
+    "credito": false,
+    "monto_pagado": "144.25"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 36,
+  "fields": {
+    "empleado": 2,
+    "factura": 36,
+    "status": 2,
+    "fecha_venta": "2025-04-28T14:44:04.799Z",
+    "credito": true,
+    "monto_pagado": "494.49"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 37,
+  "fields": {
+    "empleado": 3,
+    "factura": 37,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.813Z",
+    "credito": false,
+    "monto_pagado": "810.68"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 38,
+  "fields": {
+    "empleado": 4,
+    "factura": 38,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.832Z",
+    "credito": false,
+    "monto_pagado": "1531.83"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 39,
+  "fields": {
+    "empleado": 3,
+    "factura": 39,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.843Z",
+    "credito": true,
+    "monto_pagado": "501.37"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 40,
+  "fields": {
+    "empleado": 1,
+    "factura": 40,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.857Z",
+    "credito": false,
+    "monto_pagado": "1166.51"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 41,
+  "fields": {
+    "empleado": 3,
+    "factura": 41,
+    "status": 2,
+    "fecha_venta": "2025-04-28T14:44:04.874Z",
+    "credito": true,
+    "monto_pagado": "804.61"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 42,
+  "fields": {
+    "empleado": 2,
+    "factura": 42,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.899Z",
+    "credito": false,
+    "monto_pagado": "507.98"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 43,
+  "fields": {
+    "empleado": 4,
+    "factura": 43,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.925Z",
+    "credito": false,
+    "monto_pagado": "574.04"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 44,
+  "fields": {
+    "empleado": 2,
+    "factura": 44,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.947Z",
+    "credito": false,
+    "monto_pagado": "861.09"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 45,
+  "fields": {
+    "empleado": 2,
+    "factura": 45,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.970Z",
+    "credito": false,
+    "monto_pagado": "1531.89"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 46,
+  "fields": {
+    "empleado": 3,
+    "factura": 46,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:04.993Z",
+    "credito": false,
+    "monto_pagado": "1631.38"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 47,
+  "fields": {
+    "empleado": 3,
+    "factura": 47,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:05.011Z",
+    "credito": false,
+    "monto_pagado": "1028.94"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 48,
+  "fields": {
+    "empleado": 1,
+    "factura": 48,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:05.036Z",
+    "credito": false,
+    "monto_pagado": "1591.76"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 49,
+  "fields": {
+    "empleado": 1,
+    "factura": 49,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:05.067Z",
+    "credito": false,
+    "monto_pagado": "1974.07"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 50,
+  "fields": {
+    "empleado": 2,
+    "factura": 50,
+    "status": 1,
+    "fecha_venta": "2025-04-28T14:44:05.093Z",
+    "credito": true,
+    "monto_pagado": "1307.28"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 51,
+  "fields": {
+    "empleado": 5,
+    "factura": 51,
+    "status": 1,
+    "fecha_venta": "2025-04-28T15:51:38.870Z",
+    "credito": false,
+    "monto_pagado": "176.65"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 52,
+  "fields": {
+    "empleado": 5,
+    "factura": 52,
+    "status": 1,
+    "fecha_venta": "2025-04-28T15:52:46.236Z",
+    "credito": false,
+    "monto_pagado": "232.19"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 53,
+  "fields": {
+    "empleado": 5,
+    "factura": 54,
+    "status": 1,
+    "fecha_venta": "2025-04-28T16:02:38.828Z",
+    "credito": false,
+    "monto_pagado": "0.00"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 54,
+  "fields": {
+    "empleado": 5,
+    "factura": 55,
+    "status": 2,
+    "fecha_venta": "2025-04-28T16:11:09.018Z",
+    "credito": true,
+    "monto_pagado": "0.00"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 55,
+  "fields": {
+    "empleado": 6,
+    "factura": 56,
+    "status": 2,
+    "fecha_venta": "2025-04-28T20:19:12.984Z",
+    "credito": true,
+    "monto_pagado": "0.00"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 56,
+  "fields": {
+    "empleado": 6,
+    "factura": 57,
+    "status": 1,
+    "fecha_venta": "2025-04-28T20:20:25.968Z",
+    "credito": false,
+    "monto_pagado": "0.00"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 57,
+  "fields": {
+    "empleado": 6,
+    "factura": 58,
+    "status": 1,
+    "fecha_venta": "2025-04-28T20:33:27.432Z",
+    "credito": false,
+    "monto_pagado": "0.00"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 58,
+  "fields": {
+    "empleado": 6,
+    "factura": 59,
+    "status": 1,
+    "fecha_venta": "2025-04-28T20:34:10.306Z",
+    "credito": false,
+    "monto_pagado": "0.00"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 59,
+  "fields": {
+    "empleado": 6,
+    "factura": 60,
+    "status": 2,
+    "fecha_venta": "2025-04-28T20:37:57.231Z",
+    "credito": true,
+    "monto_pagado": "0.00"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 60,
+  "fields": {
+    "empleado": 6,
+    "factura": 61,
+    "status": 1,
+    "fecha_venta": "2025-04-28T20:50:14.170Z",
+    "credito": false,
+    "monto_pagado": "950.46"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 61,
+  "fields": {
+    "empleado": 6,
+    "factura": 62,
+    "status": 1,
+    "fecha_venta": "2025-04-28T20:52:31.827Z",
+    "credito": true,
+    "monto_pagado": "706.60"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 62,
+  "fields": {
+    "empleado": 5,
+    "factura": 63,
+    "status": 1,
+    "fecha_venta": "2025-04-28T21:25:05.958Z",
+    "credito": false,
+    "monto_pagado": "377.40"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 63,
+  "fields": {
+    "empleado": 5,
+    "factura": 64,
+    "status": 1,
+    "fecha_venta": "2025-04-28T21:25:49.316Z",
+    "credito": true,
+    "monto_pagado": "667.61"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 64,
+  "fields": {
+    "empleado": 5,
+    "factura": 65,
+    "status": 1,
+    "fecha_venta": "2025-04-28T21:35:09.954Z",
+    "credito": true,
+    "monto_pagado": "1030.30"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 65,
+  "fields": {
+    "empleado": 5,
+    "factura": 66,
+    "status": 3,
+    "fecha_venta": "2025-05-02T19:40:04.592Z",
+    "credito": false,
+    "monto_pagado": "244.10"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 66,
+  "fields": {
+    "empleado": 5,
+    "factura": 67,
+    "status": 2,
+    "fecha_venta": "2025-05-09T02:50:30.459Z",
+    "credito": true,
+    "monto_pagado": "0.00"
+  }
+},
+{
+  "model": "black_invoices.ventas",
+  "pk": 67,
+  "fields": {
+    "empleado": 5,
+    "factura": 68,
+    "status": 1,
+    "fecha_venta": "2025-05-09T02:50:46.410Z",
+    "credito": false,
+    "monto_pagado": "135.78"
+  }
+},
+{
+  "model": "black_invoices.pagoventa",
+  "pk": 1,
+  "fields": {
+    "venta": 15,
+    "monto": "481.73",
+    "fecha": "2025-04-28T14:44:04.518Z"
+  }
+},
+{
+  "model": "black_invoices.pagoventa",
+  "pk": 2,
+  "fields": {
+    "venta": 23,
+    "monto": "306.24",
+    "fecha": "2025-04-28T14:44:04.663Z"
+  }
+},
+{
+  "model": "black_invoices.pagoventa",
+  "pk": 3,
+  "fields": {
+    "venta": 23,
+    "monto": "306.24",
+    "fecha": "2025-04-28T14:44:04.664Z"
+  }
+},
+{
+  "model": "black_invoices.pagoventa",
+  "pk": 4,
+  "fields": {
+    "venta": 26,
+    "monto": "106.70",
+    "fecha": "2025-04-28T14:44:04.687Z"
+  }
+},
+{
+  "model": "black_invoices.pagoventa",
+  "pk": 5,
+  "fields": {
+    "venta": 26,
+    "monto": "106.70",
+    "fecha": "2025-04-28T14:44:04.687Z"
+  }
+},
+{
+  "model": "black_invoices.pagoventa",
+  "pk": 6,
+  "fields": {
+    "venta": 26,
+    "monto": "106.70",
+    "fecha": "2025-04-28T14:44:04.688Z"
+  }
+},
+{
+  "model": "black_invoices.pagoventa",
+  "pk": 7,
+  "fields": {
+    "venta": 34,
+    "monto": "1223.48",
+    "fecha": "2025-04-28T14:44:04.785Z"
+  }
+},
+{
+  "model": "black_invoices.pagoventa",
+  "pk": 8,
+  "fields": {
+    "venta": 36,
+    "monto": "494.49",
+    "fecha": "2025-04-28T14:44:04.801Z"
+  }
+},
+{
+  "model": "black_invoices.pagoventa",
+  "pk": 9,
+  "fields": {
+    "venta": 41,
+    "monto": "402.30",
+    "fecha": "2025-04-28T14:44:04.879Z"
+  }
+},
+{
+  "model": "black_invoices.pagoventa",
+  "pk": 10,
+  "fields": {
+    "venta": 41,
+    "monto": "402.30",
+    "fecha": "2025-04-28T14:44:04.880Z"
+  }
+},
+{
+  "model": "black_invoices.pagoventa",
+  "pk": 11,
+  "fields": {
+    "venta": 50,
+    "monto": "149.41",
+    "fecha": "2025-04-28T14:44:05.099Z"
+  }
+},
+{
+  "model": "black_invoices.pagoventa",
+  "pk": 12,
+  "fields": {
+    "venta": 50,
+    "monto": "149.41",
+    "fecha": "2025-04-28T14:44:05.100Z"
+  }
+},
+{
+  "model": "black_invoices.pagoventa",
+  "pk": 13,
+  "fields": {
+    "venta": 50,
+    "monto": "149.41",
+    "fecha": "2025-04-28T14:44:05.100Z"
+  }
+},
+{
+  "model": "black_invoices.pagoventa",
+  "pk": 14,
+  "fields": {
+    "venta": 50,
+    "monto": "850.00",
+    "fecha": "2025-04-28T14:48:15.361Z"
+  }
+},
+{
+  "model": "black_invoices.pagoventa",
+  "pk": 15,
+  "fields": {
+    "venta": 63,
+    "monto": "600.00",
+    "fecha": "2025-04-28T21:32:36.963Z"
+  }
+},
+{
+  "model": "black_invoices.pagoventa",
+  "pk": 16,
+  "fields": {
+    "venta": 63,
+    "monto": "67.61",
+    "fecha": "2025-04-28T21:32:51.035Z"
+  }
+},
+{
+  "model": "black_invoices.pagoventa",
+  "pk": 17,
+  "fields": {
+    "venta": 64,
+    "monto": "1030.30",
+    "fecha": "2025-05-02T17:42:11.756Z"
+  }
+},
+{
+  "model": "black_invoices.pagoventa",
+  "pk": 18,
+  "fields": {
+    "venta": 39,
+    "monto": "501.37",
+    "fecha": "2025-05-02T17:46:44.370Z"
+  }
+},
+{
+  "model": "black_invoices.pagoventa",
+  "pk": 19,
+  "fields": {
+    "venta": 61,
+    "monto": "706.60",
+    "fecha": "2025-05-02T17:46:56.371Z"
+  }
+},
+{
+  "model": "black_invoices.pagoventa",
+  "pk": 20,
+  "fields": {
+    "venta": 24,
+    "monto": "71.72",
+    "fecha": "2025-05-02T17:47:23.008Z"
+  }
+},
+{
+  "model": "black_invoices.pagoventa",
+  "pk": 21,
+  "fields": {
+    "venta": 50,
+    "monto": "9.06",
+    "fecha": "2025-05-16T20:56:29.201Z"
+  }
+},
+{
+  "model": "black_invoices.statusventas",
+  "pk": 1,
+  "fields": {
+    "nombre": "Completada",
+    "vent_cancelada": false,
+    "vent_espera": false
+  }
+},
+{
+  "model": "black_invoices.statusventas",
+  "pk": 2,
+  "fields": {
+    "nombre": "Pendiente",
+    "vent_cancelada": false,
+    "vent_espera": true
+  }
+},
+{
+  "model": "black_invoices.statusventas",
+  "pk": 3,
+  "fields": {
+    "nombre": "Cancelada",
+    "vent_cancelada": true,
+    "vent_espera": false
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 1,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.236Z",
+    "total_fac": "1078.91",
+    "metodo_pag": "tarjeta",
+    "cliente": 19,
+    "empleado": 2,
+    "total_venta": "1078.91"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 2,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.271Z",
+    "total_fac": "555.42",
+    "metodo_pag": "credito",
+    "cliente": 5,
+    "empleado": 4,
+    "total_venta": "555.42"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 3,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.290Z",
+    "total_fac": "495.69",
+    "metodo_pag": "tarjeta",
+    "cliente": 10,
+    "empleado": 3,
+    "total_venta": "495.69"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 4,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.310Z",
+    "total_fac": "2122.46",
+    "metodo_pag": "tarjeta",
+    "cliente": 13,
+    "empleado": 4,
+    "total_venta": "2122.46"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 5,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.335Z",
+    "total_fac": "1056.69",
+    "metodo_pag": "transferencia",
+    "cliente": 4,
+    "empleado": 3,
+    "total_venta": "1056.69"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 6,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.361Z",
+    "total_fac": "201.41",
+    "metodo_pag": "efectivo",
+    "cliente": 1,
+    "empleado": 4,
+    "total_venta": "201.41"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 7,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.376Z",
+    "total_fac": "1412.63",
+    "metodo_pag": "transferencia",
+    "cliente": 16,
+    "empleado": 2,
+    "total_venta": "1412.63"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 8,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.395Z",
+    "total_fac": "697.77",
+    "metodo_pag": "transferencia",
+    "cliente": 15,
+    "empleado": 3,
+    "total_venta": "697.77"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 9,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.404Z",
+    "total_fac": "1326.29",
+    "metodo_pag": "credito",
+    "cliente": 9,
+    "empleado": 2,
+    "total_venta": "1326.29"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 10,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.433Z",
+    "total_fac": "834.69",
+    "metodo_pag": "credito",
+    "cliente": 2,
+    "empleado": 1,
+    "total_venta": "834.69"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 11,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.450Z",
+    "total_fac": "697.77",
+    "metodo_pag": "efectivo",
+    "cliente": 11,
+    "empleado": 3,
+    "total_venta": "697.77"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 12,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.457Z",
+    "total_fac": "627.09",
+    "metodo_pag": "tarjeta",
+    "cliente": 4,
+    "empleado": 1,
+    "total_venta": "627.09"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 13,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.464Z",
+    "total_fac": "1202.62",
+    "metodo_pag": "efectivo",
+    "cliente": 17,
+    "empleado": 1,
+    "total_venta": "1202.62"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 14,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.477Z",
+    "total_fac": "1968.87",
+    "metodo_pag": "credito",
+    "cliente": 3,
+    "empleado": 3,
+    "total_venta": "1968.87"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 15,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.503Z",
+    "total_fac": "621.45",
+    "metodo_pag": "credito",
+    "cliente": 1,
+    "empleado": 2,
+    "total_venta": "621.45"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 16,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.519Z",
+    "total_fac": "1259.67",
+    "metodo_pag": "tarjeta",
+    "cliente": 13,
+    "empleado": 4,
+    "total_venta": "1259.67"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 17,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.541Z",
+    "total_fac": "2007.67",
+    "metodo_pag": "transferencia",
+    "cliente": 20,
+    "empleado": 3,
+    "total_venta": "2007.67"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 18,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.567Z",
+    "total_fac": "1076.10",
+    "metodo_pag": "transferencia",
+    "cliente": 6,
+    "empleado": 1,
+    "total_venta": "1076.10"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 19,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.581Z",
+    "total_fac": "1741.03",
+    "metodo_pag": "transferencia",
+    "cliente": 16,
+    "empleado": 2,
+    "total_venta": "1741.03"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 20,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.603Z",
+    "total_fac": "1364.59",
+    "metodo_pag": "tarjeta",
+    "cliente": 20,
+    "empleado": 1,
+    "total_venta": "1364.59"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 21,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.624Z",
+    "total_fac": "1253.86",
+    "metodo_pag": "transferencia",
+    "cliente": 5,
+    "empleado": 4,
+    "total_venta": "1253.86"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 22,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.641Z",
+    "total_fac": "1160.16",
+    "metodo_pag": "tarjeta",
+    "cliente": 11,
+    "empleado": 4,
+    "total_venta": "1160.16"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 23,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.653Z",
+    "total_fac": "874.97",
+    "metodo_pag": "credito",
+    "cliente": 10,
+    "empleado": 2,
+    "total_venta": "874.97"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 24,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.664Z",
+    "total_fac": "71.72",
+    "metodo_pag": "credito",
+    "cliente": 5,
+    "empleado": 2,
+    "total_venta": "71.72"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 25,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.669Z",
+    "total_fac": "553.28",
+    "metodo_pag": "tarjeta",
+    "cliente": 3,
+    "empleado": 2,
+    "total_venta": "553.28"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 26,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.675Z",
+    "total_fac": "816.26",
+    "metodo_pag": "credito",
+    "cliente": 8,
+    "empleado": 1,
+    "total_venta": "816.26"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 27,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.688Z",
+    "total_fac": "2185.98",
+    "metodo_pag": "transferencia",
+    "cliente": 12,
+    "empleado": 3,
+    "total_venta": "2185.98"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 28,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.702Z",
+    "total_fac": "1781.96",
+    "metodo_pag": "efectivo",
+    "cliente": 2,
+    "empleado": 2,
+    "total_venta": "1781.96"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 29,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.717Z",
+    "total_fac": "276.64",
+    "metodo_pag": "efectivo",
+    "cliente": 3,
+    "empleado": 4,
+    "total_venta": "276.64"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 30,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.722Z",
+    "total_fac": "1597.42",
+    "metodo_pag": "efectivo",
+    "cliente": 18,
+    "empleado": 1,
+    "total_venta": "1597.42"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 31,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.737Z",
+    "total_fac": "1350.06",
+    "metodo_pag": "transferencia",
+    "cliente": 12,
+    "empleado": 2,
+    "total_venta": "1350.06"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 32,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.751Z",
+    "total_fac": "467.95",
+    "metodo_pag": "tarjeta",
+    "cliente": 17,
+    "empleado": 2,
+    "total_venta": "467.95"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 33,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.761Z",
+    "total_fac": "1749.86",
+    "metodo_pag": "tarjeta",
+    "cliente": 10,
+    "empleado": 4,
+    "total_venta": "1749.86"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 34,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.776Z",
+    "total_fac": "1855.20",
+    "metodo_pag": "credito",
+    "cliente": 1,
+    "empleado": 4,
+    "total_venta": "1855.20"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 35,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.786Z",
+    "total_fac": "144.25",
+    "metodo_pag": "efectivo",
+    "cliente": 8,
+    "empleado": 2,
+    "total_venta": "144.25"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 36,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.791Z",
+    "total_fac": "1307.04",
+    "metodo_pag": "credito",
+    "cliente": 15,
+    "empleado": 2,
+    "total_venta": "1307.04"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 37,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.801Z",
+    "total_fac": "810.68",
+    "metodo_pag": "transferencia",
+    "cliente": 14,
+    "empleado": 3,
+    "total_venta": "810.68"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 38,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.816Z",
+    "total_fac": "1531.83",
+    "metodo_pag": "transferencia",
+    "cliente": 8,
+    "empleado": 4,
+    "total_venta": "1531.83"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 39,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.835Z",
+    "total_fac": "501.37",
+    "metodo_pag": "credito",
+    "cliente": 11,
+    "empleado": 3,
+    "total_venta": "501.37"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 40,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.846Z",
+    "total_fac": "1166.51",
+    "metodo_pag": "transferencia",
+    "cliente": 7,
+    "empleado": 1,
+    "total_venta": "1166.51"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 41,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.860Z",
+    "total_fac": "1073.24",
+    "metodo_pag": "credito",
+    "cliente": 12,
+    "empleado": 3,
+    "total_venta": "1073.24"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 42,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.881Z",
+    "total_fac": "507.98",
+    "metodo_pag": "tarjeta",
+    "cliente": 4,
+    "empleado": 2,
+    "total_venta": "507.98"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 43,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.904Z",
+    "total_fac": "574.04",
+    "metodo_pag": "transferencia",
+    "cliente": 1,
+    "empleado": 4,
+    "total_venta": "574.04"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 44,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.930Z",
+    "total_fac": "861.09",
+    "metodo_pag": "efectivo",
+    "cliente": 3,
+    "empleado": 2,
+    "total_venta": "861.09"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 45,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.951Z",
+    "total_fac": "1531.89",
+    "metodo_pag": "tarjeta",
+    "cliente": 3,
+    "empleado": 2,
+    "total_venta": "1531.89"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 46,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.975Z",
+    "total_fac": "1631.38",
+    "metodo_pag": "transferencia",
+    "cliente": 8,
+    "empleado": 3,
+    "total_venta": "1631.38"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 47,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:04.998Z",
+    "total_fac": "1028.94",
+    "metodo_pag": "transferencia",
+    "cliente": 4,
+    "empleado": 3,
+    "total_venta": "1028.94"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 48,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:05.016Z",
+    "total_fac": "1591.76",
+    "metodo_pag": "transferencia",
+    "cliente": 20,
+    "empleado": 1,
+    "total_venta": "1591.76"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 49,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:05.040Z",
+    "total_fac": "1974.07",
+    "metodo_pag": "efectivo",
+    "cliente": 1,
+    "empleado": 1,
+    "total_venta": "1974.07"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 50,
+  "fields": {
+    "fecha_fac": "2025-04-28T14:44:05.072Z",
+    "total_fac": "1307.28",
+    "metodo_pag": "credito",
+    "cliente": 1,
+    "empleado": 2,
+    "total_venta": "1307.28"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 51,
+  "fields": {
+    "fecha_fac": "2025-04-28T15:51:38.838Z",
+    "total_fac": "176.65",
+    "metodo_pag": "tarjeta",
+    "cliente": 16,
+    "empleado": 5,
+    "total_venta": "176.65"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 52,
+  "fields": {
+    "fecha_fac": "2025-04-28T15:52:46.222Z",
+    "total_fac": "232.19",
+    "metodo_pag": "transferencia",
+    "cliente": 19,
+    "empleado": 5,
+    "total_venta": "232.19"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 53,
+  "fields": {
+    "fecha_fac": "2025-04-28T15:59:00.046Z",
+    "total_fac": "0.00",
+    "metodo_pag": "efectivo",
+    "cliente": 8,
+    "empleado": 5,
+    "total_venta": "0.00"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 54,
+  "fields": {
+    "fecha_fac": "2025-04-28T16:02:38.821Z",
+    "total_fac": "0.00",
+    "metodo_pag": "efectivo",
+    "cliente": 16,
+    "empleado": 5,
+    "total_venta": "0.00"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 55,
+  "fields": {
+    "fecha_fac": "2025-04-28T16:11:09.009Z",
+    "total_fac": "0.00",
+    "metodo_pag": "credito",
+    "cliente": 8,
+    "empleado": 5,
+    "total_venta": "0.00"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 56,
+  "fields": {
+    "fecha_fac": "2025-04-28T20:19:12.971Z",
+    "total_fac": "0.00",
+    "metodo_pag": "credito",
+    "cliente": 8,
+    "empleado": 6,
+    "total_venta": "0.00"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 57,
+  "fields": {
+    "fecha_fac": "2025-04-28T20:20:25.961Z",
+    "total_fac": "0.00",
+    "metodo_pag": "efectivo",
+    "cliente": 12,
+    "empleado": 6,
+    "total_venta": "0.00"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 58,
+  "fields": {
+    "fecha_fac": "2025-04-28T20:33:27.427Z",
+    "total_fac": "0.00",
+    "metodo_pag": "efectivo",
+    "cliente": 8,
+    "empleado": 6,
+    "total_venta": "0.00"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 59,
+  "fields": {
+    "fecha_fac": "2025-04-28T20:34:10.300Z",
+    "total_fac": "0.00",
+    "metodo_pag": "efectivo",
+    "cliente": 8,
+    "empleado": 6,
+    "total_venta": "0.00"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 60,
+  "fields": {
+    "fecha_fac": "2025-04-28T20:37:57.229Z",
+    "total_fac": "0.00",
+    "metodo_pag": "credito",
+    "cliente": 16,
+    "empleado": 6,
+    "total_venta": "0.00"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 61,
+  "fields": {
+    "fecha_fac": "2025-04-28T20:50:14.154Z",
+    "total_fac": "950.46",
+    "metodo_pag": "efectivo",
+    "cliente": 8,
+    "empleado": 6,
+    "total_venta": "950.46"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 62,
+  "fields": {
+    "fecha_fac": "2025-04-28T20:52:31.811Z",
+    "total_fac": "706.60",
+    "metodo_pag": "efectivo",
+    "cliente": 5,
+    "empleado": 6,
+    "total_venta": "706.60"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 63,
+  "fields": {
+    "fecha_fac": "2025-04-28T21:25:05.935Z",
+    "total_fac": "377.40",
+    "metodo_pag": "efectivo",
+    "cliente": 8,
+    "empleado": 5,
+    "total_venta": "377.40"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 64,
+  "fields": {
+    "fecha_fac": "2025-04-28T21:25:49.298Z",
+    "total_fac": "667.61",
+    "metodo_pag": "credito",
+    "cliente": 8,
+    "empleado": 5,
+    "total_venta": "667.61"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 65,
+  "fields": {
+    "fecha_fac": "2025-04-28T21:35:09.929Z",
+    "total_fac": "1030.30",
+    "metodo_pag": "credito",
+    "cliente": 12,
+    "empleado": 5,
+    "total_venta": "1030.30"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 66,
+  "fields": {
+    "fecha_fac": "2025-05-02T19:40:04.556Z",
+    "total_fac": "244.10",
+    "metodo_pag": "efectivo",
+    "cliente": 7,
+    "empleado": 5,
+    "total_venta": "244.10"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 67,
+  "fields": {
+    "fecha_fac": "2025-05-09T02:50:30.442Z",
+    "total_fac": "244.10",
+    "metodo_pag": "credito",
+    "cliente": 6,
+    "empleado": 5,
+    "total_venta": "244.10"
+  }
+},
+{
+  "model": "black_invoices.factura",
+  "pk": 68,
+  "fields": {
+    "fecha_fac": "2025-05-09T02:50:46.397Z",
+    "total_fac": "135.78",
+    "metodo_pag": "efectivo",
+    "cliente": 7,
+    "empleado": 5,
+    "total_venta": "135.78"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 1,
+  "fields": {
+    "factura": 1,
+    "tipo_factura": 1,
+    "producto": 26,
+    "cantidad": 1,
+    "sub_total": "232.19",
+    "fecha_creacion": "2025-04-28T14:44:04.240Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 2,
+  "fields": {
+    "factura": 1,
+    "tipo_factura": 1,
+    "producto": 17,
+    "cantidad": 3,
+    "sub_total": "846.72",
+    "fecha_creacion": "2025-04-28T14:44:04.251Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 3,
+  "fields": {
+    "factura": 2,
+    "tipo_factura": 2,
+    "producto": 15,
+    "cantidad": 3,
+    "sub_total": "293.19",
+    "fecha_creacion": "2025-04-28T14:44:04.273Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 4,
+  "fields": {
+    "factura": 2,
+    "tipo_factura": 2,
+    "producto": 16,
+    "cantidad": 3,
+    "sub_total": "262.23",
+    "fecha_creacion": "2025-04-28T14:44:04.279Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 5,
+  "fields": {
+    "factura": 3,
+    "tipo_factura": 1,
+    "producto": 12,
+    "cantidad": 1,
+    "sub_total": "88.35",
+    "fecha_creacion": "2025-04-28T14:44:04.292Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 6,
+  "fields": {
+    "factura": 3,
+    "tipo_factura": 1,
+    "producto": 9,
+    "cantidad": 3,
+    "sub_total": "407.34",
+    "fecha_creacion": "2025-04-28T14:44:04.297Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 7,
+  "fields": {
+    "factura": 4,
+    "tipo_factura": 1,
+    "producto": 5,
+    "cantidad": 2,
+    "sub_total": "361.96",
+    "fecha_creacion": "2025-04-28T14:44:04.312Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 8,
+  "fields": {
+    "factura": 4,
+    "tipo_factura": 1,
+    "producto": 23,
+    "cantidad": 3,
+    "sub_total": "697.77",
+    "fecha_creacion": "2025-04-28T14:44:04.315Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 9,
+  "fields": {
+    "factura": 4,
+    "tipo_factura": 1,
+    "producto": 11,
+    "cantidad": 2,
+    "sub_total": "244.40",
+    "fecha_creacion": "2025-04-28T14:44:04.320Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 10,
+  "fields": {
+    "factura": 4,
+    "tipo_factura": 1,
+    "producto": 12,
+    "cantidad": 3,
+    "sub_total": "265.05",
+    "fecha_creacion": "2025-04-28T14:44:04.326Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 11,
+  "fields": {
+    "factura": 4,
+    "tipo_factura": 1,
+    "producto": 20,
+    "cantidad": 2,
+    "sub_total": "553.28",
+    "fecha_creacion": "2025-04-28T14:44:04.329Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 12,
+  "fields": {
+    "factura": 5,
+    "tipo_factura": 1,
+    "producto": 3,
+    "cantidad": 2,
+    "sub_total": "375.84",
+    "fecha_creacion": "2025-04-28T14:44:04.337Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 13,
+  "fields": {
+    "factura": 5,
+    "tipo_factura": 1,
+    "producto": 12,
+    "cantidad": 2,
+    "sub_total": "176.70",
+    "fecha_creacion": "2025-04-28T14:44:04.341Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 14,
+  "fields": {
+    "factura": 5,
+    "tipo_factura": 1,
+    "producto": 9,
+    "cantidad": 2,
+    "sub_total": "271.56",
+    "fecha_creacion": "2025-04-28T14:44:04.346Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 15,
+  "fields": {
+    "factura": 5,
+    "tipo_factura": 1,
+    "producto": 23,
+    "cantidad": 1,
+    "sub_total": "232.59",
+    "fecha_creacion": "2025-04-28T14:44:04.351Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 16,
+  "fields": {
+    "factura": 6,
+    "tipo_factura": 1,
+    "producto": 8,
+    "cantidad": 1,
+    "sub_total": "141.95",
+    "fecha_creacion": "2025-04-28T14:44:04.363Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 17,
+  "fields": {
+    "factura": 6,
+    "tipo_factura": 1,
+    "producto": 25,
+    "cantidad": 2,
+    "sub_total": "59.46",
+    "fecha_creacion": "2025-04-28T14:44:04.366Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 18,
+  "fields": {
+    "factura": 7,
+    "tipo_factura": 1,
+    "producto": 6,
+    "cantidad": 1,
+    "sub_total": "274.07",
+    "fecha_creacion": "2025-04-28T14:44:04.378Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 19,
+  "fields": {
+    "factura": 7,
+    "tipo_factura": 1,
+    "producto": 7,
+    "cantidad": 2,
+    "sub_total": "572.46",
+    "fecha_creacion": "2025-04-28T14:44:04.381Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 20,
+  "fields": {
+    "factura": 7,
+    "tipo_factura": 1,
+    "producto": 14,
+    "cantidad": 3,
+    "sub_total": "566.10",
+    "fecha_creacion": "2025-04-28T14:44:04.385Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 21,
+  "fields": {
+    "factura": 8,
+    "tipo_factura": 1,
+    "producto": 23,
+    "cantidad": 3,
+    "sub_total": "697.77",
+    "fecha_creacion": "2025-04-28T14:44:04.396Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 22,
+  "fields": {
+    "factura": 9,
+    "tipo_factura": 2,
+    "producto": 5,
+    "cantidad": 3,
+    "sub_total": "542.94",
+    "fecha_creacion": "2025-04-28T14:44:04.406Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 23,
+  "fields": {
+    "factura": 9,
+    "tipo_factura": 2,
+    "producto": 7,
+    "cantidad": 2,
+    "sub_total": "572.46",
+    "fecha_creacion": "2025-04-28T14:44:04.410Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 24,
+  "fields": {
+    "factura": 9,
+    "tipo_factura": 2,
+    "producto": 22,
+    "cantidad": 2,
+    "sub_total": "143.44",
+    "fecha_creacion": "2025-04-28T14:44:04.415Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 25,
+  "fields": {
+    "factura": 9,
+    "tipo_factura": 2,
+    "producto": 21,
+    "cantidad": 1,
+    "sub_total": "67.45",
+    "fecha_creacion": "2025-04-28T14:44:04.422Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 26,
+  "fields": {
+    "factura": 10,
+    "tipo_factura": 2,
+    "producto": 7,
+    "cantidad": 2,
+    "sub_total": "572.46",
+    "fecha_creacion": "2025-04-28T14:44:04.435Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 27,
+  "fields": {
+    "factura": 10,
+    "tipo_factura": 2,
+    "producto": 16,
+    "cantidad": 3,
+    "sub_total": "262.23",
+    "fecha_creacion": "2025-04-28T14:44:04.441Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 28,
+  "fields": {
+    "factura": 11,
+    "tipo_factura": 1,
+    "producto": 23,
+    "cantidad": 3,
+    "sub_total": "697.77",
+    "fecha_creacion": "2025-04-28T14:44:04.451Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 29,
+  "fields": {
+    "factura": 12,
+    "tipo_factura": 1,
+    "producto": 13,
+    "cantidad": 3,
+    "sub_total": "627.09",
+    "fecha_creacion": "2025-04-28T14:44:04.458Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 30,
+  "fields": {
+    "factura": 13,
+    "tipo_factura": 1,
+    "producto": 21,
+    "cantidad": 2,
+    "sub_total": "134.90",
+    "fecha_creacion": "2025-04-28T14:44:04.465Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 31,
+  "fields": {
+    "factura": 13,
+    "tipo_factura": 1,
+    "producto": 13,
+    "cantidad": 1,
+    "sub_total": "209.03",
+    "fecha_creacion": "2025-04-28T14:44:04.467Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 32,
+  "fields": {
+    "factura": 13,
+    "tipo_factura": 1,
+    "producto": 7,
+    "cantidad": 3,
+    "sub_total": "858.69",
+    "fecha_creacion": "2025-04-28T14:44:04.470Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 33,
+  "fields": {
+    "factura": 14,
+    "tipo_factura": 2,
+    "producto": 8,
+    "cantidad": 3,
+    "sub_total": "425.85",
+    "fecha_creacion": "2025-04-28T14:44:04.479Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 34,
+  "fields": {
+    "factura": 14,
+    "tipo_factura": 2,
+    "producto": 24,
+    "cantidad": 2,
+    "sub_total": "377.04",
+    "fecha_creacion": "2025-04-28T14:44:04.484Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 35,
+  "fields": {
+    "factura": 14,
+    "tipo_factura": 2,
+    "producto": 5,
+    "cantidad": 2,
+    "sub_total": "361.96",
+    "fecha_creacion": "2025-04-28T14:44:04.488Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 36,
+  "fields": {
+    "factura": 14,
+    "tipo_factura": 2,
+    "producto": 6,
+    "cantidad": 1,
+    "sub_total": "274.07",
+    "fecha_creacion": "2025-04-28T14:44:04.492Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 37,
+  "fields": {
+    "factura": 14,
+    "tipo_factura": 2,
+    "producto": 1,
+    "cantidad": 3,
+    "sub_total": "529.95",
+    "fecha_creacion": "2025-04-28T14:44:04.496Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 38,
+  "fields": {
+    "factura": 15,
+    "tipo_factura": 2,
+    "producto": 14,
+    "cantidad": 1,
+    "sub_total": "188.70",
+    "fecha_creacion": "2025-04-28T14:44:04.504Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 39,
+  "fields": {
+    "factura": 15,
+    "tipo_factura": 2,
+    "producto": 18,
+    "cantidad": 3,
+    "sub_total": "432.75",
+    "fecha_creacion": "2025-04-28T14:44:04.509Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 40,
+  "fields": {
+    "factura": 16,
+    "tipo_factura": 1,
+    "producto": 24,
+    "cantidad": 1,
+    "sub_total": "188.52",
+    "fecha_creacion": "2025-04-28T14:44:04.521Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 41,
+  "fields": {
+    "factura": 16,
+    "tipo_factura": 1,
+    "producto": 11,
+    "cantidad": 3,
+    "sub_total": "366.60",
+    "fecha_creacion": "2025-04-28T14:44:04.524Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 42,
+  "fields": {
+    "factura": 16,
+    "tipo_factura": 1,
+    "producto": 6,
+    "cantidad": 1,
+    "sub_total": "274.07",
+    "fecha_creacion": "2025-04-28T14:44:04.526Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 43,
+  "fields": {
+    "factura": 16,
+    "tipo_factura": 1,
+    "producto": 18,
+    "cantidad": 1,
+    "sub_total": "144.25",
+    "fecha_creacion": "2025-04-28T14:44:04.529Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 44,
+  "fields": {
+    "factura": 16,
+    "tipo_factura": 1,
+    "producto": 7,
+    "cantidad": 1,
+    "sub_total": "286.23",
+    "fecha_creacion": "2025-04-28T14:44:04.533Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 45,
+  "fields": {
+    "factura": 17,
+    "tipo_factura": 1,
+    "producto": 13,
+    "cantidad": 2,
+    "sub_total": "418.06",
+    "fecha_creacion": "2025-04-28T14:44:04.543Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 46,
+  "fields": {
+    "factura": 17,
+    "tipo_factura": 1,
+    "producto": 24,
+    "cantidad": 3,
+    "sub_total": "565.56",
+    "fecha_creacion": "2025-04-28T14:44:04.547Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 47,
+  "fields": {
+    "factura": 17,
+    "tipo_factura": 1,
+    "producto": 3,
+    "cantidad": 1,
+    "sub_total": "187.92",
+    "fecha_creacion": "2025-04-28T14:44:04.550Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 48,
+  "fields": {
+    "factura": 17,
+    "tipo_factura": 1,
+    "producto": 5,
+    "cantidad": 3,
+    "sub_total": "542.94",
+    "fecha_creacion": "2025-04-28T14:44:04.554Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 49,
+  "fields": {
+    "factura": 17,
+    "tipo_factura": 1,
+    "producto": 15,
+    "cantidad": 3,
+    "sub_total": "293.19",
+    "fecha_creacion": "2025-04-28T14:44:04.559Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 50,
+  "fields": {
+    "factura": 18,
+    "tipo_factura": 1,
+    "producto": 3,
+    "cantidad": 2,
+    "sub_total": "375.84",
+    "fecha_creacion": "2025-04-28T14:44:04.568Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 51,
+  "fields": {
+    "factura": 18,
+    "tipo_factura": 1,
+    "producto": 17,
+    "cantidad": 2,
+    "sub_total": "564.48",
+    "fecha_creacion": "2025-04-28T14:44:04.571Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 52,
+  "fields": {
+    "factura": 18,
+    "tipo_factura": 1,
+    "producto": 9,
+    "cantidad": 1,
+    "sub_total": "135.78",
+    "fecha_creacion": "2025-04-28T14:44:04.574Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 53,
+  "fields": {
+    "factura": 19,
+    "tipo_factura": 1,
+    "producto": 2,
+    "cantidad": 3,
+    "sub_total": "779.10",
+    "fecha_creacion": "2025-04-28T14:44:04.583Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 54,
+  "fields": {
+    "factura": 19,
+    "tipo_factura": 1,
+    "producto": 26,
+    "cantidad": 2,
+    "sub_total": "464.38",
+    "fecha_creacion": "2025-04-28T14:44:04.587Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 55,
+  "fields": {
+    "factura": 19,
+    "tipo_factura": 1,
+    "producto": 1,
+    "cantidad": 2,
+    "sub_total": "353.30",
+    "fecha_creacion": "2025-04-28T14:44:04.591Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 56,
+  "fields": {
+    "factura": 19,
+    "tipo_factura": 1,
+    "producto": 18,
+    "cantidad": 1,
+    "sub_total": "144.25",
+    "fecha_creacion": "2025-04-28T14:44:04.595Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 57,
+  "fields": {
+    "factura": 20,
+    "tipo_factura": 1,
+    "producto": 21,
+    "cantidad": 2,
+    "sub_total": "134.90",
+    "fecha_creacion": "2025-04-28T14:44:04.604Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 58,
+  "fields": {
+    "factura": 20,
+    "tipo_factura": 1,
+    "producto": 26,
+    "cantidad": 1,
+    "sub_total": "232.19",
+    "fecha_creacion": "2025-04-28T14:44:04.608Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 59,
+  "fields": {
+    "factura": 20,
+    "tipo_factura": 1,
+    "producto": 20,
+    "cantidad": 3,
+    "sub_total": "829.92",
+    "fecha_creacion": "2025-04-28T14:44:04.612Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 60,
+  "fields": {
+    "factura": 20,
+    "tipo_factura": 1,
+    "producto": 4,
+    "cantidad": 3,
+    "sub_total": "167.58",
+    "fecha_creacion": "2025-04-28T14:44:04.616Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 61,
+  "fields": {
+    "factura": 21,
+    "tipo_factura": 1,
+    "producto": 4,
+    "cantidad": 2,
+    "sub_total": "111.72",
+    "fecha_creacion": "2025-04-28T14:44:04.626Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 62,
+  "fields": {
+    "factura": 21,
+    "tipo_factura": 1,
+    "producto": 3,
+    "cantidad": 3,
+    "sub_total": "563.76",
+    "fecha_creacion": "2025-04-28T14:44:04.630Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 63,
+  "fields": {
+    "factura": 21,
+    "tipo_factura": 1,
+    "producto": 10,
+    "cantidad": 2,
+    "sub_total": "296.14",
+    "fecha_creacion": "2025-04-28T14:44:04.634Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 64,
+  "fields": {
+    "factura": 21,
+    "tipo_factura": 1,
+    "producto": 17,
+    "cantidad": 1,
+    "sub_total": "282.24",
+    "fecha_creacion": "2025-04-28T14:44:04.636Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 65,
+  "fields": {
+    "factura": 22,
+    "tipo_factura": 1,
+    "producto": 18,
+    "cantidad": 3,
+    "sub_total": "432.75",
+    "fecha_creacion": "2025-04-28T14:44:04.642Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 66,
+  "fields": {
+    "factura": 22,
+    "tipo_factura": 1,
+    "producto": 23,
+    "cantidad": 2,
+    "sub_total": "465.18",
+    "fecha_creacion": "2025-04-28T14:44:04.644Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 67,
+  "fields": {
+    "factura": 22,
+    "tipo_factura": 1,
+    "producto": 16,
+    "cantidad": 3,
+    "sub_total": "262.23",
+    "fecha_creacion": "2025-04-28T14:44:04.648Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 68,
+  "fields": {
+    "factura": 23,
+    "tipo_factura": 2,
+    "producto": 16,
+    "cantidad": 3,
+    "sub_total": "262.23",
+    "fecha_creacion": "2025-04-28T14:44:04.654Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 69,
+  "fields": {
+    "factura": 23,
+    "tipo_factura": 2,
+    "producto": 25,
+    "cantidad": 2,
+    "sub_total": "59.46",
+    "fecha_creacion": "2025-04-28T14:44:04.656Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 70,
+  "fields": {
+    "factura": 23,
+    "tipo_factura": 2,
+    "producto": 20,
+    "cantidad": 2,
+    "sub_total": "553.28",
+    "fecha_creacion": "2025-04-28T14:44:04.659Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 71,
+  "fields": {
+    "factura": 24,
+    "tipo_factura": 2,
+    "producto": 22,
+    "cantidad": 1,
+    "sub_total": "71.72",
+    "fecha_creacion": "2025-04-28T14:44:04.665Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 72,
+  "fields": {
+    "factura": 25,
+    "tipo_factura": 1,
+    "producto": 20,
+    "cantidad": 2,
+    "sub_total": "553.28",
+    "fecha_creacion": "2025-04-28T14:44:04.670Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 73,
+  "fields": {
+    "factura": 26,
+    "tipo_factura": 2,
+    "producto": 10,
+    "cantidad": 1,
+    "sub_total": "148.07",
+    "fecha_creacion": "2025-04-28T14:44:04.676Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 74,
+  "fields": {
+    "factura": 26,
+    "tipo_factura": 2,
+    "producto": 12,
+    "cantidad": 3,
+    "sub_total": "265.05",
+    "fecha_creacion": "2025-04-28T14:44:04.678Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 75,
+  "fields": {
+    "factura": 26,
+    "tipo_factura": 2,
+    "producto": 2,
+    "cantidad": 1,
+    "sub_total": "259.70",
+    "fecha_creacion": "2025-04-28T14:44:04.680Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 76,
+  "fields": {
+    "factura": 26,
+    "tipo_factura": 2,
+    "producto": 22,
+    "cantidad": 2,
+    "sub_total": "143.44",
+    "fecha_creacion": "2025-04-28T14:44:04.682Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 77,
+  "fields": {
+    "factura": 27,
+    "tipo_factura": 1,
+    "producto": 2,
+    "cantidad": 3,
+    "sub_total": "779.10",
+    "fecha_creacion": "2025-04-28T14:44:04.689Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 78,
+  "fields": {
+    "factura": 27,
+    "tipo_factura": 1,
+    "producto": 12,
+    "cantidad": 1,
+    "sub_total": "88.35",
+    "fecha_creacion": "2025-04-28T14:44:04.691Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 79,
+  "fields": {
+    "factura": 27,
+    "tipo_factura": 1,
+    "producto": 20,
+    "cantidad": 3,
+    "sub_total": "829.92",
+    "fecha_creacion": "2025-04-28T14:44:04.694Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 80,
+  "fields": {
+    "factura": 27,
+    "tipo_factura": 1,
+    "producto": 4,
+    "cantidad": 1,
+    "sub_total": "55.86",
+    "fecha_creacion": "2025-04-28T14:44:04.696Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 81,
+  "fields": {
+    "factura": 27,
+    "tipo_factura": 1,
+    "producto": 18,
+    "cantidad": 3,
+    "sub_total": "432.75",
+    "fecha_creacion": "2025-04-28T14:44:04.698Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 82,
+  "fields": {
+    "factura": 28,
+    "tipo_factura": 1,
+    "producto": 3,
+    "cantidad": 1,
+    "sub_total": "187.92",
+    "fecha_creacion": "2025-04-28T14:44:04.703Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 83,
+  "fields": {
+    "factura": 28,
+    "tipo_factura": 1,
+    "producto": 24,
+    "cantidad": 2,
+    "sub_total": "377.04",
+    "fecha_creacion": "2025-04-28T14:44:04.705Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 84,
+  "fields": {
+    "factura": 28,
+    "tipo_factura": 1,
+    "producto": 17,
+    "cantidad": 3,
+    "sub_total": "846.72",
+    "fecha_creacion": "2025-04-28T14:44:04.708Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 85,
+  "fields": {
+    "factura": 28,
+    "tipo_factura": 1,
+    "producto": 16,
+    "cantidad": 2,
+    "sub_total": "174.82",
+    "fecha_creacion": "2025-04-28T14:44:04.711Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 86,
+  "fields": {
+    "factura": 28,
+    "tipo_factura": 1,
+    "producto": 15,
+    "cantidad": 2,
+    "sub_total": "195.46",
+    "fecha_creacion": "2025-04-28T14:44:04.713Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 87,
+  "fields": {
+    "factura": 29,
+    "tipo_factura": 1,
+    "producto": 20,
+    "cantidad": 1,
+    "sub_total": "276.64",
+    "fecha_creacion": "2025-04-28T14:44:04.718Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 88,
+  "fields": {
+    "factura": 30,
+    "tipo_factura": 1,
+    "producto": 18,
+    "cantidad": 1,
+    "sub_total": "144.25",
+    "fecha_creacion": "2025-04-28T14:44:04.723Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 89,
+  "fields": {
+    "factura": 30,
+    "tipo_factura": 1,
+    "producto": 14,
+    "cantidad": 3,
+    "sub_total": "566.10",
+    "fecha_creacion": "2025-04-28T14:44:04.726Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 90,
+  "fields": {
+    "factura": 30,
+    "tipo_factura": 1,
+    "producto": 2,
+    "cantidad": 1,
+    "sub_total": "259.70",
+    "fecha_creacion": "2025-04-28T14:44:04.728Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 91,
+  "fields": {
+    "factura": 30,
+    "tipo_factura": 1,
+    "producto": 1,
+    "cantidad": 2,
+    "sub_total": "353.30",
+    "fecha_creacion": "2025-04-28T14:44:04.731Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 92,
+  "fields": {
+    "factura": 30,
+    "tipo_factura": 1,
+    "producto": 6,
+    "cantidad": 1,
+    "sub_total": "274.07",
+    "fecha_creacion": "2025-04-28T14:44:04.733Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 93,
+  "fields": {
+    "factura": 31,
+    "tipo_factura": 1,
+    "producto": 6,
+    "cantidad": 1,
+    "sub_total": "274.07",
+    "fecha_creacion": "2025-04-28T14:44:04.738Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 94,
+  "fields": {
+    "factura": 31,
+    "tipo_factura": 1,
+    "producto": 4,
+    "cantidad": 1,
+    "sub_total": "55.86",
+    "fecha_creacion": "2025-04-28T14:44:04.740Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 95,
+  "fields": {
+    "factura": 31,
+    "tipo_factura": 1,
+    "producto": 11,
+    "cantidad": 1,
+    "sub_total": "122.20",
+    "fecha_creacion": "2025-04-28T14:44:04.743Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 96,
+  "fields": {
+    "factura": 31,
+    "tipo_factura": 1,
+    "producto": 23,
+    "cantidad": 2,
+    "sub_total": "465.18",
+    "fecha_creacion": "2025-04-28T14:44:04.745Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 97,
+  "fields": {
+    "factura": 31,
+    "tipo_factura": 1,
+    "producto": 18,
+    "cantidad": 3,
+    "sub_total": "432.75",
+    "fecha_creacion": "2025-04-28T14:44:04.747Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 98,
+  "fields": {
+    "factura": 32,
+    "tipo_factura": 1,
+    "producto": 9,
+    "cantidad": 1,
+    "sub_total": "135.78",
+    "fecha_creacion": "2025-04-28T14:44:04.752Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 99,
+  "fields": {
+    "factura": 32,
+    "tipo_factura": 1,
+    "producto": 18,
+    "cantidad": 1,
+    "sub_total": "144.25",
+    "fecha_creacion": "2025-04-28T14:44:04.755Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 100,
+  "fields": {
+    "factura": 32,
+    "tipo_factura": 1,
+    "producto": 3,
+    "cantidad": 1,
+    "sub_total": "187.92",
+    "fecha_creacion": "2025-04-28T14:44:04.757Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 101,
+  "fields": {
+    "factura": 33,
+    "tipo_factura": 1,
+    "producto": 25,
+    "cantidad": 3,
+    "sub_total": "89.19",
+    "fecha_creacion": "2025-04-28T14:44:04.762Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 102,
+  "fields": {
+    "factura": 33,
+    "tipo_factura": 1,
+    "producto": 18,
+    "cantidad": 2,
+    "sub_total": "288.50",
+    "fecha_creacion": "2025-04-28T14:44:04.765Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 103,
+  "fields": {
+    "factura": 33,
+    "tipo_factura": 1,
+    "producto": 24,
+    "cantidad": 2,
+    "sub_total": "377.04",
+    "fecha_creacion": "2025-04-28T14:44:04.767Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 104,
+  "fields": {
+    "factura": 33,
+    "tipo_factura": 1,
+    "producto": 1,
+    "cantidad": 3,
+    "sub_total": "529.95",
+    "fecha_creacion": "2025-04-28T14:44:04.769Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 105,
+  "fields": {
+    "factura": 33,
+    "tipo_factura": 1,
+    "producto": 23,
+    "cantidad": 2,
+    "sub_total": "465.18",
+    "fecha_creacion": "2025-04-28T14:44:04.771Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 106,
+  "fields": {
+    "factura": 34,
+    "tipo_factura": 2,
+    "producto": 7,
+    "cantidad": 3,
+    "sub_total": "858.69",
+    "fecha_creacion": "2025-04-28T14:44:04.777Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 107,
+  "fields": {
+    "factura": 34,
+    "tipo_factura": 2,
+    "producto": 18,
+    "cantidad": 3,
+    "sub_total": "432.75",
+    "fecha_creacion": "2025-04-28T14:44:04.779Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 108,
+  "fields": {
+    "factura": 34,
+    "tipo_factura": 2,
+    "producto": 3,
+    "cantidad": 3,
+    "sub_total": "563.76",
+    "fecha_creacion": "2025-04-28T14:44:04.781Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 109,
+  "fields": {
+    "factura": 35,
+    "tipo_factura": 1,
+    "producto": 18,
+    "cantidad": 1,
+    "sub_total": "144.25",
+    "fecha_creacion": "2025-04-28T14:44:04.787Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 110,
+  "fields": {
+    "factura": 36,
+    "tipo_factura": 2,
+    "producto": 20,
+    "cantidad": 3,
+    "sub_total": "829.92",
+    "fecha_creacion": "2025-04-28T14:44:04.792Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 111,
+  "fields": {
+    "factura": 36,
+    "tipo_factura": 2,
+    "producto": 5,
+    "cantidad": 1,
+    "sub_total": "180.98",
+    "fecha_creacion": "2025-04-28T14:44:04.794Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 112,
+  "fields": {
+    "factura": 36,
+    "tipo_factura": 2,
+    "producto": 10,
+    "cantidad": 2,
+    "sub_total": "296.14",
+    "fecha_creacion": "2025-04-28T14:44:04.797Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 113,
+  "fields": {
+    "factura": 37,
+    "tipo_factura": 1,
+    "producto": 6,
+    "cantidad": 1,
+    "sub_total": "274.07",
+    "fecha_creacion": "2025-04-28T14:44:04.802Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 114,
+  "fields": {
+    "factura": 37,
+    "tipo_factura": 1,
+    "producto": 9,
+    "cantidad": 2,
+    "sub_total": "271.56",
+    "fecha_creacion": "2025-04-28T14:44:04.806Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 115,
+  "fields": {
+    "factura": 37,
+    "tipo_factura": 1,
+    "producto": 12,
+    "cantidad": 3,
+    "sub_total": "265.05",
+    "fecha_creacion": "2025-04-28T14:44:04.810Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 116,
+  "fields": {
+    "factura": 38,
+    "tipo_factura": 1,
+    "producto": 12,
+    "cantidad": 2,
+    "sub_total": "176.70",
+    "fecha_creacion": "2025-04-28T14:44:04.818Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 117,
+  "fields": {
+    "factura": 38,
+    "tipo_factura": 1,
+    "producto": 5,
+    "cantidad": 1,
+    "sub_total": "180.98",
+    "fecha_creacion": "2025-04-28T14:44:04.821Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 118,
+  "fields": {
+    "factura": 38,
+    "tipo_factura": 1,
+    "producto": 24,
+    "cantidad": 3,
+    "sub_total": "565.56",
+    "fecha_creacion": "2025-04-28T14:44:04.823Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 119,
+  "fields": {
+    "factura": 38,
+    "tipo_factura": 1,
+    "producto": 25,
+    "cantidad": 3,
+    "sub_total": "89.19",
+    "fecha_creacion": "2025-04-28T14:44:04.827Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 120,
+  "fields": {
+    "factura": 38,
+    "tipo_factura": 1,
+    "producto": 2,
+    "cantidad": 2,
+    "sub_total": "519.40",
+    "fecha_creacion": "2025-04-28T14:44:04.830Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 121,
+  "fields": {
+    "factura": 39,
+    "tipo_factura": 2,
+    "producto": 1,
+    "cantidad": 2,
+    "sub_total": "353.30",
+    "fecha_creacion": "2025-04-28T14:44:04.837Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 122,
+  "fields": {
+    "factura": 39,
+    "tipo_factura": 2,
+    "producto": 10,
+    "cantidad": 1,
+    "sub_total": "148.07",
+    "fecha_creacion": "2025-04-28T14:44:04.840Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 123,
+  "fields": {
+    "factura": 40,
+    "tipo_factura": 1,
+    "producto": 20,
+    "cantidad": 3,
+    "sub_total": "829.92",
+    "fecha_creacion": "2025-04-28T14:44:04.848Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 124,
+  "fields": {
+    "factura": 40,
+    "tipo_factura": 1,
+    "producto": 10,
+    "cantidad": 1,
+    "sub_total": "148.07",
+    "fecha_creacion": "2025-04-28T14:44:04.851Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 125,
+  "fields": {
+    "factura": 40,
+    "tipo_factura": 1,
+    "producto": 24,
+    "cantidad": 1,
+    "sub_total": "188.52",
+    "fecha_creacion": "2025-04-28T14:44:04.854Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 126,
+  "fields": {
+    "factura": 41,
+    "tipo_factura": 2,
+    "producto": 9,
+    "cantidad": 3,
+    "sub_total": "407.34",
+    "fecha_creacion": "2025-04-28T14:44:04.862Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 127,
+  "fields": {
+    "factura": 41,
+    "tipo_factura": 2,
+    "producto": 14,
+    "cantidad": 2,
+    "sub_total": "377.40",
+    "fecha_creacion": "2025-04-28T14:44:04.865Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 128,
+  "fields": {
+    "factura": 41,
+    "tipo_factura": 2,
+    "producto": 18,
+    "cantidad": 2,
+    "sub_total": "288.50",
+    "fecha_creacion": "2025-04-28T14:44:04.869Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 129,
+  "fields": {
+    "factura": 42,
+    "tipo_factura": 1,
+    "producto": 9,
+    "cantidad": 2,
+    "sub_total": "271.56",
+    "fecha_creacion": "2025-04-28T14:44:04.883Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 130,
+  "fields": {
+    "factura": 42,
+    "tipo_factura": 1,
+    "producto": 12,
+    "cantidad": 1,
+    "sub_total": "88.35",
+    "fecha_creacion": "2025-04-28T14:44:04.888Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 131,
+  "fields": {
+    "factura": 42,
+    "tipo_factura": 1,
+    "producto": 10,
+    "cantidad": 1,
+    "sub_total": "148.07",
+    "fecha_creacion": "2025-04-28T14:44:04.893Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 132,
+  "fields": {
+    "factura": 43,
+    "tipo_factura": 1,
+    "producto": 4,
+    "cantidad": 1,
+    "sub_total": "55.86",
+    "fecha_creacion": "2025-04-28T14:44:04.905Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 133,
+  "fields": {
+    "factura": 43,
+    "tipo_factura": 1,
+    "producto": 25,
+    "cantidad": 2,
+    "sub_total": "59.46",
+    "fecha_creacion": "2025-04-28T14:44:04.910Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 134,
+  "fields": {
+    "factura": 43,
+    "tipo_factura": 1,
+    "producto": 8,
+    "cantidad": 2,
+    "sub_total": "283.90",
+    "fecha_creacion": "2025-04-28T14:44:04.914Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 135,
+  "fields": {
+    "factura": 43,
+    "tipo_factura": 1,
+    "producto": 16,
+    "cantidad": 2,
+    "sub_total": "174.82",
+    "fecha_creacion": "2025-04-28T14:44:04.920Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 136,
+  "fields": {
+    "factura": 44,
+    "tipo_factura": 1,
+    "producto": 12,
+    "cantidad": 3,
+    "sub_total": "265.05",
+    "fecha_creacion": "2025-04-28T14:44:04.932Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 137,
+  "fields": {
+    "factura": 44,
+    "tipo_factura": 1,
+    "producto": 9,
+    "cantidad": 3,
+    "sub_total": "407.34",
+    "fecha_creacion": "2025-04-28T14:44:04.938Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 138,
+  "fields": {
+    "factura": 44,
+    "tipo_factura": 1,
+    "producto": 14,
+    "cantidad": 1,
+    "sub_total": "188.70",
+    "fecha_creacion": "2025-04-28T14:44:04.943Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 139,
+  "fields": {
+    "factura": 45,
+    "tipo_factura": 1,
+    "producto": 6,
+    "cantidad": 3,
+    "sub_total": "822.21",
+    "fecha_creacion": "2025-04-28T14:44:04.954Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 140,
+  "fields": {
+    "factura": 45,
+    "tipo_factura": 1,
+    "producto": 17,
+    "cantidad": 1,
+    "sub_total": "282.24",
+    "fecha_creacion": "2025-04-28T14:44:04.959Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 141,
+  "fields": {
+    "factura": 45,
+    "tipo_factura": 1,
+    "producto": 19,
+    "cantidad": 2,
+    "sub_total": "427.44",
+    "fecha_creacion": "2025-04-28T14:44:04.964Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 142,
+  "fields": {
+    "factura": 46,
+    "tipo_factura": 1,
+    "producto": 11,
+    "cantidad": 3,
+    "sub_total": "366.60",
+    "fecha_creacion": "2025-04-28T14:44:04.977Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 143,
+  "fields": {
+    "factura": 46,
+    "tipo_factura": 1,
+    "producto": 13,
+    "cantidad": 2,
+    "sub_total": "418.06",
+    "fecha_creacion": "2025-04-28T14:44:04.982Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 144,
+  "fields": {
+    "factura": 46,
+    "tipo_factura": 1,
+    "producto": 17,
+    "cantidad": 3,
+    "sub_total": "846.72",
+    "fecha_creacion": "2025-04-28T14:44:04.987Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 145,
+  "fields": {
+    "factura": 47,
+    "tipo_factura": 1,
+    "producto": 3,
+    "cantidad": 3,
+    "sub_total": "563.76",
+    "fecha_creacion": "2025-04-28T14:44:05Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 146,
+  "fields": {
+    "factura": 47,
+    "tipo_factura": 1,
+    "producto": 23,
+    "cantidad": 2,
+    "sub_total": "465.18",
+    "fecha_creacion": "2025-04-28T14:44:05.006Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 147,
+  "fields": {
+    "factura": 48,
+    "tipo_factura": 1,
+    "producto": 13,
+    "cantidad": 2,
+    "sub_total": "418.06",
+    "fecha_creacion": "2025-04-28T14:44:05.018Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 148,
+  "fields": {
+    "factura": 48,
+    "tipo_factura": 1,
+    "producto": 6,
+    "cantidad": 2,
+    "sub_total": "548.14",
+    "fecha_creacion": "2025-04-28T14:44:05.022Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 149,
+  "fields": {
+    "factura": 48,
+    "tipo_factura": 1,
+    "producto": 14,
+    "cantidad": 3,
+    "sub_total": "566.10",
+    "fecha_creacion": "2025-04-28T14:44:05.027Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 150,
+  "fields": {
+    "factura": 48,
+    "tipo_factura": 1,
+    "producto": 25,
+    "cantidad": 2,
+    "sub_total": "59.46",
+    "fecha_creacion": "2025-04-28T14:44:05.031Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 151,
+  "fields": {
+    "factura": 49,
+    "tipo_factura": 1,
+    "producto": 15,
+    "cantidad": 3,
+    "sub_total": "293.19",
+    "fecha_creacion": "2025-04-28T14:44:05.042Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 152,
+  "fields": {
+    "factura": 49,
+    "tipo_factura": 1,
+    "producto": 14,
+    "cantidad": 3,
+    "sub_total": "566.10",
+    "fecha_creacion": "2025-04-28T14:44:05.047Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 153,
+  "fields": {
+    "factura": 49,
+    "tipo_factura": 1,
+    "producto": 22,
+    "cantidad": 2,
+    "sub_total": "143.44",
+    "fecha_creacion": "2025-04-28T14:44:05.052Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 154,
+  "fields": {
+    "factura": 49,
+    "tipo_factura": 1,
+    "producto": 20,
+    "cantidad": 2,
+    "sub_total": "553.28",
+    "fecha_creacion": "2025-04-28T14:44:05.057Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 155,
+  "fields": {
+    "factura": 49,
+    "tipo_factura": 1,
+    "producto": 13,
+    "cantidad": 2,
+    "sub_total": "418.06",
+    "fecha_creacion": "2025-04-28T14:44:05.062Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 156,
+  "fields": {
+    "factura": 50,
+    "tipo_factura": 2,
+    "producto": 17,
+    "cantidad": 2,
+    "sub_total": "564.48",
+    "fecha_creacion": "2025-04-28T14:44:05.074Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 157,
+  "fields": {
+    "factura": 50,
+    "tipo_factura": 2,
+    "producto": 14,
+    "cantidad": 3,
+    "sub_total": "566.10",
+    "fecha_creacion": "2025-04-28T14:44:05.080Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 158,
+  "fields": {
+    "factura": 50,
+    "tipo_factura": 2,
+    "producto": 12,
+    "cantidad": 2,
+    "sub_total": "176.70",
+    "fecha_creacion": "2025-04-28T14:44:05.086Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 159,
+  "fields": {
+    "factura": 51,
+    "tipo_factura": 1,
+    "producto": 1,
+    "cantidad": 1,
+    "sub_total": "176.65",
+    "fecha_creacion": "2025-04-28T15:51:38.859Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 160,
+  "fields": {
+    "factura": 52,
+    "tipo_factura": 1,
+    "producto": 26,
+    "cantidad": 1,
+    "sub_total": "232.19",
+    "fecha_creacion": "2025-04-28T15:52:46.231Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 161,
+  "fields": {
+    "factura": 61,
+    "tipo_factura": 1,
+    "producto": 9,
+    "cantidad": 7,
+    "sub_total": "950.46",
+    "fecha_creacion": "2025-04-28T20:50:14.160Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 162,
+  "fields": {
+    "factura": 62,
+    "tipo_factura": 2,
+    "producto": 1,
+    "cantidad": 4,
+    "sub_total": "706.60",
+    "fecha_creacion": "2025-04-28T20:52:31.819Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 163,
+  "fields": {
+    "factura": 63,
+    "tipo_factura": 1,
+    "producto": 14,
+    "cantidad": 1,
+    "sub_total": "188.70",
+    "fecha_creacion": "2025-04-28T21:25:05.942Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 164,
+  "fields": {
+    "factura": 63,
+    "tipo_factura": 1,
+    "producto": 14,
+    "cantidad": 1,
+    "sub_total": "188.70",
+    "fecha_creacion": "2025-04-28T21:25:05.949Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 165,
+  "fields": {
+    "factura": 64,
+    "tipo_factura": 2,
+    "producto": 9,
+    "cantidad": 1,
+    "sub_total": "135.78",
+    "fecha_creacion": "2025-04-28T21:25:49.301Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 166,
+  "fields": {
+    "factura": 64,
+    "tipo_factura": 2,
+    "producto": 21,
+    "cantidad": 1,
+    "sub_total": "67.45",
+    "fecha_creacion": "2025-04-28T21:25:49.307Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 167,
+  "fields": {
+    "factura": 64,
+    "tipo_factura": 2,
+    "producto": 26,
+    "cantidad": 2,
+    "sub_total": "464.38",
+    "fecha_creacion": "2025-04-28T21:25:49.313Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 168,
+  "fields": {
+    "factura": 65,
+    "tipo_factura": 2,
+    "producto": 9,
+    "cantidad": 1,
+    "sub_total": "135.78",
+    "fecha_creacion": "2025-04-28T21:35:09.939Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 169,
+  "fields": {
+    "factura": 65,
+    "tipo_factura": 2,
+    "producto": 1,
+    "cantidad": 4,
+    "sub_total": "706.60",
+    "fecha_creacion": "2025-04-28T21:35:09.946Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 170,
+  "fields": {
+    "factura": 65,
+    "tipo_factura": 2,
+    "producto": 3,
+    "cantidad": 1,
+    "sub_total": "187.92",
+    "fecha_creacion": "2025-04-28T21:35:09.951Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 171,
+  "fields": {
+    "factura": 66,
+    "tipo_factura": 1,
+    "producto": 1,
+    "cantidad": 1,
+    "sub_total": "176.65",
+    "fecha_creacion": "2025-05-02T19:40:04.567Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 172,
+  "fields": {
+    "factura": 66,
+    "tipo_factura": 1,
+    "producto": 21,
+    "cantidad": 1,
+    "sub_total": "67.45",
+    "fecha_creacion": "2025-05-02T19:40:04.583Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 173,
+  "fields": {
+    "factura": 67,
+    "tipo_factura": 2,
+    "producto": 21,
+    "cantidad": 1,
+    "sub_total": "67.45",
+    "fecha_creacion": "2025-05-09T02:50:30.447Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 174,
+  "fields": {
+    "factura": 67,
+    "tipo_factura": 2,
+    "producto": 1,
+    "cantidad": 1,
+    "sub_total": "176.65",
+    "fecha_creacion": "2025-05-09T02:50:30.455Z"
+  }
+},
+{
+  "model": "black_invoices.detallefactura",
+  "pk": 175,
+  "fields": {
+    "factura": 68,
+    "tipo_factura": 1,
+    "producto": 9,
+    "cantidad": 1,
+    "sub_total": "135.78",
+    "fecha_creacion": "2025-05-09T02:50:46.401Z"
+  }
+},
+{
+  "model": "black_invoices.tipofactura",
+  "pk": 1,
+  "fields": {
+    "credito_fac": false,
+    "contado_fac": true,
+    "plazo_credito": null
+  }
+},
+{
+  "model": "black_invoices.tipofactura",
+  "pk": 2,
+  "fields": {
+    "credito_fac": true,
+    "contado_fac": true,
+    "plazo_credito": 30
+  }
+}
+]

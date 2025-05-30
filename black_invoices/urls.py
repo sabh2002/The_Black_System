@@ -50,6 +50,7 @@ urlpatterns = [
     path('configuracion/importar-datos/', views.import_database_view, name='importar_datos'),
     path('productos/mas-vendidos/', views.ProductosMasVendidosView.as_view(), name='productos_mas_vendidos'),
     path('productos/mas-vendidos/pdf', views.ProductosMasVendidosPDFView.as_view(), name='productos_mas_vendidos_pdf'),
+    path('comisiones/historial/', views.HistorialComisionesView.as_view(), name='historial_comisiones'),
 
     # ...
 # URL para editar perfil

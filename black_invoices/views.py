@@ -1036,6 +1036,114 @@ class ComisionListView(LoginRequiredMixin, ListView):
         
         return context
     
+# Agregar esta vista al archivo views.py existente
+
+class HistorialComisionesView(LoginRequiredMixin, ListView):
+    model = Ventas
+    template_name = 'black_invoices/comisiones/historial_comisiones.html'
+    context_object_name = 'ventas'
+    
+    def get_queryset(self):
+        # Obtener todas las ventas completadas (no canceladas)
+        queryset = Ventas.objects.exclude(
+            status__vent_cancelada=True
+        ).select_related(
+            'empleado', 'empleado__nivel_acceso', 'factura', 'factura__cliente', 'status'
+        ).filter(
+            # Solo ventas completadas (contado o crédito pagado)
+            Q(credito=False) | Q(credito=True, monto_pagado__gte=F('factura__total_fac'))
+        ).order_by('-factura__fecha_fac')
+        
+        return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Historial de Comisiones'
+        
+        # Obtener todas las ventas para cálculos
+        ventas = self.get_queryset()
+        
+        # Preparar datos de historial con comisiones calculadas
+        historial_comisiones = []
+        total_comisiones_general = Decimal('0.00')
+        total_ventas_calculadas = 0
+        
+        for venta in ventas:
+            # Calcular comisión para esta venta
+            total_venta = venta.factura.total_fac
+            rango_comision = ConsultaComision.objects.filter(
+                rango_inferior__lte=total_venta,
+                rango_superior__gte=total_venta
+            ).first()
+            
+            porcentaje = rango_comision.porcentaje if rango_comision else Decimal('0.00')
+            comision_venta = (total_venta * porcentaje / Decimal('100.00')) if rango_comision else Decimal('0.00')
+            total_comisiones_general += comision_venta
+            total_ventas_calculadas += 1
+            
+            # Determinar estado de la venta
+            if venta.status.vent_cancelada:
+                estado = 'Cancelada'
+            elif venta.status.vent_espera or (venta.credito and venta.monto_pagado < venta.factura.total_fac):
+                estado = 'Pendiente'
+            else:
+                estado = 'Completada'
+            
+            historial_comisiones.append({
+                'venta_id': venta.id,
+                'empleado_nombre': f"{venta.empleado.nombre} {venta.empleado.apellido}",
+                'empleado_nivel': venta.empleado.nivel_acceso.nombre,
+                'fecha_venta': venta.factura.fecha_fac,
+                'numero_recibo': venta.factura.id,
+                'cliente_nombre': f"{venta.factura.cliente.nombre} {venta.factura.cliente.apellido}",
+                'total_venta': total_venta,
+                'porcentaje_comision': porcentaje,
+                'monto_comision': comision_venta,
+                'estado_venta': estado,
+                'es_credito': venta.credito
+            })
+        
+        context['historial_comisiones'] = historial_comisiones
+        
+        # Estadísticas generales
+        context['estadisticas'] = {
+            'total_comisiones': total_comisiones_general,
+            'total_ventas': total_ventas_calculadas,
+            'promedio_comision': total_comisiones_general / total_ventas_calculadas if total_ventas_calculadas > 0 else Decimal('0.00')
+        }
+        
+        # Datos para filtros
+        context['empleados_unicos'] = Empleado.objects.filter(
+            activo=True
+        ).values('id', 'nombre', 'apellido').distinct()
+        
+        context['niveles_acceso'] = NivelAcceso.objects.all()
+        
+        # Meses del año actual
+        año_actual = datetime.now().year
+        context['meses_año'] = [
+            {'numero': 1, 'nombre': 'Enero'},
+            {'numero': 2, 'nombre': 'Febrero'},
+            {'numero': 3, 'nombre': 'Marzo'},
+            {'numero': 4, 'nombre': 'Abril'},
+            {'numero': 5, 'nombre': 'Mayo'},
+            {'numero': 6, 'nombre': 'Junio'},
+            {'numero': 7, 'nombre': 'Julio'},
+            {'numero': 8, 'nombre': 'Agosto'},
+            {'numero': 9, 'nombre': 'Septiembre'},
+            {'numero': 10, 'nombre': 'Octubre'},
+            {'numero': 11, 'nombre': 'Noviembre'},
+            {'numero': 12, 'nombre': 'Diciembre'},
+        ]
+        context['año_actual'] = año_actual
+        
+        # Porcentajes de comisión disponibles
+        context['porcentajes_comision'] = ConsultaComision.objects.values_list(
+            'porcentaje', flat=True
+        ).distinct().order_by('porcentaje')
+        
+        return context
+    
 class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = Empleado
     form_class = UserProfileForm 

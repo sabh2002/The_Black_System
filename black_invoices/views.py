@@ -703,14 +703,18 @@ class VentaCreateView(LoginRequiredMixin, View):
     template_name = 'black_invoices/ventas/venta_form.html'
     
     def get(self, request):
+        # Obtener tasa de cambio actual
+        tasa_actual = TasaCambio.get_tasa_actual()
+        
         context = {
             'titulo': 'Crear Venta',
             'clientes': Cliente.objects.all(),
-            'productos': Producto.objects.all(),
+            'productos': Producto.objects.filter(activo=True, stock__gt=0),  # Solo productos activos con stock
             'opciones_venta': [
                 {'id': 'contado', 'nombre': 'Contado'},
                 {'id': 'credito', 'nombre': 'Crédito'}
-            ]
+            ],
+            'tasa_cambio': tasa_actual.tasa_usd_ves if tasa_actual else 1
         }
         return render(request, self.template_name, context)
     
@@ -811,7 +815,18 @@ class VentaCreateView(LoginRequiredMixin, View):
                     monto_pagado=0 if es_credito else factura.total_fac
                 )
                 
-                messages.success(request, f'Venta {"a crédito " if es_credito else ""}#{venta.id} creada exitosamente.')
+                # 8. Mensaje de éxito con información en ambas monedas
+                tasa_actual = TasaCambio.get_tasa_actual()
+                if tasa_actual:
+                    total_bs = total_factura * tasa_actual.tasa_usd_ves
+                    messages.success(
+                        request, 
+                        f'Venta {"a crédito " if es_credito else ""}#{venta.id} creada exitosamente. '
+                        f'Total: ${total_factura:,.2f} ({total_bs:,.2f} Bs)'
+                    )
+                else:
+                    messages.success(request, f'Venta {"a crédito " if es_credito else ""}#{venta.id} creada exitosamente.')
+                
                 return redirect('black_invoices:venta_detail', pk=venta.id)
                 
         except Exception as e:
@@ -847,10 +862,10 @@ class VentasPendientesView(EmpleadoRolMixin, ListView):
         context['titulo'] = 'Abonos (Crédito)'
         return context
     
-class RegistrarPagoView(EmpleadoRolMixin, UpdateView):
+""" class RegistrarPagoView(EmpleadoRolMixin, UpdateView):
     model = Ventas
     template_name = 'black_invoices/ventas/registrar_pago.html'
-    fields = []  # No usamos campos del modelo directamente
+    fields = []
     roles_permitidos = ['Administrador', 'Supervisor', 'Vendedor']
     
     def get_context_data(self, **kwargs):
@@ -862,8 +877,15 @@ class RegistrarPagoView(EmpleadoRolMixin, UpdateView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         
+        # VALIDAR que esté autorizada
+        if not self.object.autorizada:
+            messages.error(request, 'No se pueden registrar pagos en ventas no autorizadas.')
+            return redirect('black_invoices:ventas_pendientes')
+        
         try:
             monto = float(request.POST.get('monto', 0))
+            metodo_pago = request.POST.get('metodo_pago', 'efectivo')  # NUEVO
+            referencia = request.POST.get('referencia_pago', '')      # NUEVO
             
             if monto <= 0:
                 messages.error(request, 'El monto debe ser mayor a cero.')
@@ -874,18 +896,179 @@ class RegistrarPagoView(EmpleadoRolMixin, UpdateView):
                 return self.get(request, *args, **kwargs)
             
             # Registrar pago
-            self.object.registrar_pago(monto)
+            from decimal import Decimal
+            monto_decimal = Decimal(str(monto))
+            self.object.monto_pagado += monto_decimal
+            
+            if self.object.completada and self.object.credito:
+                estado_completado = StatusVentas.objects.get(nombre="Completada")
+                self.object.status = estado_completado
+                
+            self.object.save(update_fields=['monto_pagado', 'status'])
+            
+            # CREAR REGISTRO CON MÉTODO DE PAGO
+            PagoVenta.objects.create(
+                venta=self.object,
+                monto=monto_decimal,
+                metodo_pago=metodo_pago,           # NUEVO
+                referencia_pago=referencia if referencia else None  # NUEVO
+            )
+            
+            metodo_nombre = dict(PagoVenta.METODOS_PAGO_CHOICES)[metodo_pago]
             
             if self.object.completada:
-                messages.success(request, f'Pago de ${monto} registrado. La venta ha sido completada.')
+                messages.success(request, f'Pago de ${monto} vía {metodo_nombre} registrado. Venta completada.')
             else:
-                messages.success(request, f'Pago de ${monto} registrado. Saldo pendiente: ${self.object.saldo_pendiente}')
+                messages.success(request, f'Pago de ${monto} vía {metodo_nombre} registrado. Saldo: ${self.object.saldo_pendiente}')
+            
+            return redirect('black_invoices:ventas_pendientes')
+            
+        except ValueError:
+            messages.error(request, 'Por favor ingrese un monto válido.')
+            return self.get(request, *args, **kwargs) """
+class RegistrarPagoView(EmpleadoRolMixin, UpdateView):
+    model = Ventas
+    template_name = 'black_invoices/ventas/registrar_pago.html'
+    fields = []  # No usamos campos del modelo directamente
+    roles_permitidos = ['Administrador', 'Supervisor', 'Vendedor']
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = f'Registrar Pago - Venta #{self.object.id}'
+        context['venta'] = self.object
+        context['metodos_pago'] = PagoVenta.METODOS_PAGO_CHOICES
+        
+        # Agregar tasa de cambio actual
+        tasa_actual = TasaCambio.get_tasa_actual()
+        context['tasa_cambio'] = tasa_actual.tasa_usd_ves if tasa_actual else 1
+        
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        
+        try:
+            monto = float(request.POST.get('monto', 0))
+            metodo_pago = request.POST.get('metodo_pago', 'efectivo')
+            referencia = request.POST.get('referencia', '').strip()
+            
+            if monto <= 0:
+                messages.error(request, 'El monto debe ser mayor a cero.')
+                return self.get(request, *args, **kwargs)
+            
+            if monto > (self.object.saldo_pendiente + Decimal(0.01)):
+                messages.error(request, f'El monto excede el saldo pendiente (${self.object.saldo_pendiente}).')
+                return self.get(request, *args, **kwargs)
+            
+            # Validar referencia para métodos que la requieren
+            if metodo_pago in ['pago_movil', 'transferencia'] and not referencia:
+                messages.error(request, f'La referencia es obligatoria para {dict(PagoVenta.METODOS_PAGO_CHOICES)[metodo_pago]}.')
+                return self.get(request, *args, **kwargs)
+            
+            # Registrar pago con método
+            self.object.registrar_pago_con_metodo(monto, metodo_pago, referencia)
+            
+            metodo_display = dict(PagoVenta.METODOS_PAGO_CHOICES).get(metodo_pago, metodo_pago)
+            
+            # Mensaje diferenciado según el estado
+            if self.object.completada:
+                messages.success(
+                    request, 
+                    f'Pago de ${monto} registrado vía {metodo_display}. La venta ha sido completada.'
+                )
+            else:
+                messages.success(
+                    request, 
+                    f'Pago de ${monto} registrado vía {metodo_display}. Saldo pendiente: ${self.object.saldo_pendiente}'
+                )
             
             return redirect('black_invoices:ventas_pendientes')
             
         except ValueError:
             messages.error(request, 'Por favor ingrese un monto válido.')
             return self.get(request, *args, **kwargs)
+        except Exception as e:
+            messages.error(request, f'Error al procesar el pago: {str(e)}')
+            return self.get(request, *args, **kwargs)
+class VentasAutorizacionView(EmpleadoRolMixin, ListView):
+    model = Ventas
+    template_name = 'black_invoices/ventas/ventas_autorizacion.html'
+    context_object_name = 'ventas'
+    roles_permitidos = ['Administrador', 'Supervisor']
+    
+    def get_queryset(self):
+        return Ventas.objects.filter(
+            requiere_autorizacion=True,
+            autorizada=False,
+            status__vent_cancelada=False
+        ).order_by('-fecha_venta')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Ventas Pendientes de Autorización'
+        return context
+
+class AutorizarVentaView(EmpleadoRolMixin, View):
+    roles_permitidos = ['Administrador', 'Supervisor']
+    
+    def post(self, request, pk):
+        try:
+            venta = Ventas.objects.get(pk=pk)
+            accion = request.POST.get('accion')
+            comentarios = request.POST.get('comentarios', '')
+            empleado = request.user.empleado
+            
+            if accion == 'autorizar':
+                # Verificar stock antes de autorizar
+                detalles = venta.factura.detallefactura_set.all()
+                for detalle in detalles:
+                    if detalle.cantidad > detalle.producto.stock:
+                        messages.error(request, f'Stock insuficiente para {detalle.producto.nombre}')
+                        return redirect('black_invoices:ventas_autorizacion')
+                
+                # Descontar stock
+                for detalle in detalles:
+                    detalle.producto.stock -= detalle.cantidad
+                    detalle.producto.save(update_fields=['stock'])
+                
+                # Autorizar venta
+                venta.autorizada = True
+                venta.autorizada_por = empleado
+                venta.fecha_autorizacion = timezone.now()
+                venta.comentarios_autorizacion = comentarios
+                
+                # Cambiar estado
+                if venta.credito:
+                    estado = StatusVentas.objects.get(nombre="Pendiente")
+                else:
+                    estado = StatusVentas.objects.get(nombre="Completada")
+                    venta.monto_pagado = venta.factura.total_fac
+                
+                venta.status = estado
+                venta.save()
+                
+                messages.success(request, f'Venta #{venta.id} autorizada exitosamente.')
+                
+            elif accion == 'rechazar':
+                venta.autorizada = False
+                venta.autorizada_por = empleado
+                venta.fecha_autorizacion = timezone.now()
+                venta.comentarios_autorizacion = f"RECHAZADA: {comentarios}"
+                
+                estado_cancelado = StatusVentas.objects.get(vent_cancelada=True)
+                venta.status = estado_cancelado
+                venta.save()
+                
+                messages.success(request, f'Venta #{venta.id} rechazada.')
+            
+        except Ventas.DoesNotExist:
+            messages.error(request, 'Venta no encontrada.')
+        except Exception as e:
+            messages.error(request, f'Error: {str(e)}')
+        
+        return redirect('black_invoices:ventas_autorizacion')
+
+        
 class VentaDetailView(LoginRequiredMixin, DetailView):
     model = Ventas
     template_name = 'black_invoices/ventas/venta_detail.html'
@@ -1851,3 +2034,49 @@ class ProductosMasVendidosPDFView(LoginRequiredMixin, View):
             # Considera redirigir a una página más genérica o a la página anterior
             # si 'productos_mas_vendidos' no existe o no es el lugar correcto.
             return redirect(request.META.get('HTTP_REFERER', reverse_lazy('black_invoices:inicio')))
+        
+class TasaCambioListView(EmpleadoRolMixin, ListView):
+    model = TasaCambio
+    template_name = 'black_invoices/configuracion/tasa_cambio_list.html'
+    context_object_name = 'tasas'
+    roles_permitidos = ['Administrador', 'Supervisor']
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Gestión de Tasa de Cambio'
+        context['tasa_actual'] = TasaCambio.get_tasa_actual()
+        return context
+
+class TasaCambioCreateView(EmpleadoRolMixin, CreateView):
+    model = TasaCambio
+    template_name = 'black_invoices/configuracion/tasa_cambio_form.html'
+    fields = ['fecha', 'tasa_usd_ves', 'activa']
+    success_url = reverse_lazy('black_invoices:tasa_cambio_list')
+    roles_permitidos = ['Administrador', 'Supervisor']
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Agregar Tasa de Cambio'
+        context['boton'] = 'Guardar'
+        return context
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Tasa de cambio creada exitosamente')
+        return super().form_valid(form)
+
+class TasaCambioUpdateView(EmpleadoRolMixin, UpdateView):
+    model = TasaCambio
+    template_name = 'black_invoices/configuracion/tasa_cambio_form.html'
+    fields = ['fecha', 'tasa_usd_ves', 'activa']
+    success_url = reverse_lazy('black_invoices:tasa_cambio_list')
+    roles_permitidos = ['Administrador', 'Supervisor']
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Editar Tasa de Cambio'
+        context['boton'] = 'Actualizar'
+        return context
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Tasa de cambio actualizada exitosamente')
+        return super().form_valid(form)

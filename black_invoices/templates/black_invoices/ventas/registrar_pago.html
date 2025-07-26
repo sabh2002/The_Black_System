@@ -13,17 +13,57 @@
                     <h5>Información de la Venta</h5>
                     <p><strong>Cliente:</strong> {{ venta.factura.cliente.nombre }} {{ venta.factura.cliente.apellido }}</p>
                     <p><strong>Fecha:</strong> {{ venta.factura.fecha_fac|date:"d/m/Y H:i" }}</p>
-                    <p><strong>Total Recibo:</strong> ${{ venta.factura.total_fac|floatformat:2 }}</p>
-                    <p><strong>Monto Pagado:</strong> ${{ venta.monto_pagado|floatformat:2 }}</p>
-                    <p><strong>Saldo Pendiente:</strong> ${{ venta.saldo_pendiente|floatformat:2 }}</p>
+                    
+                    <!-- PRECIOS EN DÓLARES Y BOLÍVARES -->
+                    <p><strong>Total Recibo:</strong> 
+                        <span class="text-primary">${{ venta.factura.total_fac|floatformat:2 }}</span>
+                        {% if venta.factura.total_fac > 0 %}
+                            {% load custom_filters %}
+                            <br><small class="text-muted">{{ venta.factura.total_fac|precio_bolivares|floatformat:2 }} Bs</small>
+                        {% endif %}
+                    </p>
+                    
+                    <p><strong>Monto Pagado:</strong> 
+                        <span class="text-success">${{ venta.monto_pagado|floatformat:2 }}</span>
+                        {% if venta.monto_pagado > 0 %}
+                            <br><small class="text-muted">{{ venta.monto_pagado|precio_bolivares|floatformat:2 }} Bs</small>
+                        {% endif %}
+                    </p>
+                    
+                    <p><strong>Saldo Pendiente:</strong> 
+                        <span class="text-warning">${{ venta.saldo_pendiente|floatformat:2 }}</span>
+                        {% if venta.saldo_pendiente > 0 %}
+                            <br><small class="text-muted">{{ venta.saldo_pendiente|precio_bolivares|floatformat:2 }} Bs</small>
+                        {% endif %}
+                    </p>
+                    
+                    <!-- Estado de autorización (si existe) -->
+                    {% if venta.autorizada is not None %}
+                    <p><strong>Estado de Autorización:</strong> 
+                        <span class="badge {% if venta.autorizada %}badge-success{% else %}badge-warning{% endif %}">
+                            {{ venta.estado_autorizacion|default:"Pendiente" }}
+                        </span>
+                    </p>
+                    {% if venta.autorizada_por %}
+                    <p><strong>Autorizada por:</strong> {{ venta.autorizada_por.nombre }} {{ venta.autorizada_por.apellido }}</p>
+                    <p><strong>Fecha autorización:</strong> {{ venta.fecha_autorizacion|date:"d/m/Y H:i" }}</p>
+                    {% endif %}
+                    {% endif %}
                 </div>
             </div>
             <div class="col-md-6">
+                {% if venta.autorizada == False %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Venta no autorizada</strong><br>
+                    No se pueden registrar pagos hasta que un administrador autorice esta venta.
+                </div>
+                {% else %}
                 <div class="card card-primary">
                     <div class="card-header">
                         <h3 class="card-title">Registrar Pago</h3>
                     </div>
-                    <form method="post">
+                    <form method="post" id="form-pago">
                         {% csrf_token %}
                         <div class="card-body">
                             <div class="form-group">
@@ -36,6 +76,28 @@
                                            step="0.01" min="0.01" max="{{ venta.saldo_pendiente }}" 
                                            value="{{ venta.saldo_pendiente }}" required>
                                 </div>
+                                <!-- Mostrar equivalente en bolívares en tiempo real -->
+                                <small class="form-text text-muted">
+                                    Equivalente: <span id="monto-bolivares">{{ venta.saldo_pendiente|precio_bolivares|floatformat:2 }} Bs</span>
+                                </small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="metodo_pago">Método de Pago:</label>
+                                <select class="form-control" id="metodo_pago" name="metodo_pago" required>
+                                    {% for value, display in metodos_pago %}
+                                    <option value="{{ value }}">{{ display }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="form-group" id="referencia-group">
+                                <label for="referencia">Referencia/Número (Opcional):</label>
+                                <input type="text" class="form-control" id="referencia" name="referencia" 
+                                       placeholder="Ej: Número de confirmación, voucher, etc." maxlength="50">
+                                <small class="form-text text-muted" id="referencia-help">
+                                    Ingrese el número de referencia, confirmación o voucher si aplica
+                                </small>
                             </div>
                         </div>
                         <div class="card-footer">
@@ -48,6 +110,7 @@
                         </div>
                     </form>
                 </div>
+                {% endif %}
             </div>
         </div>
         
@@ -64,6 +127,8 @@
                             <th>#</th>
                             <th>Fecha</th>
                             <th>Monto</th>
+                            <th>Método</th>
+                            <th>Referencia</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -71,7 +136,14 @@
                         <tr>
                             <td>{{ pago.id }}</td>
                             <td>{{ pago.fecha|date:"d/m/Y H:i" }}</td>
-                            <td>${{ pago.monto|floatformat:2 }}</td>
+                            <td>
+                                <strong>${{ pago.monto|floatformat:2 }}</strong>
+                                <br><small class="text-muted">{{ pago.monto|precio_bolivares|floatformat:2 }} Bs</small>
+                            </td>
+                            <td>
+                                <span class="badge badge-info">{{ pago.get_metodo_pago_display }}</span>
+                            </td>
+                            <td>{{ pago.referencia|default:"-" }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -81,4 +153,98 @@
         {% endif %}
     </div>
 </div>
+
+<script>
+$(document).ready(function() {
+    const $metodoPago = $('#metodo_pago');
+    const $referencia = $('#referencia');
+    const $referenciaGroup = $('#referencia-group');
+    const $referenciaHelp = $('#referencia-help');
+    const $monto = $('#monto');
+    const $montoBolivares = $('#monto-bolivares');
+    
+    // Tasa de cambio desde el backend (se puede mejorar con AJAX)
+    const tasaCambio = {{ tasa_cambio|default:1 }};
+    
+    // Función para actualizar equivalente en bolívares
+    function updateBolivares() {
+        const montoUSD = parseFloat($monto.val()) || 0;
+        const montoVES = montoUSD * tasaCambio;
+        $montoBolivares.text(montoVES.toFixed(2) + ' Bs');
+    }
+    
+    // Función para manejar cambios en método de pago
+    function toggleReferencia() {
+        const metodo = $metodoPago.val();
+        
+        if (metodo === 'efectivo') {
+            $referenciaGroup.hide();
+            $referencia.val('').prop('required', false);
+        } else {
+            $referenciaGroup.show();
+            $referencia.prop('required', false); // Mantener como opcional
+            
+            // Actualizar placeholder y texto de ayuda según método
+            switch(metodo) {
+                case 'tarjeta':
+                    $referencia.attr('placeholder', 'Ej: Número de voucher, autorización');
+                    $referenciaHelp.text('Ingrese el número de voucher o autorización de la tarjeta');
+                    break;
+                case 'pago_movil':
+                    $referencia.attr('placeholder', 'Ej: Número de referencia del pago móvil');
+                    $referenciaHelp.text('Ingrese el número de referencia del pago móvil');
+                    break;
+                case 'transferencia':
+                    $referencia.attr('placeholder', 'Ej: Número de referencia bancaria');
+                    $referenciaHelp.text('Ingrese el número de referencia de la transferencia bancaria');
+                    break;
+                default:
+                    $referencia.attr('placeholder', 'Número de referencia o confirmación');
+                    $referenciaHelp.text('Ingrese el número de referencia o confirmación si aplica');
+            }
+        }
+    }
+    
+    // Event listeners
+    $monto.on('input', updateBolivares);
+    $metodoPago.on('change', toggleReferencia);
+    
+    // Inicializar
+    updateBolivares();
+    toggleReferencia();
+    
+    // Validación del formulario
+    $('#form-pago').on('submit', function(e) {
+        const monto = parseFloat($monto.val());
+        const saldoPendiente = parseFloat('{{ venta.saldo_pendiente }}');
+        
+        if (monto > saldoPendiente + 0.01) {
+            e.preventDefault();
+            alert('El monto no puede exceder el saldo pendiente.');
+            $monto.focus();
+            return false;
+        }
+        
+        if (monto <= 0) {
+            e.preventDefault();
+            alert('El monto debe ser mayor a cero.');
+            $monto.focus();
+            return false;
+        }
+        
+        const metodo = $metodoPago.val();
+        if (metodo !== 'efectivo' && $referencia.val().trim() === '') {
+            const confirmar = confirm('¿Está seguro de registrar el pago sin número de referencia?');
+            if (!confirmar) {
+                e.preventDefault();
+                $referencia.focus();
+                return false;
+            }
+        }
+        
+        // Deshabilitar botón para evitar doble envío
+        $(this).find('button[type="submit"]').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Procesando...');
+    });
+});
+</script>
 {% endblock %}

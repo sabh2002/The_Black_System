@@ -1,0 +1,95 @@
+{% extends 'black_invoices/base/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ titulo }}</h3>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.fecha.id_for_label }}">{{ form.fecha.label }}</label>
+                        {{ form.fecha }}
+                        {% if form.fecha.errors %}
+                            <div class="text-danger">
+                                {{ form.fecha.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.tasa_usd_ves.id_for_label }}">{{ form.tasa_usd_ves.label }}</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">1 USD =</span>
+                            </div>
+                            {{ form.tasa_usd_ves }}
+                            <div class="input-group-append">
+                                <span class="input-group-text">VES</span>
+                            </div>
+                        </div>
+                        {% if form.tasa_usd_ves.help_text %}
+                            <small class="form-text text-muted">{{ form.tasa_usd_ves.help_text }}</small>
+                        {% endif %}
+                        {% if form.tasa_usd_ves.errors %}
+                            <div class="text-danger">
+                                {{ form.tasa_usd_ves.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div class="custom-control custom-checkbox">
+                            {{ form.activa }}
+                            <label class="custom-control-label" for="{{ form.activa.id_for_label }}">
+                                {{ form.activa.label }}
+                            </label>
+                        </div>
+                        <small class="form-text text-muted">
+                            Si activas esta tasa, se desactivarán automáticamente las demás.
+                        </small>
+                        {% if form.activa.errors %}
+                            <div class="text-danger">
+                                {{ form.activa.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> {{ boton }}
+                </button>
+                <a href="{% url 'black_invoices:tasa_cambio_list' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    // Configurar fecha actual por defecto
+    if (!$('#id_fecha').val()) {
+        const today = new Date().toISOString().split('T')[0];
+        $('#id_fecha').val(today);
+    }
+    
+    // Agregar clases CSS a los campos
+    $('#id_fecha').addClass('form-control');
+    $('#id_tasa_usd_ves').addClass('form-control');
+    $('#id_activa').addClass('custom-control-input');
+});
+</script>
+{% endblock %}

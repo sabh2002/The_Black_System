@@ -35,6 +35,8 @@ urlpatterns = [
     path('ventas/<int:pk>/cancelar/', views.cancelar_venta, name='cancelar_venta'),
     path('ventas/pendientes/', views.VentasPendientesView.as_view(), name='ventas_pendientes'),
     path('ventas/<int:pk>/pago/', views.RegistrarPagoView.as_view(), name='registrar_pago'),
+    path('ventas/autorizacion/', views.VentasAutorizacionView.as_view(), name='ventas_autorizacion'),
+    path('ventas/autorizar/<int:pk>/', views.AutorizarVentaView.as_view(), name='autorizar_venta'),
 
     # # Empleados
     path('empleados/', views.EmpleadoListView.as_view(), name='empleado_list'),
@@ -51,7 +53,9 @@ urlpatterns = [
     path('productos/mas-vendidos/', views.ProductosMasVendidosView.as_view(), name='productos_mas_vendidos'),
     path('productos/mas-vendidos/pdf', views.ProductosMasVendidosPDFView.as_view(), name='productos_mas_vendidos_pdf'),
     path('comisiones/historial/', views.HistorialComisionesView.as_view(), name='historial_comisiones'),
-
+    path('configuracion/tasa-cambio/', views.TasaCambioListView.as_view(), name='tasa_cambio_list'),
+    path('configuracion/tasa-cambio/crear/', views.TasaCambioCreateView.as_view(), name='tasa_cambio_create'),
+    path('configuracion/tasa-cambio/editar/<int:pk>/', views.TasaCambioUpdateView.as_view(), name='tasa_cambio_update'),
     # ...
 # URL para editar perfil
 

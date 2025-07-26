@@ -1,0 +1,69 @@
+{% extends 'black_invoices/base/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-md-9">
+                <h3 class="card-title">{{ titulo }}</h3>
+                {% if tasa_actual %}
+                <p class="mb-0 text-muted">
+                    <small>Tasa actual: <strong>1 USD = {{ tasa_actual.tasa_usd_ves }} VES</strong> ({{ tasa_actual.fecha }})</small>
+                </p>
+                {% else %}
+                <p class="mb-0 text-warning">
+                    <small><i class="fas fa-exclamation-triangle"></i> No hay tasa de cambio activa</small>
+                </p>
+                {% endif %}
+            </div>
+            <div class="col-md-3 text-right">
+                <a href="{% url 'black_invoices:tasa_cambio_create' %}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Nueva Tasa
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Tasa (USD a VES)</th>
+                    <th>Estado</th>
+                    <th>Fecha Creación</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tasa in tasas %}
+                <tr>
+                    <td>{{ tasa.fecha|date:"d/m/Y" }}</td>
+                    <td>
+                        <strong>{{ tasa.tasa_usd_ves|floatformat:2 }} VES</strong>
+                        <small class="text-muted d-block">por cada 1 USD</small>
+                    </td>
+                    <td>
+                        {% if tasa.activa %}
+                        <span class="badge badge-success">Activa</span>
+                        {% else %}
+                        <span class="badge badge-secondary">Inactiva</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ tasa.fecha_creacion|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'black_invoices:tasa_cambio_update' tasa.pk %}" class="btn btn-sm btn-info">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">No hay tasas de cambio registradas.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

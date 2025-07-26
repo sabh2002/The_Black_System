@@ -64,7 +64,13 @@
                 <tr>
                     <td>{{ producto.id }}</td>
                     <td>{{ producto.nombre }}</td>
-                    <td>${{ producto.precio|floatformat:2 }}</td>
+                    
+                    <td>
+                        <strong>${{ producto.precio|floatformat:2 }}</strong>
+                        {% if producto.get_precio_bolivares > 0 %}
+                        <br><small class="text-muted">{{ producto.get_precio_bolivares|floatformat:2 }} Bs</small>
+                        {% endif %}
+                    </td>
                     <td>
                         <span class="badge 
                             {% if producto.stock <= 0 %}
